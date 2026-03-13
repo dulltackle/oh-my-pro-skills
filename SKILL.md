@@ -1,7 +1,8 @@
 ---
-name: writing-plans
+name: writing-plans-pro
 description: Use when you have a spec or requirements for a multi-step task, before touching code
 ---
+
 # Writing Plans
 
 ## Overview
@@ -48,6 +49,7 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 ### Task N: [Component Name]
 
 **Files:**
+
 - Create: `exact/path/to/file.py`
 - Modify: `exact/path/to/existing.py:123-145`
 - Test: `tests/exact/path/to/test.py`
