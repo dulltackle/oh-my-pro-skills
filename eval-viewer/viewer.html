@@ -705,8 +705,9 @@
       const run = EMBEDDED_DATA.runs[index];
 
       // Progress
+      const evalLabel = run.eval_name ? `${run.eval_name} · ` : "";
       document.getElementById("progress").textContent =
-        `${index + 1} of ${EMBEDDED_DATA.runs.length}`;
+        `${evalLabel}${index + 1} of ${EMBEDDED_DATA.runs.length}`;
 
       // Prompt
       document.getElementById("prompt-text").textContent = run.prompt;

@@ -77,6 +77,7 @@ def load_eval_set(eval_set_path: Path) -> list[dict[str, Any]]:
         normalized.setdefault("prompt", query)
         normalized.setdefault("query", query)
         normalized.setdefault("should_trigger", True)
+        normalized.setdefault("eval_name", item.get("eval_name") or f"eval-{normalized['id']}")
         items.append(normalized)
     return items
 

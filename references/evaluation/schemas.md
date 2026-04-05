@@ -14,6 +14,7 @@
   "evals": [
     {
       "id": 1,
+      "eval_name": "merge-two-skills",
       "query": "请帮我融合两个 skill",
       "prompt": "请帮我融合两个 skill",
       "should_trigger": true,
@@ -30,6 +31,7 @@
 
 说明：
 
+- `eval_name`：可选但强烈建议提供；用于工作目录名、viewer 标题和 benchmark 展示
 - `query`：用于触发检测或最小查询
 - `prompt`：完整执行提示，可与 `query` 相同
 - `should_trigger`：该用例预期是否应触发 skill
@@ -126,6 +128,7 @@
   "runs": [
     {
       "eval_id": 1,
+      "eval_name": "skill-merge",
       "configuration": "with_skill",
       "run_number": 1,
       "result": {

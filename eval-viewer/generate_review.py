@@ -50,7 +50,7 @@ def find_runs(workspace: Path) -> list[dict]:
     """Recursively find directories that contain an outputs/ subdirectory."""
     runs: list[dict] = []
     _find_runs_recursive(workspace, workspace, runs)
-    runs.sort(key=lambda r: (r.get("eval_id", float("inf")), r["id"]))
+    runs.sort(key=lambda r: (r.get("eval_id", float("inf")), r.get("eval_name", ""), r["id"]))
     return runs
 
 
@@ -75,17 +75,23 @@ def build_run(root: Path, run_dir: Path) -> dict | None:
     """Build a run dict with prompt, outputs, and grading data."""
     prompt = ""
     eval_id = None
+    eval_name = None
 
     # Try eval_metadata.json
-    for candidate in [run_dir / "eval_metadata.json", run_dir.parent / "eval_metadata.json"]:
+    for candidate in [
+        run_dir / "eval_metadata.json",
+        run_dir.parent / "eval_metadata.json",
+        run_dir.parent.parent / "eval_metadata.json",
+    ]:
         if candidate.exists():
             try:
                 metadata = json.loads(candidate.read_text())
                 prompt = metadata.get("prompt", "")
                 eval_id = metadata.get("eval_id")
+                eval_name = metadata.get("eval_name")
             except (json.JSONDecodeError, OSError):
                 pass
-            if prompt:
+            if prompt or eval_id is not None or eval_name:
                 break
 
     # Fall back to transcript.md
@@ -130,6 +136,7 @@ def build_run(root: Path, run_dir: Path) -> dict | None:
         "id": run_id,
         "prompt": prompt,
         "eval_id": eval_id,
+        "eval_name": eval_name or run_dir.parent.parent.name,
         "outputs": output_files,
         "grading": grading,
     }

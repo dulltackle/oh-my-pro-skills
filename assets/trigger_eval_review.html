@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trigger Eval Review</title>
+  <style>
+    :root {
+      --bg: #f4efe6;
+      --surface: #fffdf8;
+      --ink: #171512;
+      --muted: #6e675d;
+      --line: #ddd4c7;
+      --accent: #b85c38;
+      --accent-strong: #96462a;
+      --positive: #2f7d4b;
+      --negative: #8a3340;
+      --shadow: 0 16px 40px rgba(23, 21, 18, 0.08);
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "PingFang SC", "Hiragino Sans GB", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(184, 92, 56, 0.10), transparent 28%),
+        linear-gradient(180deg, #fbf7f0 0%, var(--bg) 100%);
+      min-height: 100vh;
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 32px auto 48px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(184, 92, 56, 0.14), rgba(255, 255, 255, 0.9));
+      border: 1px solid rgba(184, 92, 56, 0.18);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.05;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 900px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 20px;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .panel-header {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .panel-body {
+      padding: 18px;
+    }
+
+    .meta-row + .meta-row {
+      margin-top: 16px;
+    }
+
+    .meta-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+      letter-spacing: 0.04em;
+    }
+
+    .meta-value {
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+
+    .tips {
+      padding-left: 18px;
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 11px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .primary:hover {
+      background: var(--accent-strong);
+    }
+
+    .secondary {
+      background: rgba(184, 92, 56, 0.10);
+      color: var(--accent-strong);
+    }
+
+    .ghost {
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    .stats {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      min-width: 140px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #f8f2e9;
+      border: 1px solid #eadfce;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .items {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .item {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .item-head {
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+      background: #fcf8f1;
+    }
+
+    .item-title {
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .pill-positive {
+      color: var(--positive);
+      background: rgba(47, 125, 75, 0.10);
+    }
+
+    .pill-negative {
+      color: var(--negative);
+      background: rgba(138, 51, 64, 0.10);
+    }
+
+    .item-body {
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font: inherit;
+      color: var(--ink);
+      background: #fffdf9;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    .item-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .empty {
+      padding: 28px;
+      text-align: center;
+      color: var(--muted);
+      border: 1px dashed var(--line);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.65);
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <h1>触发样本审阅</h1>
+      <p>先把应触发 / 不应触发样本修好，再去跑 description 优化。这个页面导出的 JSON 可以直接供 `scripts/run_eval.py` 或 `scripts/run_loop.py` 使用。</p>
+    </section>
+
+    <div class="grid">
+      <aside class="panel">
+        <div class="panel-header">Skill 信息</div>
+        <div class="panel-body">
+          <div class="meta-row">
+            <div class="meta-label">Skill</div>
+            <div class="meta-value" id="skill-name"></div>
+          </div>
+          <div class="meta-row">
+            <div class="meta-label">当前 Description</div>
+            <div class="meta-value" id="skill-description"></div>
+          </div>
+          <div class="meta-row">
+            <div class="meta-label">审阅提示</div>
+            <ul class="tips">
+              <li>优先保留真实用户会说的话。</li>
+              <li>负样本要写 near-miss，而不是明显无关。</li>
+              <li>复杂、多步骤、容易和邻近 skill 混淆的样本更有价值。</li>
+            </ul>
+          </div>
+        </div>
+      </aside>
+
+      <main class="panel">
+        <div class="panel-header">样本列表</div>
+        <div class="panel-body">
+          <div class="stats">
+            <div class="stat">
+              <strong id="positive-count">0</strong>
+              <span>应触发</span>
+            </div>
+            <div class="stat">
+              <strong id="negative-count">0</strong>
+              <span>不应触发</span>
+            </div>
+            <div class="stat">
+              <strong id="total-count">0</strong>
+              <span>总样本数</span>
+            </div>
+          </div>
+
+          <div class="controls">
+            <button class="primary" type="button" onclick="addItem(true)">新增应触发</button>
+            <button class="secondary" type="button" onclick="addItem(false)">新增不应触发</button>
+            <button class="ghost" type="button" onclick="exportEvalSet()">导出 JSON</button>
+          </div>
+
+          <div class="items" id="items"></div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const SKILL_NAME = __SKILL_NAME_PLACEHOLDER__;
+    const SKILL_DESCRIPTION = __SKILL_DESCRIPTION_PLACEHOLDER__;
+    const INITIAL_EVALS = __EVAL_DATA_PLACEHOLDER__;
+
+    let items = (Array.isArray(INITIAL_EVALS) ? INITIAL_EVALS : []).map((item, index) => ({
+      id: Number.isInteger(item.id) ? item.id : index + 1,
+      eval_name: item.eval_name || `eval-${index + 1}`,
+      query: item.query || item.prompt || "",
+      should_trigger: item.should_trigger !== false,
+    }));
+
+    document.getElementById("skill-name").textContent = SKILL_NAME;
+    document.getElementById("skill-description").textContent = SKILL_DESCRIPTION;
+
+    function slugify(text) {
+      const base = String(text || "")
+        .toLowerCase()
+        .replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        .slice(0, 48);
+      return base || "eval-item";
+    }
+
+    function refreshStats() {
+      const positives = items.filter(item => item.should_trigger).length;
+      const negatives = items.length - positives;
+      document.getElementById("positive-count").textContent = positives;
+      document.getElementById("negative-count").textContent = negatives;
+      document.getElementById("total-count").textContent = items.length;
+    }
+
+    function removeItem(id) {
+      items = items.filter(item => item.id !== id);
+      render();
+    }
+
+    function updateItem(id, key, value) {
+      items = items.map(item => item.id === id ? { ...item, [key]: value } : item);
+      render(key === "should_trigger");
+    }
+
+    function addItem(shouldTrigger) {
+      const nextId = items.reduce((max, item) => Math.max(max, item.id), 0) + 1;
+      items.push({
+        id: nextId,
+        eval_name: shouldTrigger ? `positive-${nextId}` : `negative-${nextId}`,
+        query: "",
+        should_trigger: shouldTrigger,
+      });
+      render();
+    }
+
+    function render(shouldRebuild = true) {
+      refreshStats();
+      const container = document.getElementById("items");
+      if (!items.length) {
+        container.innerHTML = '<div class="empty">还没有样本。先新增几条，再导出 JSON。</div>';
+        return;
+      }
+
+      if (!shouldRebuild) {
+        refreshStats();
+        return;
+      }
+
+      container.innerHTML = "";
+      items.forEach((item, index) => {
+        const wrapper = document.createElement("section");
+        wrapper.className = "item";
+        const pillClass = item.should_trigger ? "pill pill-positive" : "pill pill-negative";
+        const pillText = item.should_trigger ? "应触发" : "不应触发";
+        wrapper.innerHTML = `
+          <div class="item-head">
+            <div class="item-title">
+              <span>样本 ${index + 1}</span>
+              <span class="${pillClass}">${pillText}</span>
+            </div>
+            <button class="ghost" type="button">删除</button>
+          </div>
+          <div class="item-body">
+            <div>
+              <label>Eval Name</label>
+              <input type="text" value="${escapeHtml(item.eval_name)}" data-key="eval_name">
+            </div>
+            <div>
+              <label>查询内容</label>
+              <textarea data-key="query">${escapeHtml(item.query)}</textarea>
+            </div>
+            <div class="item-actions">
+              <label class="toggle">
+                <input type="checkbox" ${item.should_trigger ? "checked" : ""} data-key="should_trigger">
+                标记为应触发
+              </label>
+              <button class="secondary" type="button">根据查询自动生成名称</button>
+            </div>
+          </div>
+        `;
+
+        const deleteButton = wrapper.querySelector(".item-head button");
+        deleteButton.addEventListener("click", () => removeItem(item.id));
+
+        wrapper.querySelectorAll("[data-key]").forEach(element => {
+          const key = element.getAttribute("data-key");
+          const eventName = element.tagName === "TEXTAREA" || element.type === "text" ? "input" : "change";
+          element.addEventListener(eventName, event => {
+            const value = element.type === "checkbox" ? element.checked : event.target.value;
+            updateItem(item.id, key, value);
+          });
+        });
+
+        const autoNameButton = wrapper.querySelector(".secondary");
+        autoNameButton.addEventListener("click", () => {
+          updateItem(item.id, "eval_name", slugify(item.query));
+          render();
+        });
+
+        container.appendChild(wrapper);
+      });
+      refreshStats();
+    }
+
+    function exportEvalSet() {
+      const payload = {
+        skill_name: SKILL_NAME,
+        evals: items.map((item, index) => {
+          const query = item.query.trim();
+          return {
+            id: index + 1,
+            eval_name: (item.eval_name || slugify(query) || `eval-${index + 1}`).trim(),
+            query,
+            prompt: query,
+            should_trigger: Boolean(item.should_trigger),
+          };
+        }),
+      };
+
+      const blob = new Blob([JSON.stringify(payload, null, 2) + "\n"], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${SKILL_NAME || "skill"}-trigger-evals.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function escapeHtml(text) {
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    render();
+  </script>
+</body>
+</html>

@@ -445,10 +445,12 @@ def validate_special_layout(skill_path: Path, skill_name: str, report: Validatio
         "agents/analyzer.md",
         "eval-viewer/generate_review.py",
         "eval-viewer/viewer.html",
+        "assets/trigger_eval_review.html",
         "scripts/run_eval.py",
         "scripts/improve_description.py",
         "scripts/run_loop.py",
         "scripts/aggregate_benchmark.py",
+        "scripts/render_trigger_eval_review.py",
         "LICENSE.txt",
     ]
 

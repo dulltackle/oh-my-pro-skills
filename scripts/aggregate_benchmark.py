@@ -37,6 +37,18 @@ def calculate_stats(values: list[float]) -> dict:
     }
 
 
+def discover_eval_dirs(search_dir: Path) -> list[Path]:
+    eval_dirs: list[Path] = []
+    for child in sorted(path for path in search_dir.iterdir() if path.is_dir()):
+        metadata_path = child / "eval_metadata.json"
+        if metadata_path.exists():
+            eval_dirs.append(child)
+            continue
+        if any(grandchild.is_dir() and list(grandchild.glob("run-*")) for grandchild in child.iterdir()):
+            eval_dirs.append(child)
+    return eval_dirs
+
+
 def load_run_results(benchmark_dir: Path) -> dict:
     """
     Load all run results from a benchmark directory.
@@ -46,22 +58,23 @@ def load_run_results(benchmark_dir: Path) -> dict:
     """
     # Support both layouts: eval dirs directly under benchmark_dir, or under runs/
     runs_dir = benchmark_dir / "runs"
-    if runs_dir.exists():
-        search_dir = runs_dir
-    elif list(benchmark_dir.glob("eval-*")):
-        search_dir = benchmark_dir
-    else:
+    search_dir = runs_dir if runs_dir.exists() else benchmark_dir
+    eval_dirs = discover_eval_dirs(search_dir)
+    if not eval_dirs:
         print(f"在 {benchmark_dir} 或 {benchmark_dir / 'runs'} 中都未找到 eval 目录")
         return {}
 
     results: dict[str, list] = {}
 
-    for eval_idx, eval_dir in enumerate(sorted(search_dir.glob("eval-*"))):
+    for eval_idx, eval_dir in enumerate(eval_dirs):
         metadata_path = eval_dir / "eval_metadata.json"
+        eval_name = eval_dir.name
         if metadata_path.exists():
             try:
                 with open(metadata_path) as mf:
-                    eval_id = json.load(mf).get("eval_id", eval_idx)
+                    metadata = json.load(mf)
+                    eval_id = metadata.get("eval_id", eval_idx)
+                    eval_name = metadata.get("eval_name") or eval_name
             except (json.JSONDecodeError, OSError):
                 eval_id = eval_idx
         else:
@@ -99,6 +112,7 @@ def load_run_results(benchmark_dir: Path) -> dict:
                 # Extract metrics
                 result = {
                     "eval_id": eval_id,
+                    "eval_name": eval_name,
                     "run_number": run_number,
                     "pass_rate": grading.get("summary", {}).get("pass_rate", 0.0),
                     "passed": grading.get("summary", {}).get("passed", 0),
@@ -210,6 +224,7 @@ def generate_benchmark(benchmark_dir: Path, skill_name: str = "", skill_path: st
         for result in results[config]:
             runs.append({
                 "eval_id": result["eval_id"],
+                "eval_name": result.get("eval_name"),
                 "configuration": config,
                 "run_number": result["run_number"],
                 "result": {
@@ -227,11 +242,11 @@ def generate_benchmark(benchmark_dir: Path, skill_name: str = "", skill_path: st
             })
 
     # Determine eval IDs from results
-    eval_ids = sorted(set(
-        r["eval_id"]
-        for config in results.values()
-        for r in config
-    ))
+    eval_ids = sorted({r["eval_id"] for config in results.values() for r in config})
+    runs_per_configuration = max(
+        (len({r["run_number"] for r in config_runs}) for config_runs in results.values()),
+        default=0,
+    )
 
     benchmark = {
         "metadata": {
@@ -241,7 +256,7 @@ def generate_benchmark(benchmark_dir: Path, skill_name: str = "", skill_path: st
             "analyzer_model": "<model-name>",
             "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "evals_run": eval_ids,
-            "runs_per_configuration": 3
+            "runs_per_configuration": runs_per_configuration
         },
         "runs": runs,
         "run_summary": run_summary,

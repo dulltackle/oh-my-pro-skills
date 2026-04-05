@@ -14,6 +14,27 @@ description: 创建、改造、融合和优化 Agent skills，并提供结构设
 3. 为 skill 建立 eval、baseline 对比与 benchmark
 4. 优化 description 与触发效果
 
+## 先提取上下文，再补问题
+
+- 如果当前对话里已经包含 workflow、工具链、用户纠偏、输入输出样例或约束，先从现有上下文提取
+- 只有当关键信息仍缺失时，再补问题，不要让用户重复已经说过的话
+- 提问题时优先补这几类空白：触发时机、输出格式、边界、依赖资源、是否需要评测
+
+## 渐进披露
+
+skill 默认采用三层结构：
+
+1. frontmatter：只有 `name` 和 `description` 等高频元数据，始终在上下文里
+2. 顶层 `SKILL.md`：只保留路由、原则、流程和资源入口
+3. 按需资源：`references/`、`scripts/`、`assets/`、`evals/`
+
+约定：
+
+- 顶层 `SKILL.md` 实务上尽量控制在 500 行以内
+- 长示例、schema、评测细节、大段领域知识放进 `references/`
+- 单个 reference 很长时，优先在文件开头补目录或分节导航
+- 可确定、可复用、容易出错的操作优先沉到 `scripts/`
+
 ## 先判断任务类型
 
 开始前先识别当前请求属于哪一类：
@@ -32,6 +53,13 @@ description: 创建、改造、融合和优化 Agent skills，并提供结构设
 - 顶层 `SKILL.md` 只保留路由、原则、关键决策和入口说明
 - 长示例、schema、评测细节、viewer 说明放进 `references/`
 - 重复、脆弱或需要确定性的逻辑优先做成 `scripts/`
+
+### 沟通风格随用户熟悉度调整
+
+- 默认优先用用户意图、任务目标和产物来描述，不要上来就堆术语
+- 只有当上下文已经表明用户熟悉时，才直接使用 `eval`、`benchmark`、`assertion` 等词
+- 如果术语不可避免，先用一句中文短解释再继续，例如“评测样本（eval）”或“可验证断言（assertion）”
+- 对熟悉工程流程的用户可以更直接；对非工程背景用户要优先讲目的、步骤和交付物
 
 ### 先复用，后新增
 
@@ -73,7 +101,7 @@ description: 创建、改造、融合和优化 Agent skills，并提供结构设
 
 - 先从当前对话提取已有信息，再补缺口
 - 明确 `name`、`description`、输出形式、依赖资源
-- 先写顶层 `SKILL.md`，再决定是否需要 `scripts/`、`references/`、`assets/`
+- 先写顶层 `SKILL.md`，再决定是否需要 `scripts/`、`references/`、`assets/`、`evals/`
 - 需要骨架时使用 `scripts/init_skill.py`
 
 需要详细写作模式时，读取：
@@ -99,7 +127,8 @@ description: 创建、改造、融合和优化 Agent skills，并提供结构设
 - 只在需要验证 skill 价值时进入
 - 优先设计能区分 skill 价值的 eval prompt
 - 对比 `with_skill` 与 `baseline`，必要时加 `old_skill`
-- 聚合 grading、timing、benchmark，必要时使用 viewer
+- workspace 默认建议用 `iteration-N/<eval-name>/{with_skill,without_skill,old_skill}`
+- 先把结果放进 viewer 给人看，再汇总 benchmark 和结论
 
 需要评测细节时，读取：
 
@@ -121,6 +150,7 @@ description: 创建、改造、融合和优化 Agent skills，并提供结构设
 
 - 先检查 `description` 是否缺少任务、时机、触发短语或边界
 - 再检查是否过于抽象、过于技术化、或与邻近 skill 混淆
+- 先产出可人工审查的 should-trigger / should-not-trigger 查询，再跑优化回路
 - 需要时用 eval 样本回归验证
 
 需要触发优化细节时，读取：
@@ -140,9 +170,10 @@ description: 创建、改造、融合和优化 Agent skills，并提供结构设
 ```text
 skill-name/
 ├── SKILL.md
-├── scripts/
 ├── references/
-└── assets/
+├── scripts/
+├── assets/
+└── evals/
 ```
 
 在本 skill 中：

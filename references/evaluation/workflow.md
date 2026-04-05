@@ -8,10 +8,16 @@
 
 建议每个 eval 至少包含：
 
+- `eval_name`
 - `prompt`
 - `expected_output`
 - 可选输入文件
 - 一组可验证的 expectations
+
+其中：
+
+- `eval_name` 用于 workspace 目录名、viewer 标题和 benchmark 展示
+- 没有 `eval_name` 时，可以回退到 `id`，但不建议长期依赖
 
 ## 2. 选择 baseline
 
@@ -20,6 +26,23 @@
 - 有多个实现版本时：可追加更多配置，但要保持命名稳定
 
 ## 3. 运行执行
+
+推荐 workspace 结构：
+
+```text
+iteration-1/
+├── plan-skill-merge/
+│   ├── eval_metadata.json
+│   ├── with_skill/
+│   ├── without_skill/
+│   └── old_skill/
+└── compare-trigger-description/
+    ├── eval_metadata.json
+    ├── with_skill/
+    └── without_skill/
+```
+
+其中 `<eval-name>/` 建议使用稳定、可读的 kebab-case 名称。
 
 支持两种模式：
 
@@ -38,8 +61,9 @@
 ## 5. 展示与回看
 
 - `eval-viewer/generate_review.py` 可生成静态 HTML 或本地服务
-- viewer 是可选工具，不是硬依赖
+- viewer 不是硬依赖，但在有人类 review 的流程里应作为默认建议步骤
 - 反馈、旧版本输出和 benchmark 应尽量放在统一 workspace
+- 如果需要对比新旧结果，优先先开 viewer，再整理 benchmark 结论
 
 ## 6. 迭代
 

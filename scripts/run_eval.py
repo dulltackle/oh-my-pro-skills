@@ -71,6 +71,7 @@ def summarize(item: dict[str, Any], triggers: list[bool], trigger_threshold: flo
     did_pass = trigger_rate >= trigger_threshold if should_trigger else trigger_rate < trigger_threshold
     return {
         "id": item.get("id"),
+        "eval_name": item.get("eval_name") or f"eval-{item.get('id')}",
         "query": item["query"],
         "prompt": item["prompt"],
         "should_trigger": should_trigger,
