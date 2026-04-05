@@ -57,17 +57,17 @@
 
 至少统一以下项目：
 
-- 主体名称：Agent / Codex / 编码代理
+- 主体名称：Agent / 编码代理
 - 任务名称：eval、baseline、benchmark、grader、viewer
 - 目录名称：`references/`、`scripts/`、`agents/`
 - 配置和数据文件名：`evals.json`、`grading.json`、`benchmark.json`
 
-## 第四步：做来源映射
+## 第四步：整理迁移清单
 
-在删除 vendor 副本前，记录每个文件属于：
+在删除旧副本前，用一份简短清单记录每个文件属于：
 
 - 直接保留
 - 重写后迁入
 - 舍弃
 
-这个映射表应与许可证处理一起完成。
+这份清单应与许可证处理一起完成，不要求再维护单独的映射文档。

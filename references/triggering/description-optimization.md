@@ -50,7 +50,7 @@
 
 示例：
 
-> 创建、改造、融合和优化 Agent/Codex skills，并提供结构设计、评测、基线对比、description 优化、打包与校验流程。用于用户想从零创建 skill、修改已有 skill、融合两个 skill、为 skill 设计 eval、比较新旧版本效果、提升 skill 触发率，或排查 skill 为什么没有按预期触发时。
+> 创建、改造、融合和优化 Agent skills，并提供结构设计、评测、基线对比、description 优化、打包与校验流程。用于用户想从零创建 skill、修改已有 skill、融合两个 skill、为 skill 设计 eval、比较新旧版本效果、提升 skill 触发率，或排查 skill 为什么没有按预期触发时。
 
 ## 优化流程
 

@@ -1,6 +1,6 @@
 ---
 name: creating-skill-pro
-description: 创建、改造、融合和优化 Agent/Codex skills，并提供结构设计、评测、基线对比、description 优化、打包与校验流程。用于用户想从零创建 skill、修改已有 skill、融合两个 skill、为 skill 设计 eval、比较新旧版本效果、提升 skill 触发率，或排查 skill 为什么没有按预期触发时。
+description: 创建、改造、融合和优化 Agent skills，并提供结构设计、评测、基线对比、description 优化、打包与校验流程。用于用户想从零创建 skill、修改已有 skill、融合两个 skill、为 skill 设计 eval、比较新旧版本效果、提升 skill 触发率，或排查 skill 为什么没有按预期触发时。
 ---
 
 # Creating Skill
@@ -93,7 +93,6 @@ description: 创建、改造、融合和优化 Agent/Codex skills，并提供结
 需要融合方法时，读取：
 
 - `references/merging/merge-playbook.md`
-- `references/merging/source-mapping.md`
 
 ### 评测与对比
 
@@ -149,7 +148,7 @@ skill-name/
 在本 skill 中：
 
 - `references/authoring/`：写作原则、结构模式、示例
-- `references/merging/`：融合策略、来源映射
+- `references/merging/`：融合策略、迁移收尾
 - `references/evaluation/`：eval、grading、benchmark、viewer
 - `references/triggering/`：description 与触发优化
 
