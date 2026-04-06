@@ -1,6 +1,3 @@
-[submodule "creating-skill-pro"]
-	path = creating-skill-pro
-	url = ./creating-skill-pro
 [submodule "generating-git-commit"]
 	path = generating-git-commit
 	url = ./generating-git-commit
