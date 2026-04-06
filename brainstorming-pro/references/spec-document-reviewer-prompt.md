@@ -1,50 +1,50 @@
-# Spec Document Reviewer Prompt Template
+# Spec 审阅 Prompt 模板
 
-Use this template when dispatching a spec document reviewer subagent.
+当需要委派 spec 审阅任务时，使用本模板。
 
-**Purpose:** Verify the spec is complete, consistent, and ready for implementation planning.
+**目的：** 验证 spec 是否完整、一致，并且已经准备好进入实施计划阶段。
 
-**Dispatch after:** Spec document is written to docs/superpowers/specs/
+**派发时机：** spec 文档已经写入 `docs/specs/` 或仓库约定的 spec 目录之后。
 
+```md
+任务工具（通用）：
+description: "审阅 spec 文档"
+prompt: |
+你是 spec 文档审阅者。请判断这份 spec 是否完整，并且已经可以进入实施计划阶段。
+
+    **待审阅 spec：** [SPEC_FILE_PATH]
+
+    ## 检查项
+
+    | 类别 | 重点检查 |
+    |------|----------|
+    | 完整性 | 是否存在 TODO、占位符、TBD、未写完的小节 |
+    | 覆盖度 | 是否遗漏错误处理、边界条件、集成点 |
+    | 一致性 | 是否存在内部矛盾、前后冲突或定义漂移 |
+    | 清晰度 | 是否有模糊要求、含混接口或无法执行的描述 |
+    | 节制度 | 是否加入了未被请求的能力或过度设计 |
+    | 范围控制 | 是否已经聚焦到单个可规划问题，而不是混入多个独立子系统 |
+    | 结构边界 | 模块或单元是否职责清晰、接口明确、可独立理解与验证 |
+
+    ## 重点关注
+
+    请特别留意：
+    - 任何 TODO、占位文本或“后续再定义”
+    - 明显比其它部分更空泛、细节不足的章节
+    - 关键模块缺少边界、接口或数据流说明
+    - 看完文档后，是否仍无法判断后续该如何拆计划
+
+    ## 输出格式
+
+    ## Spec 审阅结果
+
+    **状态：** ✅ 通过 | ❌ 有问题
+
+    **问题：**
+    - [章节或小节]：[具体问题] - [为什么会阻塞后续计划]
+
+    **建议：**
+    - [不阻塞通过的优化建议]
 ```
-Task tool (general-purpose):
-  description: "Review spec document"
-  prompt: |
-    You are a spec document reviewer. Verify this spec is complete and ready for planning.
 
-    **Spec to review:** [SPEC_FILE_PATH]
-
-    ## What to Check
-
-    | Category | What to Look For |
-    |----------|------------------|
-    | Completeness | TODOs, placeholders, "TBD", incomplete sections |
-    | Coverage | Missing error handling, edge cases, integration points |
-    | Consistency | Internal contradictions, conflicting requirements |
-    | Clarity | Ambiguous requirements |
-    | YAGNI | Unrequested features, over-engineering |
-    | Scope | Focused enough for a single plan — not covering multiple independent subsystems |
-    | Architecture | Units with clear boundaries, well-defined interfaces, independently understandable and testable |
-
-    ## CRITICAL
-
-    Look especially hard for:
-    - Any TODO markers or placeholder text
-    - Sections saying "to be defined later" or "will spec when X is done"
-    - Sections noticeably less detailed than others
-    - Units that lack clear boundaries or interfaces — can you understand what each unit does without reading its internals?
-
-    ## Output Format
-
-    ## Spec Review
-
-    **Status:** ✅ Approved | ❌ Issues Found
-
-    **Issues (if any):**
-    - [Section X]: [specific issue] - [why it matters]
-
-    **Recommendations (advisory):**
-    - [suggestions that don't block approval]
-```
-
-**Reviewer returns:** Status, Issues (if any), Recommendations
+**审阅返回：** 状态、问题列表、建议
