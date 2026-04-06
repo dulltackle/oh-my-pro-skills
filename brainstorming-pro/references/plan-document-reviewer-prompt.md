@@ -2,15 +2,15 @@
 
 Use this template when dispatching a plan document reviewer subagent.
 
-**Purpose:** Verify the plan chunk is complete, matches the spec, and has proper task decomposition.
+**Purpose:** Verify the implementation plan chunk is complete, matches the spec, and has proper task decomposition.
 
-**Dispatch after:** Each plan chunk is written
+**Dispatch after:** Each implementation plan chunk is written
 
 ```
 Task tool (general-purpose):
-  description: "Review plan chunk N"
+  description: "Review implementation plan chunk N"
   prompt: |
-    You are a plan document reviewer. Verify this plan chunk is complete and ready for implementation.
+    You are an implementation plan reviewer. Verify this plan chunk is complete and ready for implementation.
 
     **Plan chunk to review:** [PLAN_FILE_PATH] - Chunk N only
     **Spec for reference:** [SPEC_FILE_PATH]
@@ -24,7 +24,7 @@ Task tool (general-purpose):
     | Task Decomposition | Tasks atomic, clear boundaries, steps actionable |
     | File Structure | Files have clear single responsibilities, split by responsibility not layer |
     | File Size | Would any new or modified file likely grow large enough to be hard to reason about as a whole? |
-    | Task Syntax | Checkbox syntax (`- [ ]`) on steps for tracking |
+    | Verification | Missing verification steps or missing expected outputs |
     | Chunk Size | Each chunk under 1000 lines |
 
     ## CRITICAL
