@@ -1,0 +1,21 @@
+[submodule "brainstorming-pro"]
+	path = brainstorming-pro
+	url = ./brainstorming-pro
+[submodule "creating-skill-pro"]
+	path = creating-skill-pro
+	url = ./creating-skill-pro
+[submodule "generating-git-commit"]
+	path = generating-git-commit
+	url = ./generating-git-commit
+[submodule "playwright-interactive"]
+	path = playwright-interactive
+	url = ./playwright-interactive
+[submodule "playwright"]
+	path = playwright
+	url = ./playwright
+[submodule "screenshot"]
+	path = screenshot
+	url = ./screenshot
+[submodule "writing-plans-pro"]
+	path = writing-plans-pro
+	url = ./writing-plans-pro
