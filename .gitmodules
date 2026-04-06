@@ -1,6 +1,3 @@
-[submodule "brainstorming-pro"]
-	path = brainstorming-pro
-	url = ./brainstorming-pro
 [submodule "creating-skill-pro"]
 	path = creating-skill-pro
 	url = ./creating-skill-pro
