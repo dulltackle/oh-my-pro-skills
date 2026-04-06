@@ -1,6 +1,6 @@
 ---
 name: creating-skill-pro
-description: 设计、改造、融合和验证 Agent skills，在需要梳理策略框架、重构 SKILL.md 结构、规划 `references/` 与 `scripts/` 分层、建立评测、优化 description 或排查触发问题时使用。适用于“帮我做一个 skill”“重写或合并这个 skill”“给 skill 做评测”“为什么这个 skill 没触发”等请求。
+description: 设计、改造、融合和验证 Agent skills，在需要梳理策略框架、重构 SKILL.md 结构、规划 `references/` 与 `scripts/` 分层、建立评测、优化 description 或排查触发问题时使用。适用于“帮我做一个 skill”、“重写或合并这个 skill”、“给 skill 做评测”、“为什么这个 skill 没触发”等请求。
 ---
 
 # Creating Skill
@@ -22,7 +22,7 @@ description: 设计、改造、融合和验证 Agent skills，在需要梳理策
 ### 策略哲学
 
 - 写思考框架，不写唯一路径
-- 先判断当前任务是开放式设计问题、确定性执行问题，还是验证问题
+- 先判断当前任务是开放式设计问题、确定性执行问题还是验证问题
 - 只有当 workflow 能显著降低风险时才引入它；不要把 workflow 当顶层默认范式
 - 高自由度任务必须保留重规划空间，不能被固定流程吞掉
 
