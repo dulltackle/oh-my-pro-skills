@@ -1,9 +1,6 @@
 [submodule "playwright-interactive"]
 	path = playwright-interactive
 	url = ./playwright-interactive
-[submodule "playwright"]
-	path = playwright
-	url = ./playwright
 [submodule "screenshot"]
 	path = screenshot
 	url = ./screenshot
