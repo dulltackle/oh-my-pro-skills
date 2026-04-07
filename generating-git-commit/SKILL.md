@@ -35,13 +35,14 @@ description: "遵循 Conventional Commits 规范和安全协议生成 git 提交
    - 使用 `git diff --cached` 查看改动内容
    - 忽略未暂存 diff，不要把未暂存文件纳入本次提交
 2. 如果只有 `staged changes`，使用 `git diff --cached` 分析本次提交内容
-3. 如果没有 `staged changes`，再根据用户意图从未暂存文件中选择相关文件进行分析和后续暂存
+3. 如果没有任何已暂存文件（所有文件均为未跟踪或未暂存），将全部未跟踪和未暂存文件纳入本次提交：分析所有文件改动内容，在执行时暂存全部文件
 
 ### 步骤 3：分析更改并起草消息
 
 1. **先确定提交边界**：
-   - 如果仓库同时有已暂存和未暂存更改，本次提交边界固定为“当前已暂存文件”
+   - 如果仓库同时有已暂存和未暂存更改，本次提交边界固定为”当前已暂存文件”
    - 不要根据未暂存内容改写提交消息，也不要把未暂存文件加入候选列表
+   - 如果仓库没有任何已暂存文件，本次提交边界为”所有未跟踪和未暂存文件”，分析全部改动并全部纳入提交
 2. **确定提交类型**：参考下方[类型列表](#提交类型)
 3. **检查敏感文件**：.env、credentials.json、secrets - 如果存在则警告
 4. **起草消息**，遵循格式：
@@ -142,7 +143,7 @@ description: "遵循 Conventional Commits 规范和安全协议生成 git 提交
 
 1. 如果用户选择“确认提交”，使用起草消息执行：`git commit -m "message"`
 2. 如果用户选择“修改后提交”，使用用户在该次确认中提供的最终消息执行：`git commit -m "message"`
-3. 如果本次提交边界来自未暂存文件，先暂存相关文件：`git add <files>`，再执行 `git commit -m "message"`
+3. 如果本次提交边界来自未暂存文件，先暂存所有相关文件：`git add <files>`（当没有任何已暂存文件时，暂存全部未跟踪和未暂存文件），再执行 `git commit -m "message"`
 4. 验证：`git status`
 
 执行前再次检查：
@@ -172,20 +173,28 @@ description: "遵循 Conventional Commits 规范和安全协议生成 git 提交
 消息：`fix: resolve session validation edge case during token refresh`
 确认：用户在唯一一次确认中接受或改写消息后，直接提交
 
-示例 3：同时存在 staged 和 unstaged changes
+示例 3：没有任何已暂存文件
+用户："提交一下"
+仓库状态：所有文件均为未跟踪或未暂存，无已暂存文件
+分析：分析全部未跟踪和未暂存文件的改动内容
+消息：`feat: init project with core modules`
+确认：通过 `question` 工具说明"仓库无已暂存文件，将提交全部未跟踪和未暂存文件"
+执行：`git add` 全部文件后 `git commit`
+
+示例 4：同时存在 staged 和 unstaged changes
 用户："帮我把已经暂存的改动提交掉"
 仓库状态：`src/auth.ts` 已暂存，`README.md` 仍未暂存
 分析：只读取 `git diff --cached`，只根据 `src/auth.ts` 起草消息
 消息：`fix: handle token refresh validation failure`
 确认：通过 `question` 工具明确说明“仅提交当前已暂存文件”；用户一旦确认或改写消息，直接执行 `git commit`
 
-示例 4：用户修改消息
+示例 5：用户修改消息
 起草消息：`feat: add new feature`
 用户反馈：希望改为更具体的描述
 最终消息：`feat: add real-time analytics widget`
 确认：用户在唯一一次提问里直接提供最终消息；收到后不再二次确认，直接提交
 
-示例 5：破坏性变更
+示例 6：破坏性变更
 分析：移除了废弃的 API
 消息：
 
@@ -195,7 +204,7 @@ feat!: remove deprecated legacy endpoints
 BREAKING CHANGE: Legacy API v1 endpoints have been removed. Migrate to v2.
 ```
 
-示例 6：多段落 body
+示例 7：多段落 body
 消息：
 
 ```
