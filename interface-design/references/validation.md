@@ -1,48 +1,48 @@
-# Memory Management
+# 验证检查
 
-When and how to update `.interface-design/system.md`.
+构建完成后，用这些检查确认界面没有退回默认值，也没有破坏基础工艺。
 
-## When to Add Patterns
+## 间距
 
-Add to system.md when:
-- Component used 2+ times
-- Pattern is reusable across the project
-- Has specific measurements worth remembering
+所有间距值是否都遵循同一个基础单位？
 
-## Pattern Format
+- 图标间隙是否一致？
+- 组件内部间距是否成体系？
+- 区块之间的距离是否能体现关系远近？
+- 是否存在无法解释的随机数值？
 
-```markdown
-### Button Primary
-- Height: 36px
-- Padding: 12px 16px
-- Radius: 6px
-- Font: 14px, 500 weight
-```
+## 深度
 
-## Don't Document
+深度策略是否前后一致？
 
-- One-off components
-- Temporary experiments
-- Variations better handled with props
+- 如果采用仅边框策略，是否避免了阴影？
+- 如果采用阴影策略，阴影是否微妙且层级清晰？
+- 表面层级是否可以在眯眼时被感知？
+- 下拉菜单、弹出层是否明显位于触发来源之上？
 
-## Pattern Reuse
+## 颜色
 
-Before creating a component, check system.md:
-- Pattern exists? Use it.
-- Need variation? Extend, don't create new.
+颜色是否都服务于结构、状态、动作、强调或产品性格？
 
-Memory compounds: each pattern saved makes future work faster and more consistent.
+- 是否存在无意义的装饰色？
+- 语义色是否只用于语义场景？
+- 表面是否保持同一色相，只通过明度建立层级？
+- 文本颜色是否有主要、次要、三级、弱化的层级？
 
----
+## 组件
 
-# Validation Checks
+重复出现的组件是否保持一致？
 
-If system.md defines specific values, check consistency:
+- 按钮高度、圆角、内边距是否一致？
+- 输入框、选择器、筛选器是否共享同一控件语言？
+- 卡片表面处理是否一致，同时内部结构是否针对内容设计？
+- 交互元素是否具备默认、悬停、按下、焦点、禁用状态？
 
-**Spacing** — All values multiples of the defined base?
+## 内容
 
-**Depth** — Using the declared strategy throughout? (borders-only means no shadows)
+界面内容是否像真实产品中的真实数据？
 
-**Colors** — Using defined palette, not random hex codes?
-
-**Patterns** — Reusing documented patterns instead of creating new?
+- 标题、指标、表格和导航是否讲同一个故事？
+- 数据是否具体，避免占位式泛化？
+- 用户下一步要做什么是否清晰？
+- 空状态、加载状态和错误状态是否可理解？

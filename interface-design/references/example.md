@@ -1,86 +1,86 @@
-# Craft in Action
+# 工艺实践
 
-This shows how the subtle layering principle translates to real decisions. Learn the thinking, not the code. Your values will differ — the approach won't.
-
----
-
-## The Subtle Layering Mindset
-
-Before looking at any example, internalize this: **you should barely notice the system working.**
-
-When you look at Vercel's dashboard, you don't think "nice borders." You just understand the structure. When you look at Supabase, you don't think "good surface elevation." You just know what's above what. The craft is invisible — that's how you know it's working.
+本文展示微妙分层原则如何转化为真实决策。学习思路，而不是代码。你的数值会不同，但方法不会变。
 
 ---
 
-## Example: Dashboard with Sidebar and Dropdown
+## 微妙分层心智
 
-### The Surface Decisions
+在看任何示例前，先内化这一点：**你应该几乎注意不到系统在工作。**
 
-**Why so subtle?** Each elevation jump should be only a few percentage points of lightness. You can barely see the difference in isolation. But when surfaces stack, the hierarchy emerges. This is the Vercel/Supabase way — whisper-quiet shifts that you feel rather than see.
-
-**What NOT to do:** Don't make dramatic jumps between elevations. That's jarring. Don't use different hues for different levels. Keep the same hue, shift only lightness.
-
-### The Border Decisions
-
-**Why rgba, not solid colors?** Low opacity borders blend with their background. A low-opacity white border on a dark surface is barely there — it defines the edge without demanding attention. Solid hex borders look harsh in comparison.
-
-**The test:** Look at your interface from arm's length. If borders are the first thing you notice, reduce opacity. If you can't find where regions end, increase slightly.
-
-### The Sidebar Decision
-
-**Why same background as canvas, not different?**
-
-Many dashboards make the sidebar a different color. This fragments the visual space — now you have "sidebar world" and "content world."
-
-Better: Same background, subtle border separation. The sidebar is part of the app, not a separate region. Vercel does this. Supabase does this. The border is enough.
-
-### The Dropdown Decision
-
-**Why surface-200, not surface-100?**
-
-The dropdown floats above the card it emerged from. If both were surface-100, the dropdown would blend into the card — you'd lose the sense of layering. Surface-200 is just light enough to feel "above" without being dramatically different.
-
-**Why border-overlay instead of border-default?**
-
-Overlays (dropdowns, popovers) often need slightly more definition because they're floating in space. A touch more border opacity helps them feel contained without being harsh.
+当你看 Vercel 的仪表盘时，你不会想“边框不错”，你只是理解了结构。当你看 Supabase 时，你不会想“表面层级好”，你只是知道什么在什么之上。工艺感是隐形的，这正说明它有效。
 
 ---
 
-## Example: Form Controls
+## 示例：带侧边栏和下拉菜单的仪表盘
 
-### Input Background Decision
+### 表面决策
 
-**Why darker, not lighter?**
+**为什么这么微妙？** 每次层级跳变都应该只有几个百分点的明度差。单独看几乎分辨不出来，但当表面堆叠时，层级会显现。这是 Vercel/Supabase 的方式：低声的变化，感受到而不是明显看到。
 
-Inputs are "inset" — they receive content, they don't project it. A slightly darker background signals "type here" without needing heavy borders. This is the alternative-background principle.
+**不要做什么：** 不要在层级之间制造夸张跳变，那会突兀。不要给不同层级使用不同色相。保持同一色相，只移动明度。
 
-### Focus State Decision
+### 边框决策
 
-**Why subtle focus states?**
+**为什么使用 rgba，而不是纯色？** 低透明度边框会与背景融合。暗色表面上的低透明白色边框几乎只是若隐若现，它定义边缘却不抢注意力。相比之下，纯 hex 边框会显得生硬。
 
-Focus needs to be visible, but you don't need a glowing ring or dramatic color. A noticeable increase in border opacity is enough for a clear state change. Subtle-but-noticeable — the same principle as surfaces.
+**测试：** 从一臂距离外看界面。如果边框是第一眼看到的东西，就降低透明度。如果找不到区域边界，就略微提高。
+
+### 侧边栏决策
+
+**为什么使用与画布相同的背景，而不是不同背景？**
+
+很多仪表盘会让侧边栏使用不同颜色。这会切碎视觉空间，现在你有了“侧边栏世界”和“内容世界”。
+
+更好的做法：相同背景，微妙边框分隔。侧边栏是应用的一部分，不是独立区域。Vercel 这样做，Supabase 也这样做。边框已经足够。
+
+### 下拉菜单决策
+
+**为什么是 surface-200，而不是 surface-100？**
+
+下拉菜单浮在它所来自的卡片之上。如果两者都是 surface-100，下拉菜单会融入卡片，层级感会丢失。surface-200 只需要亮一点点，就能感觉“在上方”，同时不显得夸张。
+
+**为什么使用 border-overlay，而不是 border-default？**
+
+覆盖层（下拉菜单、弹出层）经常需要稍强的定义，因为它们漂浮在空间中。略高的边框透明度能让它们有边界感，同时不刺眼。
 
 ---
 
-## Adapt to Context
+## 示例：表单控件
 
-Your product might need:
-- Warmer hues (slight yellow/orange tint)
-- Cooler hues (blue-gray base)
-- Different lightness progression
-- Light mode (principles invert — higher elevation = shadow, not lightness)
+### 输入框背景决策
 
-**The principle is constant:** barely different, still distinguishable. The values adapt to context.
+**为什么更深，而不是更亮？**
+
+输入框是“内嵌”的，它接收内容，而不是投射内容。略深的背景能提示“在这里输入”，不需要沉重边框。这就是替代背景原则。
+
+### 焦点状态决策
+
+**为什么焦点状态要微妙？**
+
+焦点必须可见，但不需要发光边框或夸张颜色。明显提高边框透明度就足够表达状态变化。微妙但可感知，和表面原则相同。
 
 ---
 
-## The Craft Check
+## 适配语境
 
-Apply the squint test to your work:
+你的产品可能需要：
+- 更温暖的色相（轻微黄/橙倾向）
+- 更冷静的色相（蓝灰基底）
+- 不同的明度递进
+- 亮色模式（原则反转：更高层级 = 阴影，而非更亮）
 
-1. Blur your eyes or step back
-2. Can you still perceive hierarchy?
-3. Is anything jumping out at you?
-4. Can you tell where regions begin and end?
+**原则不变：** 差异极小，但仍可区分。数值随语境变化。
 
-If hierarchy is visible and nothing is harsh — the subtle layering is working.
+---
+
+## 工艺检查
+
+对你的作品应用眯眼测试：
+
+1. 眯起眼睛或后退一步
+2. 还能感知层级吗？
+3. 有没有东西跳出来？
+4. 能分辨区域从哪里开始、在哪里结束吗？
+
+如果层级可见且没有任何东西刺眼，微妙分层就生效了。

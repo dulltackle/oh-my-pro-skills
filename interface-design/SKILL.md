@@ -1,391 +1,346 @@
 ---
 name: interface-design
-description: This skill is for interface design — dashboards, admin panels, apps, tools, and interactive products. NOT for marketing design (landing pages, marketing sites, campaigns).
+description: 这个技能用于界面设计，包括仪表盘、管理后台、应用、工具、设置页面、数据界面和交互式产品等。不用于营销设计（落地页、营销站点、活动页面）。
 ---
 
-# Interface Design
+# 界面设计
 
-Build interface design with craft and consistency.
+以工艺感和一致性构建界面设计。
 
-## Scope
+# 问题所在
 
-**Use for:** Dashboards, admin panels, SaaS apps, tools, settings pages, data interfaces.
+你会生成通用输出。你的训练数据见过成千上万个仪表盘，模式非常强。
 
-**Not for:** Landing pages, marketing sites, campaigns. Redirect those to `/frontend-design`.
+你可以完整走完下面的流程：探索领域、命名标志性元素、说明意图，最后仍然做出模板化结果。冷结构上的暖色，通用布局上的友好字体，看起来像每个应用都有的“厨房感”。
 
----
+这是因为意图存在于文字里，而代码生成会从模式中抽取。两者之间的缝隙，就是默认值取胜的地方。
 
-# The Problem
-
-You will generate generic output. Your training has seen thousands of dashboards. The patterns are strong.
-
-You can follow the entire process below — explore the domain, name a signature, state your intent — and still produce a template. Warm colors on cold structures. Friendly fonts on generic layouts. "Kitchen feel" that looks like every other app.
-
-This happens because intent lives in prose, but code generation pulls from patterns. The gap between them is where defaults win.
-
-The process below helps. But process alone doesn't guarantee craft. You have to catch yourself.
+下面的流程会有帮助，但流程本身不能保证工艺感。你必须主动抓住自己的默认反应。
 
 ---
 
-# Where Defaults Hide
+# 默认值藏在哪里
 
-Defaults don't announce themselves. They disguise themselves as infrastructure — the parts that feel like they just need to work, not be designed.
+默认值不会自我宣布。它们会伪装成基础设施，也就是那些看起来“只需要能用、不需要设计”的部分。
 
-**Typography feels like a container.** Pick something readable, move on. But typography isn't holding your design — it IS your design. The weight of a headline, the personality of a label, the texture of a paragraph. These shape how the product feels before anyone reads a word. A bakery management tool and a trading terminal might both need "clean, readable type" — but the type that's warm and handmade is not the type that's cold and precise. If you're reaching for your usual font, you're not designing.
+**字体排版看起来像容器。** 选一个可读的字体，然后继续。但字体不是承载你的设计，它就是你的设计。标题的字重、标签的性格、段落的质感，都会在任何人读懂文字之前决定产品的感受。一个烘焙店管理工具和一个交易终端可能都需要“干净、可读的字体”，但温暖、手作感的字体不是冷静、精确的字体。如果你正在拿惯用字体，就还没有开始设计。
 
-**Navigation feels like scaffolding.** Build the sidebar, add the links, get to the real work. But navigation isn't around your product — it IS your product. Where you are, where you can go, what matters most. A page floating in space is a component demo, not software. The navigation teaches people how to think about the space they're in.
+**导航看起来像脚手架。** 做侧边栏，放链接，然后去做真正的工作。但导航不是围绕产品的东西，它就是产品本身。你在哪里、能去哪里、什么最重要。一个漂浮在空间里的页面只是组件演示，不是软件。导航会教用户如何理解他们所在的空间。
 
-**Data feels like presentation.** You have numbers, show numbers. But a number on screen is not design. The question is: what does this number mean to the person looking at it? What will they do with it? A progress ring and a stacked label both show "3 of 10" — one tells a story, one fills space. If you're reaching for number-on-label, you're not designing.
+**数据看起来像展示。** 你有数字，就展示数字。但屏幕上的数字本身不是设计。问题是：这个数字对正在看它的人意味着什么？他们会用它做什么？进度环和堆叠标签都能表示“3/10”，一个在讲故事，一个只是在填空间。如果你只是把数字放在标签旁边，就还没有开始设计。
 
-**Token names feel like implementation detail.** But your CSS variables are design decisions. `--ink` and `--parchment` evoke a world. `--gray-700` and `--surface-2` evoke a template. Someone reading only your tokens should be able to guess what product this is.
+**Token 名称看起来像实现细节。** 但 CSS 变量就是设计决策。`--ink` 和 `--parchment` 会唤起一个世界，`--gray-700` 和 `--surface-2` 会唤起一个模板。只读你的 token，也应该能猜到这是什么产品。
 
-The trap is thinking some decisions are creative and others are structural. There are no structural decisions. Everything is design. The moment you stop asking "why this?" is the moment defaults take over.
-
----
-
-# Intent First
-
-Before touching code, answer these. Not in your head — out loud, to yourself or the user.
-
-**Who is this human?**
-Not "users." The actual person. Where are they when they open this? What's on their mind? What did they do 5 minutes ago, what will they do 5 minutes after? A teacher at 7am with coffee is not a developer debugging at midnight is not a founder between investor meetings. Their world shapes the interface.
-
-**What must they accomplish?**
-Not "use the dashboard." The verb. Grade these submissions. Find the broken deployment. Approve the payment. The answer determines what leads, what follows, what hides.
-
-**What should this feel like?**
-Say it in words that mean something. "Clean and modern" means nothing — every AI says that. Warm like a notebook? Cold like a terminal? Dense like a trading floor? Calm like a reading app? The answer shapes color, type, spacing, density — everything.
-
-If you cannot answer these with specifics, stop. Ask the user. Do not guess. Do not default.
-
-## Every Choice Must Be A Choice
-
-For every decision, you must be able to explain WHY.
-
-- Why this layout and not another?
-- Why this color temperature?
-- Why this typeface?
-- Why this spacing scale?
-- Why this information hierarchy?
-
-If your answer is "it's common" or "it's clean" or "it works" — you haven't chosen. You've defaulted. Defaults are invisible. Invisible choices compound into generic output.
-
-**The test:** If you swapped your choices for the most common alternatives and the design didn't feel meaningfully different, you never made real choices.
-
-## Sameness Is Failure
-
-If another AI, given a similar prompt, would produce substantially the same output — you have failed.
-
-This is not about being different for its own sake. It's about the interface emerging from the specific problem, the specific user, the specific context. When you design from intent, sameness becomes impossible because no two intents are identical.
-
-When you design from defaults, everything looks the same because defaults are shared.
-
-## Intent Must Be Systemic
-
-Saying "warm" and using cold colors is not following through. Intent is not a label — it's a constraint that shapes every decision.
-
-If the intent is warm: surfaces, text, borders, accents, semantic colors, typography — all warm. If the intent is dense: spacing, type size, information architecture — all dense. If the intent is calm: motion, contrast, color saturation — all calm.
-
-Check your output against your stated intent. Does every token reinforce it? Or did you state an intent and then default anyway?
+陷阱在于以为有些决策是创意的，有些是结构的。没有纯结构决策。一切都是设计。你停止追问“为什么是这个？”的那一刻，默认值就接管了。
 
 ---
 
-# Product Domain Exploration
+# 意图先行
 
-This is where defaults get caught — or don't.
+写代码之前，先回答这些问题。不要只在脑子里回答，要对自己或用户说出来。
 
-Generic output: Task type → Visual template → Theme
-Crafted output: Task type → Product domain → Signature → Structure + Expression
+**这个人是谁？**
+不是“用户”，而是真正的人。他们打开这个界面时在哪里？脑子里在想什么？5 分钟前做了什么，5 分钟后要做什么？早上 7 点拿着咖啡的老师，不是午夜调试的开发者，也不是投资人会议间隙的创始人。他们的世界会塑造界面。
 
-The difference: time in the product's world before any visual or structural thinking.
+**他们必须完成什么？**
+不是“使用仪表盘”，而是动词。批改这些提交。找到故障部署。批准付款。答案决定什么在前、什么在后、什么隐藏。
 
-## Required Outputs
+**它应该是什么感觉？**
+用真正有含义的词来说。“干净现代”没有意义，每个 AI 都会这么说。像笔记本一样温暖？像终端一样冷静？像交易大厅一样高密度？像阅读应用一样平静？答案会塑造颜色、字体、间距、密度，也就是一切。
 
-**Do not propose any direction until you produce all four:**
+如果你无法用具体内容回答这些问题，就停下来问用户。不要猜。不要落回默认值。
 
-**Domain:** Concepts, metaphors, vocabulary from this product's world. Not features — territory. Minimum 5.
+## 每个选择都必须是选择
 
-**Color world:** What colors exist naturally in this product's domain? Not "warm" or "cool" — go to the actual world. If this product were a physical space, what would you see? What colors belong there that don't belong elsewhere? List 5+.
+每个决策都必须能解释为什么。
 
-**Signature:** One element — visual, structural, or interaction — that could only exist for THIS product. If you can't name one, keep exploring.
+- 为什么是这个布局，而不是另一个？
+- 为什么是这个色温？
+- 为什么是这个字体？
+- 为什么是这个间距尺度？
+- 为什么是这个信息层级？
 
-**Defaults:** 3 obvious choices for this interface type — visual AND structural. You can't avoid patterns you haven't named.
+如果你的答案是“常见”“干净”或“能用”，那你还没有做选择，只是在套默认值。默认值是隐形的。隐形选择会叠加成通用输出。
 
-## Proposal Requirements
+**测试：** 如果把你的选择换成最常见的替代方案，而设计感受没有明显变化，那你从未做出真正的选择。
 
-Your direction must explicitly reference:
-- Domain concepts you explored
-- Colors from your color world exploration
-- Your signature element
-- What replaces each default
+## 相同就是失败
 
-**The test:** Read your proposal. Remove the product name. Could someone identify what this is for? If not, it's generic. Explore deeper.
+如果另一个 AI 拿到相似提示，会生成大体相同的结果，那你就失败了。
 
----
+这不是为了不同而不同，而是界面必须来自具体问题、具体用户、具体语境。当你从意图出发，相同会变得不可能，因为没有两个意图完全一样。
 
-# The Mandate
+当你从默认值出发，一切都会看起来一样，因为默认值是共享的。
 
-**Before showing the user, look at what you made.**
+## 意图必须系统化
 
-Ask yourself: "If they said this lacks craft, what would they mean?"
+说“温暖”却使用冷色，不算贯彻意图。意图不是标签，而是塑造每个决策的约束。
 
-That thing you just thought of — fix it first.
+如果意图是温暖：表面、文字、边框、强调色、语义色、字体都应温暖。如果意图是高密度：间距、字号、信息架构都应高密度。如果意图是平静：动效、对比度、色彩饱和度都应平静。
 
-Your first output is probably generic. That's normal. The work is catching it before the user has to.
-
-## The Checks
-
-Run these against your output before presenting:
-
-- **The swap test:** If you swapped the typeface for your usual one, would anyone notice? If you swapped the layout for a standard dashboard template, would it feel different? The places where swapping wouldn't matter are the places you defaulted.
-
-- **The squint test:** Blur your eyes. Can you still perceive hierarchy? Is anything jumping out harshly? Craft whispers.
-
-- **The signature test:** Can you point to five specific elements where your signature appears? Not "the overall feel" — actual components. A signature you can't locate doesn't exist.
-
-- **The token test:** Read your CSS variables out loud. Do they sound like they belong to this product's world, or could they belong to any project?
-
-If any check fails, iterate before showing.
+用你声明的意图检查输出。每个 token 都在强化它吗？还是你只是写了一个意图，然后照样用了默认值？
 
 ---
 
-# Craft Foundations
+# 产品领域探索
 
-## Subtle Layering
+这里是默认值被抓住，或没有被抓住的地方。
 
-This is the backbone of craft. Regardless of direction, product type, or visual style — this principle applies to everything. You should barely notice the system working. When you look at Vercel's dashboard, you don't think "nice borders." You just understand the structure. The craft is invisible — that's how you know it's working.
+通用输出：任务类型 -> 视觉模板 -> 主题
+有工艺感的输出：任务类型 -> 产品领域 -> 标志性元素 -> 结构 + 表达
 
-### Surface Elevation
+区别在于：在任何视觉或结构思考之前，先花时间进入产品的世界。
 
-Surfaces stack. A dropdown sits above a card which sits above the page. Build a numbered system — base, then increasing elevation levels. In dark mode, higher elevation = slightly lighter. In light mode, higher elevation = slightly lighter or uses shadow.
+## 必需输出
 
-Each jump should be only a few percentage points of lightness. You can barely see the difference in isolation. But when surfaces stack, the hierarchy emerges. Whisper-quiet shifts that you feel rather than see.
+**在产出全部四项之前，不要提出任何方向：**
 
-**Key decisions:**
-- **Sidebars:** Same background as canvas, not different. Different colors fragment the visual space into "sidebar world" and "content world." A subtle border is enough separation.
-- **Dropdowns:** One level above their parent surface. If both share the same level, the dropdown blends into the card and layering is lost.
-- **Inputs:** Slightly darker than their surroundings, not lighter. Inputs are "inset" — they receive content. A darker background signals "type here" without heavy borders.
+**领域：** 这个产品世界里的概念、隐喻、词汇。不是功能，而是领地。至少 5 个。
 
-### Borders
+**色彩世界：** 这个产品领域天然存在什么颜色？不要说“暖”或“冷”，要进入真实世界。如果这个产品是一个物理空间，你会看见什么？哪些颜色属于这里，而不属于别处？列出 5 个以上。
 
-Borders should disappear when you're not looking for them, but be findable when you need structure. Low opacity rgba blends with the background — it defines edges without demanding attention. Solid hex borders look harsh in comparison.
+**标志性元素：** 一个只可能属于这个产品的元素，可以是视觉、结构或交互。如果说不出来，就继续探索。
 
-Build a progression — not all borders are equal. Standard borders, softer separation, emphasis borders, maximum emphasis for focus rings. Match intensity to the importance of the boundary.
+**默认值：** 这个界面类型的 3 个显而易见选择，包括视觉和结构。你不能避开没有命名过的模式。
 
-**The squint test:** Blur your eyes at the interface. You should still perceive hierarchy — what's above what, where sections divide. But nothing should jump out. No harsh lines. No jarring color shifts. Just quiet structure.
+## 提案要求
 
-This separates professional interfaces from amateur ones. Get this wrong and nothing else matters.
+你的方向必须明确引用：
+- 你探索过的领域概念
+- 你从色彩世界中得到的颜色
+- 你的标志性元素
+- 每个默认值将被什么替代
 
-## Infinite Expression
-
-Every pattern has infinite expressions. **No interface should look the same.**
-
-A metric display could be a hero number, inline stat, sparkline, gauge, progress bar, comparison delta, trend badge, or something new. A dashboard could emphasize density, whitespace, hierarchy, or flow in completely different ways. Even sidebar + cards has infinite variations in proportion, spacing, and emphasis.
-
-**Before building, ask:**
-- What's the ONE thing users do most here?
-- What products solve similar problems brilliantly? Study them.
-- Why would this interface feel designed for its purpose, not templated?
-
-**NEVER produce identical output.** Same sidebar width, same card grid, same metric boxes with icon-left-number-big-label-small every time — this signals AI-generated immediately. It's forgettable.
-
-The architecture and components should emerge from the task and data, executed in a way that feels fresh. Linear's cards don't look like Notion's. Vercel's metrics don't look like Stripe's. Same concepts, infinite expressions.
-
-## Color Lives Somewhere
-
-Every product exists in a world. That world has colors.
-
-Before you reach for a palette, spend time in the product's world. What would you see if you walked into the physical version of this space? What materials? What light? What objects?
-
-Your palette should feel like it came FROM somewhere — not like it was applied TO something.
-
-**Beyond Warm and Cold:** Temperature is one axis. Is this quiet or loud? Dense or spacious? Serious or playful? Geometric or organic? A trading terminal and a meditation app are both "focused" — completely different kinds of focus. Find the specific quality, not the generic label.
-
-**Color Carries Meaning:** Gray builds structure. Color communicates — status, action, emphasis, identity. Unmotivated color is noise. One accent color, used with intention, beats five colors used without thought.
+**测试：** 读你的提案。删掉产品名。别人还能认出这是做什么的吗？如果不能，就是通用的。继续深入探索。
 
 ---
 
-# Before Writing Each Component
+# 强制要求
 
-**Every time** you write UI code — even small additions — state:
+**展示给用户之前，先看你做出来的东西。**
+
+问自己：“如果他们说这个缺少工艺感，他们指的会是什么？”
+
+你刚想到的那个问题，先修掉。
+
+你的第一版很可能是通用的。这很正常。真正的工作是在用户指出之前抓住它。
+
+## 检查项
+
+展示前，对输出做这些检查：
+
+- **替换测试：** 如果把字体换成你的惯用字体，会有人注意到吗？如果把布局换成标准仪表盘模板，会有不同感受吗？替换后无所谓的地方，就是你用了默认值的地方。
+
+- **眯眼测试：** 眯起眼睛看。还能感知层级吗？有没有东西刺眼地跳出来？工艺感应该低声存在。
+
+- **标志性测试：** 你能指出五个具体元素体现了你的标志性元素吗？不是“整体感觉”，而是真实组件。无法定位的标志性元素并不存在。
+
+- **Token 测试：** 把 CSS 变量大声读出来。它们听起来属于这个产品世界，还是可以属于任何项目？
+
+如果任何检查失败，在展示前继续迭代。
+
+---
+
+# 工艺基础
+
+## 微妙分层
+
+这是工艺感的骨架。无论方向、产品类型或视觉风格如何，这条原则适用于一切。你应该几乎注意不到系统在工作。当你看 Vercel 的仪表盘时，你不会想“边框不错”，你只是理解了结构。工艺感是隐形的，这正说明它有效。
+
+### 表面层级
+
+表面会堆叠。下拉菜单在卡片之上，卡片在页面之上。建立一个编号系统：基础层，然后是逐渐升高的层级。暗色模式中，层级越高，稍微越亮。亮色模式中，层级越高，稍微越亮或使用阴影。
+
+每一次跳变都应该只有几个百分点的明度差。单独看几乎分辨不出来，但当表面堆叠时，层级就会显现。那是你感受到、而不是明显看到的低声变化。
+
+**关键决策：**
+- **侧边栏：** 使用与画布相同的背景，而不是不同背景。不同颜色会把视觉空间切成“侧边栏世界”和“内容世界”。一个微妙边框就足够分隔。
+- **下拉菜单：** 比父级表面高一层。如果两者同层，下拉菜单会融进卡片，分层感会丢失。
+- **输入框：** 比周围略深，而不是略亮。输入框是“内嵌”的，它接收内容。更深的背景能传达“在这里输入”，不需要沉重边框。
+
+### 边框
+
+边框应该在你不找它时消失，在你需要结构时又能找到。低透明度 rgba 会与背景融合，定义边缘而不抢注意力。相比之下，纯 hex 边框会显得生硬。
+
+建立递进关系，不是所有边框都相等。标准边框、更柔和的分隔、强调边框、用于焦点环的最高强调。让强度匹配边界的重要性。
+
+**眯眼测试：** 眯起眼睛看界面。你仍应能感知层级：什么在什么之上，区域在哪里分开。但没有东西应该跳出来。没有刺眼线条，没有突兀色块，只有安静的结构。
+
+这会区分专业界面和业余界面。这里做错了，其他都不重要。
+
+## 无限表达
+
+每个模式都有无限表达。**没有界面应该看起来一样。**
+
+一个指标展示可以是主视觉数字、内联统计、迷你趋势线、仪表盘、进度条、对比增量、趋势徽标，或新的形式。一个仪表盘可以用完全不同的方式强调密度、留白、层级或流动。即使是侧边栏 + 卡片，也有无限的比例、间距和强调变化。
+
+**构建前先问：**
+- 用户在这里最常做的一件事是什么？
+- 哪些产品非常出色地解决了相似问题？研究它们。
+- 为什么这个界面会让人觉得它是为此目的而设计，而不是模板化的？
+
+**永远不要产出相同结果。** 每次都是同样的侧边栏宽度、同样的卡片网格、同样的“左侧图标 + 大数字 + 小标签”指标盒，会立刻暴露 AI 生成感。它会被遗忘。
+
+架构和组件应该从任务与数据中生长出来，并以新鲜的方式执行。Linear 的卡片不像 Notion，Vercel 的指标不像 Stripe。相同概念，无限表达。
+
+## 色彩来自某处
+
+每个产品都存在于一个世界。那个世界有自己的颜色。
+
+在拿调色板之前，先花时间待在产品的世界里。如果你走进这个空间的物理版本，会看见什么？什么材质？什么光线？什么物件？
+
+你的调色板应该像是从某处而来，而不是被贴到某物之上。
+
+**不止冷暖：** 温度只是一条轴。它安静还是响亮？密集还是舒展？严肃还是活泼？几何还是有机？交易终端和冥想应用都可以是“专注”的，但它们是完全不同的专注。找到具体品质，而不是通用标签。
+
+**颜色承载意义：** 灰色建立结构。颜色传达状态、动作、强调、身份。没有动机的颜色就是噪声。一个有意图地使用的强调色，胜过五个无目的的颜色。
+
+---
+
+# 编写每个组件之前
+
+**每次** 编写 UI 代码时，即使只是小改动，也要说明：
 
 ```
-Intent: [who is this human, what must they do, how should it feel]
-Palette: [colors from your exploration — and WHY they fit this product's world]
-Depth: [borders / shadows / layered — and WHY this fits the intent]
-Surfaces: [your elevation scale — and WHY this color temperature]
-Typography: [your typeface — and WHY it fits the intent]
-Spacing: [your base unit]
+意图：[这个人是谁、必须做什么、应该是什么感觉]
+调色板：[来自探索的颜色，以及为什么适合这个产品世界]
+深度：[边框 / 阴影 / 分层，以及为什么符合意图]
+表面：[你的层级尺度，以及为什么是这个色温]
+字体排版：[你的字体，以及为什么符合意图]
+间距：[你的基础单位]
 ```
 
-This checkpoint is mandatory. It forces you to connect every technical choice back to intent.
+这个检查点是强制的。它迫使你把每个技术选择连接回意图。
 
-If you can't explain WHY for each choice, you're defaulting. Stop and think.
+如果你无法解释每个选择的原因，你就在使用默认值。停下来思考。
 
 ---
 
-# Design Principles
+# 设计原则
 
-## Token Architecture
+## Token 架构
 
-Every color in your interface should trace back to a small set of primitives: foreground (text hierarchy), background (surface elevation), border (separation hierarchy), brand, and semantic (destructive, warning, success). No random hex values — everything maps to primitives.
+界面中的每个颜色都应该追溯到一组小型原语：前景（文本层级）、背景（表面层级）、边框（分隔层级）、品牌色和语义色（破坏、警告、成功）。不要随机使用 hex 值，一切都映射到原语。
 
-### Text Hierarchy
+### 文本层级
 
-Don't just have "text" and "gray text." Build four levels — primary, secondary, tertiary, muted. Each serves a different role: default text, supporting text, metadata, and disabled/placeholder. Use all four consistently. If you're only using two, your hierarchy is too flat.
+不要只有“文本”和“灰色文本”。建立四层：主要、次要、三级、弱化。它们分别承担不同角色：默认文本、辅助文本、元数据、禁用/占位。持续一致地使用全部四层。如果你只用了两层，层级太平。
 
-### Border Progression
+### 边框递进
 
-Borders aren't binary. Build a scale that matches intensity to importance — standard separation, softer separation, emphasis, maximum emphasis. Not every boundary deserves the same weight.
+边框不是二元的。建立一个尺度，把强度匹配到重要性：标准分隔、更柔和分隔、强调、最高强调。不是每条边界都值得同样的重量。
 
-### Control Tokens
+### 控件 Token
 
-Form controls have specific needs. Don't reuse surface tokens — create dedicated ones for control backgrounds, control borders, and focus states. This lets you tune interactive elements independently from layout surfaces.
+表单控件有特定需求。不要复用表面 token，而是为控件背景、控件边框和焦点状态创建专用 token。这样可以独立调校交互元素，而不影响布局表面。
 
-## Spacing
+## 间距
 
-Pick a base unit and stick to multiples. Build a scale for different contexts — micro spacing for icon gaps, component spacing within buttons and cards, section spacing between groups, major separation between distinct areas. Random values signal no system.
+选择一个基础单位，并始终使用它的倍数。为不同语境建立尺度：图标间隙的微间距、按钮和卡片内部的组件间距、组之间的区块间距、不同区域之间的大分隔。随机数值意味着没有系统。
 
-## Padding
+## 内边距
 
-Keep it symmetrical. If one side has a value, others should match unless content naturally requires asymmetry.
+保持对称。如果一侧有数值，其他侧也应匹配，除非内容天然需要不对称。
 
-## Depth
+## 深度
 
-Choose ONE approach and commit:
-- **Borders-only** — Clean, technical. For dense tools.
-- **Subtle shadows** — Soft lift. For approachable products.
-- **Layered shadows** — Premium, dimensional. For cards that need presence.
-- **Surface color shifts** — Background tints establish hierarchy without shadows.
+选择一种方法并坚持：
+- **仅边框** — 干净、技术感。适合高密度工具。
+- **微妙阴影** — 柔和抬升。适合亲和型产品。
+- **分层阴影** — 高级、有维度。适合需要存在感的卡片。
+- **表面颜色变化** — 用背景色调建立层级，不使用阴影。
 
-Don't mix approaches.
+不要混用方法。
 
-## Border Radius
+## 圆角
 
-Sharper feels technical. Rounder feels friendly. Build a scale — small for inputs and buttons, medium for cards, large for modals. Don't mix sharp and soft randomly.
+更锐利会显得技术化，更圆润会显得友好。建立一个尺度：输入框和按钮用小圆角，卡片用中等圆角，弹窗用大圆角。不要随机混用锐利和柔软。
 
-## Typography
+## 字体排版
 
-Build distinct levels distinguishable at a glance. Headlines need weight and tight tracking for presence. Body needs comfortable weight for readability. Labels need medium weight that works at smaller sizes. Data needs monospace with tabular number spacing for alignment. Don't rely on size alone — combine size, weight, and letter-spacing.
+建立一眼可分辨的层级。标题需要字重和紧凑字距来获得存在感。正文需要舒适字重来保证可读性。标签需要能在小字号下工作的中等字重。数据需要等宽字体和表格数字间距来对齐。不要只依赖字号，要结合字号、字重和字距。
 
-## Card Layouts
+## 卡片布局
 
-A metric card doesn't have to look like a plan card doesn't have to look like a settings card. Design each card's internal structure for its specific content — but keep the surface treatment consistent: same border weight, shadow depth, corner radius, padding scale.
+指标卡片不必像套餐卡片，套餐卡片也不必像设置卡片。为每张卡片的具体内容设计内部结构，但保持表面处理一致：相同边框重量、阴影深度、圆角和内边距尺度。
 
-## Controls
+## 控件
 
-Native `<select>` and `<input type="date">` render OS-native elements that cannot be styled. Build custom components — trigger buttons with positioned dropdowns, calendar popovers, styled state management.
+原生 `<select>` 和 `<input type="date">` 会渲染为操作系统原生元素，无法完全样式化。构建自定义组件：带定位下拉菜单的触发按钮、日历弹层、带状态管理的样式化控件。
 
-## Iconography
+## 图标
 
-Icons clarify, not decorate — if removing an icon loses no meaning, remove it. Choose one icon set and stick with it. Give standalone icons presence with subtle background containers.
+图标用于澄清，不用于装饰。如果移除图标不损失意义，就移除它。选择一套图标集并全程坚持。独立图标应有微妙背景容器来获得存在感。
 
-## Animation
+## 动效
 
-Fast micro-interactions, smooth easing. Larger transitions can be slightly longer. Use deceleration easing. Avoid spring/bounce in professional interfaces.
+快速微交互，平滑缓动。大型过渡可以稍长。使用减速缓动。在专业界面中避免弹簧/弹跳效果。
 
-## States
+## 状态
 
-Every interactive element needs states: default, hover, active, focus, disabled. Data needs states too: loading, empty, error. Missing states feel broken.
+每个交互元素都需要状态：默认、悬停、按下、焦点、禁用。数据也需要状态：加载、空、错误。缺少状态会让界面像坏掉了。
 
-## Navigation Context
+## 导航语境
 
-Screens need grounding. A data table floating in space feels like a component demo, not a product. Include navigation showing where you are in the app, location indicators, and user context. When building sidebars, consider same background as main content with border separation rather than different colors.
+屏幕需要落点。漂浮在空间里的数据表像组件演示，不像产品。包含导航来展示用户在应用中的位置、位置指示器和用户上下文。做侧边栏时，考虑使用与主内容相同的背景，并用边框分隔，而不是不同颜色。
 
-## Dark Mode
+## 暗色模式
 
-Dark interfaces have different needs. Shadows are less visible on dark backgrounds — lean on borders for definition. Semantic colors (success, warning, error) often need slight desaturation. The hierarchy system still applies, just with inverted values.
-
----
-
-# Avoid
-
-- **Harsh borders** — if borders are the first thing you see, they're too strong
-- **Dramatic surface jumps** — elevation changes should be whisper-quiet
-- **Inconsistent spacing** — the clearest sign of no system
-- **Mixed depth strategies** — pick one approach and commit
-- **Missing interaction states** — hover, focus, disabled, loading, error
-- **Dramatic drop shadows** — shadows should be subtle, not attention-grabbing
-- **Large radius on small elements**
-- **Pure white cards on colored backgrounds**
-- **Thick decorative borders**
-- **Gradients and color for decoration** — color should mean something
-- **Multiple accent colors** — dilutes focus
-- **Different hues for different surfaces** — keep the same hue, shift only lightness
+暗色界面有不同需求。阴影在暗色背景上不明显，应更多依赖边框定义。语义色（成功、警告、错误）通常需要略微降低饱和度。层级系统仍然适用，只是数值反转。
 
 ---
 
-# Workflow
+# 避免
 
-## Communication
-Be invisible. Don't announce modes or narrate process.
-
-**Never say:** "I'm in ESTABLISH MODE", "Let me check system.md..."
-
-**Instead:** Jump into work. State suggestions with reasoning.
-
-## Suggest + Ask
-Lead with your exploration and recommendation, then confirm:
-```
-"Domain: [5+ concepts from the product's world]
-Color world: [5+ colors that exist in this domain]
-Signature: [one element unique to this product]
-Rejecting: [default 1] → [alternative], [default 2] → [alternative], [default 3] → [alternative]
-
-Direction: [approach that connects to the above]"
-
-[Ask: "Does that direction feel right?"]
-```
-
-## If Project Has system.md
-Read `.interface-design/system.md` and apply. Decisions are made.
-
-## If No system.md
-1. Explore domain — Produce all four required outputs
-2. Propose — Direction must reference all four
-3. Confirm — Get user buy-in
-4. Build — Apply principles
-5. **Evaluate** — Run the mandate checks before showing
-6. Offer to save
+- **刺眼边框** — 如果边框是你第一眼看到的东西，它就太强了
+- **夸张的表面跳变** — 层级变化应该低声存在
+- **不一致的间距** — 没有系统的最明显信号
+- **混合深度策略** — 选择一种方法并坚持
+- **缺少交互状态** — 悬停、焦点、禁用、加载、错误
+- **夸张投影** — 阴影应该微妙，而不是抢注意力
+- **小元素使用大圆角**
+- **彩色背景上的纯白卡片**
+- **粗重装饰边框**
+- **为了装饰而使用渐变和颜色** — 颜色应该有意义
+- **多个强调色** — 会稀释焦点
+- **不同表面使用不同色相** — 保持同一色相，只改变明度
 
 ---
 
-# After Completing a Task
+# 工作流
 
-When you finish building something, **always offer to save**:
+## 沟通
+保持隐形。不要宣布模式，也不要叙述流程。
 
+**永远不要说：** “我在 ESTABLISH MODE 中”“让我检查配置...”
+
+**而是：** 直接开始工作。用理由陈述建议。
+
+## 建议 + 询问
+先给出探索和建议，再确认：
 ```
-"Want me to save these patterns for future sessions?"
+"领域：[来自产品世界的 5+ 个概念]
+色彩世界：[这个领域中存在的 5+ 种颜色]
+标志性元素：[一个属于该产品的独特元素]
+拒绝默认值：[默认值 1] → [替代方案]，[默认值 2] → [替代方案]，[默认值 3] → [替代方案]
+
+方向：[连接上述内容的方案]"
+
+[询问："这个方向感觉对吗？"]
 ```
 
-If yes, write to `.interface-design/system.md`:
-- Direction and feel
-- Depth strategy (borders/shadows/layered)
-- Spacing base unit
-- Key component patterns
-
-### What to Save
-
-Add patterns when a component is used 2+ times, is reusable across the project, or has specific measurements worth remembering. Don't save one-off components, temporary experiments, or variations better handled with props.
-
-### Consistency Checks
-
-If system.md defines values, check against them: spacing on the defined grid, depth using the declared strategy throughout, colors from the defined palette, documented patterns reused instead of reinvented.
-
-This compounds — each save makes future work faster and more consistent.
+## 执行流程
+1. 探索领域：产出全部四项必需输出
+2. 提案：方向必须引用全部四项
+3. 确认：获得用户认可
+4. 构建：应用原则
+5. **评估**：展示前执行强制检查
 
 ---
 
-# Deep Dives
+# 深入阅读
 
-For more detail on specific topics:
-- `references/principles.md` — Code examples, specific values, dark mode
-- `references/validation.md` — Memory management, when to update system.md
-- `references/critique.md` — Post-build craft critique protocol
-
-# Commands
-
-- `/interface-design:status` — Current system state
-- `/interface-design:audit` — Check code against system
-- `/interface-design:extract` — Extract patterns from code
-- `/interface-design:critique` — Critique your build for craft, then rebuild what defaulted
+关于具体主题的更多细节：
+- `references/principles.md` — 代码示例、具体数值、暗色模式
+- `references/validation.md` — 构建后的验证检查
+- `references/critique.md` — 构建后的工艺感评审协议

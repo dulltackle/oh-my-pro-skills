@@ -1,67 +1,67 @@
-# Critique
+# 评审
 
-Your first build shipped the structure. Now look at it the way a design lead reviews a junior's work — not asking "does this work?" but "would I put my name on this?"
-
----
-
-## The Gap
-
-There's a distance between correct and crafted. Correct means the layout holds, the grid aligns, the colors don't clash. Crafted means someone cared about every decision down to the last pixel. You can feel the difference immediately — the way you tell a hand-thrown mug from an injection-molded one. Both hold coffee. One has presence.
-
-Your first output lives in correct. This command pulls it toward crafted.
+你的第一版已经交付了结构。现在像设计负责人评审初级设计师的作品一样看它：不是问“这能用吗？”，而是问“我愿意在它上面署名吗？”
 
 ---
 
-## See the Composition
+## 差距
 
-Step back. Look at the whole thing.
+正确和有工艺感之间有一段距离。正确意味着布局成立、网格对齐、颜色不冲突。有工艺感意味着有人在意每个决策，直到最后一个像素。你会立刻感受到差别，就像手工拉坯的杯子和注塑杯子的区别。两者都能装咖啡，但一个有存在感。
 
-Does the layout have rhythm? Great interfaces breathe unevenly — dense tooling areas give way to open content, heavy elements balance against light ones, the eye travels through the page with purpose. Default layouts are monotone: same card size, same gaps, same density everywhere. Flatness is the sound of no one deciding.
-
-Are proportions doing work? A 280px sidebar next to full-width content says "navigation serves content." A 360px sidebar says "these are peers." The specific number declares what matters. If you can't articulate what your proportions are saying, they're not saying anything.
-
-Is there a clear focal point? Every screen has one thing the user came here to do. That thing should dominate — through size, position, contrast, or the space around it. When everything competes equally, nothing wins and the interface feels like a parking lot.
+你的第一版停留在正确。这条命令会把它推向有工艺感。
 
 ---
 
-## See the Craft
+## 看构图
 
-Move close. Pixel-close.
+后退一步，看整体。
 
-The spacing grid is non-negotiable — every value a multiple of 4, no exceptions — but correctness alone isn't craft. Craft is knowing that a tool panel at 16px padding feels workbench-tight while the same card at 24px feels like a brochure. The same number can be right in one context and lazy in another. Density is a design decision, not a constant.
+布局有节奏吗？优秀界面呼吸并不均匀：密集工具区让位给开放内容，重元素与轻元素彼此平衡，视线有目的地穿过页面。默认布局是单调的：同样的卡片尺寸、同样的间隙、到处一样的密度。扁平感是没人做决定的声音。
 
-Typography should be legible even squinted. If size is the only thing separating your headline from your body from your label, the hierarchy is too weak. Weight, tracking, and opacity create layers that size alone can't.
+比例在发挥作用吗？280px 侧边栏配全宽内容，是在说“导航服务于内容”。360px 侧边栏是在说“它们是对等的”。具体数字会声明什么重要。如果你说不出比例在表达什么，它就什么也没表达。
 
-Surfaces should whisper hierarchy. Not thick borders, not dramatic shadows — quiet tonal shifts where you feel the depth without seeing it. Remove every border from your CSS mentally. Can you still perceive the structure through surface color alone? If not, your surfaces aren't working hard enough.
-
-Interactive elements need life. Every button, link, and clickable region should respond to hover and press. Not dramatically — a subtle shift in background, a gentle darkening. Missing states make an interface feel like a photograph of software instead of software.
+有清晰焦点吗？每个屏幕都有一个用户来到这里要做的事情。那件事应该占据主导地位，可以通过尺寸、位置、对比或周围空间来实现。当所有东西同等竞争时，没有东西会胜出，界面会像停车场一样空泛。
 
 ---
 
-## See the Content
+## 看工艺
 
-Read every visible string as a user would. Not checking for typos — checking for truth.
+靠近看。像素级地看。
 
-Does this screen tell one coherent story? Could a real person at a real company be looking at exactly this data right now? Or does the page title belong to one product, the article body to another, and the sidebar metrics to a third?
+间距网格不可妥协，每个数值都应是 4 的倍数，没有例外。但正确本身不是工艺感。工艺感是知道一个工具面板用 16px 内边距会像工作台一样紧凑，而同一张卡片用 24px 会像宣传册。同一个数字在一个语境里可以正确，在另一个语境里却偷懒。密度是设计决策，不是常量。
 
-Content incoherence breaks the illusion faster than any visual flaw. A beautifully designed interface with nonsensical content is a movie set with no script.
+字体排版即使眯眼也应该清晰。如果标题、正文和标签之间唯一的区别是字号，层级太弱。字重、字距和透明度能创造字号本身无法创造的层。
 
----
+表面应该低声表达层级。不是粗边框，不是夸张阴影，而是安静的色调变化，让你感到深度却不被它打扰。在脑中移除 CSS 里的每条边框。你还能只靠表面颜色感知结构吗？如果不能，表面没有承担足够工作。
 
-## See the Structure
-
-Open the CSS and find the lies — the places that look right but are held together with tape.
-
-Negative margins undoing a parent's padding. Calc() values that exist only as workarounds. Absolute positioning to escape layout flow. Each is a shortcut where a clean solution exists. Cards with full-width dividers use flex column and section-level padding. Centered content uses max-width with auto margins. The correct answer is always simpler than the hack.
+交互元素需要生命。每个按钮、链接和可点击区域都应该响应悬停和按下。不需要夸张，只是背景的微妙变化、轻微加深。缺失状态会让界面像软件截图，而不是软件。
 
 ---
 
-## Again
+## 看内容
 
-Look at your output one final time.
+像用户一样阅读每个可见字符串。不是检查错别字，而是检查真实感。
 
-Ask: "If they said this lacks craft, what would they point to?"
+这个屏幕是否在讲一个一致的故事？一个真实公司里的真实人，此刻可能正看着这些数据吗？还是页面标题属于一个产品，正文属于另一个产品，侧边栏指标又属于第三个产品？
 
-That thing you just thought of — fix it. Then ask again.
+内容不一致比任何视觉瑕疵都更快打破幻觉。设计漂亮但内容荒谬的界面，就像没有剧本的片场。
 
-The first build was the draft. The critique is the design.
+---
+
+## 看结构
+
+打开 CSS，找出那些谎言：看起来正确，却靠胶带粘住的地方。
+
+用负 margin 抵消父级 padding。只作为变通而存在的 calc() 值。用绝对定位逃离布局流。每一个都是存在更干净解法时走的捷径。带全宽分隔线的卡片应使用 flex column 和区块级内边距。居中内容应使用 max-width 和 auto margin。正确答案总是比 hack 更简单。
+
+---
+
+## 再来一次
+
+最后再看一次你的输出。
+
+问：“如果他们说这个缺少工艺感，他们会指向哪里？”
+
+你刚想到的那个地方，修掉。然后再问一次。
+
+第一版是草稿。评审才是设计。

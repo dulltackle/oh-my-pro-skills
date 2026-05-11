@@ -1,159 +1,159 @@
-# Core Craft Principles
+# 核心工艺原则
 
-These apply regardless of design direction. This is the quality floor.
-
----
-
-## Surface & Token Architecture
-
-Professional interfaces don't pick colors randomly — they build systems. Understanding this architecture is the difference between "looks okay" and "feels like a real product."
-
-### The Primitive Foundation
-
-Every color in your interface should trace back to a small set of primitives:
-
-- **Foreground** — text colors (primary, secondary, muted)
-- **Background** — surface colors (base, elevated, overlay)
-- **Border** — edge colors (default, subtle, strong)
-- **Brand** — your primary accent
-- **Semantic** — functional colors (destructive, warning, success)
-
-Don't invent new colors. Map everything to these primitives.
-
-### Surface Elevation Hierarchy
-
-Surfaces stack. A dropdown sits above a card which sits above the page. Build a numbered system:
-
-```
-Level 0: Base background (the app canvas)
-Level 1: Cards, panels (same visual plane as base)
-Level 2: Dropdowns, popovers (floating above)
-Level 3: Nested dropdowns, stacked overlays
-Level 4: Highest elevation (rare)
-```
-
-In dark mode, higher elevation = slightly lighter. In light mode, higher elevation = slightly lighter or uses shadow. The principle: **elevated surfaces need visual distinction from what's beneath them.**
-
-### The Subtlety Principle
-
-This is where most interfaces fail. Study Vercel, Supabase, Linear — their surfaces are **barely different** but still distinguishable. Their borders are **light but not invisible**.
-
-**For surfaces:** The difference between elevation levels should be subtle — a few percentage points of lightness, not dramatic jumps. In dark mode, surface-100 might be 7% lighter than base, surface-200 might be 9%, surface-300 might be 12%. You can barely see it, but you feel it.
-
-**For borders:** Borders should define regions without demanding attention. Use low opacity (0.05-0.12 alpha for dark mode, slightly higher for light). The border should disappear when you're not looking for it, but be findable when you need to understand the structure.
-
-**The test:** Squint at your interface. You should still perceive the hierarchy — what's above what, where regions begin and end. But no single border or surface should jump out at you. If borders are the first thing you notice, they're too strong. If you can't find where one region ends and another begins, they're too subtle.
-
-**Common AI mistakes to avoid:**
-- Borders that are too visible (1px solid gray instead of subtle rgba)
-- Surface jumps that are too dramatic (going from dark to light instead of dark to slightly-less-dark)
-- Using different hues for different surfaces (gray card on blue background)
-- Harsh dividers where subtle borders would do
-
-### Text Hierarchy via Tokens
-
-Don't just have "text" and "gray text." Build four levels:
-
-- **Primary** — default text, highest contrast
-- **Secondary** — supporting text, slightly muted
-- **Tertiary** — metadata, timestamps, less important
-- **Muted** — disabled, placeholder, lowest contrast
-
-Use all four consistently. If you're only using two, your hierarchy is too flat.
-
-### Border Progression
-
-Borders aren't binary. Build a scale:
-
-- **Default** — standard borders
-- **Subtle/Muted** — softer separation
-- **Strong** — emphasis, hover states
-- **Stronger** — maximum emphasis, focus rings
-
-Match border intensity to the importance of the boundary.
-
-### Dedicated Control Tokens
-
-Form controls (inputs, checkboxes, selects) have specific needs. Don't just reuse surface tokens — create dedicated ones:
-
-- **Control background** — often different from surface backgrounds
-- **Control border** — needs to feel interactive
-- **Control focus** — clear focus indication
-
-This separation lets you tune controls independently from layout surfaces.
-
-### Context-Aware Bases
-
-Different areas of your app might need different base surfaces:
-
-- **Marketing pages** — might use darker/richer backgrounds
-- **Dashboard/app** — might use neutral working backgrounds
-- **Sidebar** — might differ from main canvas
-
-The surface hierarchy works the same way — it just starts from a different base.
-
-### Alternative Backgrounds for Depth
-
-Beyond shadows, use contrasting backgrounds to create depth. An "alternative" or "inset" background makes content feel recessed. Useful for:
-
-- Empty states in data grids
-- Code blocks
-- Inset panels
-- Visual grouping without borders
+这些原则不受设计方向影响，是质量下限。
 
 ---
 
-## Spacing System
+## 表面与 Token 架构
 
-Pick a base unit (4px and 8px are common) and use multiples throughout. The specific number matters less than consistency — every spacing value should be explainable as "X times the base unit."
+专业界面不会随机选颜色，而是建立系统。理解这套架构，是“看起来还行”和“像一个真实产品”之间的区别。
 
-Build a scale for different contexts:
-- Micro spacing (icon gaps, tight element pairs)
-- Component spacing (within buttons, inputs, cards)
-- Section spacing (between related groups)
-- Major separation (between distinct sections)
+### 原语基础
 
-## Symmetrical Padding
+界面中的每个颜色都应该追溯到一组小型原语：
 
-TLBR must match. If top padding is 16px, left/bottom/right must also be 16px. Exception: when content naturally creates visual balance.
+- **前景** — 文本颜色（主要、次要、弱化）
+- **背景** — 表面颜色（基础、抬升、覆盖层）
+- **边框** — 边缘颜色（默认、微妙、强）
+- **品牌** — 主要强调色
+- **语义** — 功能颜色（破坏、警告、成功）
+
+不要发明新颜色。把一切映射到这些原语。
+
+### 表面层级体系
+
+表面会堆叠。下拉菜单在卡片之上，卡片在页面之上。建立编号系统：
+
+```
+层级 0: 基础背景（应用画布）
+层级 1: 卡片、面板（与基础层处于同一视觉平面）
+层级 2: 下拉菜单、弹出层（浮在上方）
+层级 3: 嵌套下拉菜单、堆叠覆盖层
+层级 4: 最高层级（少用）
+```
+
+暗色模式中，层级越高，稍微越亮。亮色模式中，层级越高，稍微越亮或使用阴影。原则是：**抬升表面必须与其下方内容有视觉区分。**
+
+### 微妙原则
+
+这是大多数界面失败的地方。研究 Vercel、Supabase、Linear，它们的表面**几乎没有差别**，但仍然可区分。它们的边框**很轻但不是看不见**。
+
+**对表面来说：** 层级之间的差异应该微妙，只相差几个百分点的明度，而不是剧烈跳变。暗色模式里，surface-100 可能比 base 亮 7%，surface-200 亮 9%，surface-300 亮 12%。你几乎看不出来，但能感受到。
+
+**对边框来说：** 边框应该定义区域，而不索取注意力。使用低透明度（暗色模式 0.05-0.12 alpha，亮色模式略高）。边框应在你不寻找它时消失，但在你需要理解结构时又能找到。
+
+**测试：** 眯眼看界面。你仍应能感知层级：什么在什么上方，区域从哪里开始、在哪里结束。但任何单个边框或表面都不应该跳出来。如果边框是你第一眼注意到的东西，它们太强了。如果你找不到一个区域在哪里结束、另一个在哪里开始，它们又太弱了。
+
+**要避免的常见 AI 错误：**
+- 边框过于明显（用 1px solid gray，而不是微妙 rgba）
+- 表面跳变过于夸张（从深色跳到浅色，而不是从深色到略浅的深色）
+- 给不同表面使用不同色相（蓝色背景上放灰色卡片）
+- 在微妙边框足够时使用生硬分隔线
+
+### 通过 Token 建立文本层级
+
+不要只有“文本”和“灰色文本”。建立四层：
+
+- **主要** — 默认文本，最高对比度
+- **次要** — 辅助文本，略微弱化
+- **三级** — 元数据、时间戳、不太重要的信息
+- **弱化** — 禁用、占位，最低对比度
+
+持续一致地使用全部四层。如果你只使用两层，层级太平。
+
+### 边框递进
+
+边框不是二元的。建立一套尺度：
+
+- **默认** — 标准边框
+- **微妙/弱化** — 更柔和的分隔
+- **强** — 强调、悬停状态
+- **更强** — 最大强调、焦点环
+
+让边框强度匹配边界的重要性。
+
+### 专用控件 Token
+
+表单控件（输入框、复选框、选择器）有特定需求。不要只复用表面 token，要创建专用 token：
+
+- **控件背景** — 通常不同于表面背景
+- **控件边框** — 需要感觉可交互
+- **控件焦点** — 清晰的焦点指示
+
+这种分离让你可以独立调校控件，而不影响布局表面。
+
+### 感知语境的基底
+
+应用的不同区域可能需要不同的基础表面：
+
+- **营销页面** — 可能使用更深、更浓的背景
+- **仪表盘/应用** — 可能使用中性的工作背景
+- **侧边栏** — 可能不同于主画布
+
+表面层级的工作方式相同，只是从不同基底开始。
+
+### 用替代背景制造深度
+
+除了阴影，还可以用对比背景创造深度。“替代”或“内嵌”背景会让内容感觉向内凹陷。适用于：
+
+- 数据网格的空状态
+- 代码块
+- 内嵌面板
+- 不用边框的视觉分组
+
+---
+
+## 间距系统
+
+选择一个基础单位（4px 和 8px 很常见），并全程使用其倍数。具体数字没有一致性重要，每个间距值都应该能解释为“基础单位的 X 倍”。
+
+为不同语境建立尺度：
+- 微间距（图标间隙、紧密元素对）
+- 组件间距（按钮、输入框、卡片内部）
+- 区块间距（相关组之间）
+- 主要分隔（不同区块之间）
+
+## 对称内边距
+
+上下左右应匹配。如果顶部内边距是 16px，左/下/右也应是 16px。例外：内容天然形成视觉平衡时。
 
 ```css
-/* Good */
+/* 好 */
 padding: 16px;
-padding: 12px 16px; /* Only when horizontal needs more room */
+padding: 12px 16px; /* 仅当水平方向需要更多空间 */
 
-/* Bad */
+/* 差 */
 padding: 24px 16px 12px 16px;
 ```
 
-## Border Radius Consistency
+## 圆角一致性
 
-Sharper corners feel technical, rounder corners feel friendly. Pick a scale that fits your product's personality and use it consistently.
+更锐利的圆角显得技术化，更圆润的圆角显得友好。选择一套符合产品性格的尺度，并一致使用。
 
-The key is having a system: small radius for inputs and buttons, medium for cards, large for modals or containers. Don't mix sharp and soft randomly — inconsistent radius is as jarring as inconsistent spacing.
+关键是要有系统：输入框和按钮用小圆角，卡片用中等圆角，弹窗或容器用大圆角。不要随机混合锐利和柔软，不一致的圆角和不一致的间距一样刺眼。
 
-## Depth & Elevation Strategy
+## 深度与层级策略
 
-Match your depth approach to your design direction. Choose ONE and commit:
+让深度方法匹配你的设计方向。选择一种并坚持：
 
-**Borders-only (flat)** — Clean, technical, dense. Works for utility-focused tools where information density matters more than visual lift. Linear, Raycast, and many developer tools use almost no shadows — just subtle borders to define regions.
+**仅边框（扁平）** — 干净、技术化、高密度。适合重视信息密度多于视觉抬升的实用工具。Linear、Raycast 和许多开发者工具几乎不用阴影，只用微妙边框定义区域。
 
-**Subtle single shadows** — Soft lift without complexity. A simple `0 1px 3px rgba(0,0,0,0.08)` can be enough. Works for approachable products that want gentle depth.
+**微妙单层阴影** — 柔和抬升，不增加复杂度。简单的 `0 1px 3px rgba(0,0,0,0.08)` 就可能足够。适合想要温和深度的亲和型产品。
 
-**Layered shadows** — Rich, premium, dimensional. Multiple shadow layers create realistic depth. Stripe and Mercury use this approach. Best for cards that need to feel like physical objects.
+**分层阴影** — 丰富、高级、有维度。多层阴影会创造更真实的深度。Stripe 和 Mercury 使用这种方法。最适合需要像实体对象一样有存在感的卡片。
 
-**Surface color shifts** — Background tints establish hierarchy without any shadows. A card at `#fff` on a `#f8fafc` background already feels elevated.
+**表面颜色变化** — 背景色调无需阴影也能建立层级。`#f8fafc` 背景上的 `#fff` 卡片已经会显得抬升。
 
 ```css
-/* Borders-only approach */
+/* 仅边框方法 */
 --border: rgba(0, 0, 0, 0.08);
 --border-subtle: rgba(0, 0, 0, 0.05);
 border: 0.5px solid var(--border);
 
-/* Single shadow approach */
+/* 单层阴影方法 */
 --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 
-/* Layered shadow approach */
+/* 分层阴影方法 */
 --shadow-layered:
   0 0 0 0.5px rgba(0, 0, 0, 0.05),
   0 1px 2px rgba(0, 0, 0, 0.04),
@@ -161,75 +161,75 @@ border: 0.5px solid var(--border);
   0 4px 8px rgba(0, 0, 0, 0.02);
 ```
 
-## Card Layouts
+## 卡片布局
 
-Monotonous card layouts are lazy design. A metric card doesn't have to look like a plan card doesn't have to look like a settings card.
+单调的卡片布局是偷懒设计。指标卡片不必像套餐卡片，套餐卡片不必像设置卡片。
 
-Design each card's internal structure for its specific content — but keep the surface treatment consistent: same border weight, shadow depth, corner radius, padding scale, typography.
+为每张卡片的具体内容设计内部结构，但保持表面处理一致：相同边框重量、阴影深度、圆角、内边距尺度和字体排版。
 
-## Isolated Controls
+## 独立控件
 
-UI controls deserve container treatment. Date pickers, filters, dropdowns — these should feel like crafted objects.
+UI 控件值得被当作对象来处理。日期选择器、筛选器、下拉菜单都应该像经过打磨的物件。
 
-**Never use native form elements for styled UI.** Native `<select>`, `<input type="date">`, and similar elements render OS-native dropdowns that cannot be styled. Build custom components instead:
+**永远不要用原生表单元素做样式化 UI。** 原生 `<select>`、`<input type="date">` 和类似元素会渲染为系统原生下拉，无法样式化。改为构建自定义组件：
 
-- Custom select: trigger button + positioned dropdown menu
-- Custom date picker: input + calendar popover
-- Custom checkbox/radio: styled div with state management
+- 自定义选择器：触发按钮 + 定位下拉菜单
+- 自定义日期选择器：输入框 + 日历弹层
+- 自定义复选框/单选框：带状态管理的样式化 div
 
-Custom select triggers must use `display: inline-flex` with `white-space: nowrap` to keep text and chevron icons on the same row.
+自定义选择器触发器必须使用 `display: inline-flex` 和 `white-space: nowrap`，确保文本和下拉箭头图标保持在同一行。
 
-## Typography Hierarchy
+## 字体排版层级
 
-Build distinct levels that are visually distinguishable at a glance:
+建立一眼可分辨的层级：
 
-- **Headlines** — heavier weight, tighter letter-spacing for presence
-- **Body** — comfortable weight for readability
-- **Labels/UI** — medium weight, works at smaller sizes
-- **Data** — often monospace, needs `tabular-nums` for alignment
+- **标题** — 更重字重、更紧字距，用于存在感
+- **正文** — 舒适字重，用于可读性
+- **标签/UI** — 中等字重，在小字号下可工作
+- **数据** — 通常用等宽字体，需要 `tabular-nums` 对齐
 
-Don't rely on size alone. Combine size, weight, and letter-spacing to create clear hierarchy. If you squint and can't tell headline from body, the hierarchy is too weak.
+不要只依赖字号。结合字号、字重和字距来创造清晰层级。如果你眯眼看不出标题和正文的区别，层级太弱。
 
-## Monospace for Data
+## 数据使用等宽字体
 
-Numbers, IDs, codes, timestamps belong in monospace. Use `tabular-nums` for columnar alignment. Mono signals "this is data."
+数字、ID、代码、时间戳属于等宽字体。使用 `tabular-nums` 做列对齐。等宽字体会传达“这是数据”。
 
-## Iconography
+## 图标
 
-Icons clarify, not decorate — if removing an icon loses no meaning, remove it. Choose a consistent icon set and stick with it throughout the product.
+图标用于澄清，不用于装饰。如果移除图标不损失意义，就移除它。选择一致的图标集，并在整个产品中坚持。
 
-Give standalone icons presence with subtle background containers. Icons next to text should align optically, not mathematically.
+独立图标用微妙背景容器增加存在感。与文字并列的图标应做视觉对齐，而不是机械数学对齐。
 
-## Animation
+## 动效
 
-Keep it fast and functional. Micro-interactions (hover, focus) should feel instant — around 150ms. Larger transitions (modals, panels) can be slightly longer — 200-250ms.
+保持快速且功能化。微交互（悬停、焦点）应感觉即时，大约 150ms。更大的过渡（弹窗、面板）可以稍长，约 200-250ms。
 
-Use smooth deceleration easing (ease-out variants). Avoid spring/bounce effects in professional interfaces — they feel playful, not serious.
+使用平滑减速缓动（ease-out 变体）。在专业界面中避免弹簧/弹跳效果，它们会显得过于玩闹，而不够严肃。
 
-## Contrast Hierarchy
+## 对比层级
 
-Build a four-level system: foreground (primary) → secondary → muted → faint. Use all four consistently.
+建立四层系统：前景（主要） -> 次要 -> 弱化 -> 微弱。持续一致地使用全部四层。
 
-## Color Carries Meaning
+## 颜色承载意义
 
-Gray builds structure. Color communicates — status, action, emphasis, identity. Unmotivated color is noise. Color that reinforces the product's world is character.
+灰色建立结构。颜色传达状态、动作、强调、身份。没有动机的颜色就是噪声。能强化产品世界的颜色就是性格。
 
-## Navigation Context
+## 导航语境
 
-Screens need grounding. A data table floating in space feels like a component demo, not a product. Consider including:
+屏幕需要落点。漂浮在空间里的数据表像组件演示，不像产品。考虑包含：
 
-- **Navigation** — sidebar or top nav showing where you are in the app
-- **Location indicator** — breadcrumbs, page title, or active nav state
-- **User context** — who's logged in, what workspace/org
+- **导航** — 侧边栏或顶部导航，展示你在应用中的位置
+- **位置指示器** — 面包屑、页面标题或激活导航状态
+- **用户上下文** — 谁已登录、当前工作区/组织是什么
 
-When building sidebars, consider using the same background as the main content area. Rely on a subtle border for separation rather than different background colors.
+构建侧边栏时，考虑使用与主内容区域相同的背景。依赖微妙边框来分隔，而不是使用不同背景色。
 
-## Dark Mode
+## 暗色模式
 
-Dark interfaces have different needs:
+暗色界面有不同需求：
 
-**Borders over shadows** — Shadows are less visible on dark backgrounds. Lean more on borders for definition.
+**边框优于阴影** — 阴影在暗色背景上不明显。更多依赖边框来定义结构。
 
-**Adjust semantic colors** — Status colors (success, warning, error) often need to be slightly desaturated for dark backgrounds.
+**调整语义色** — 状态颜色（成功、警告、错误）在暗色背景上通常需要略微降低饱和度。
 
-**Same structure, different values** — The hierarchy system still applies, just with inverted values.
+**结构相同，数值不同** — 层级系统仍然适用，只是数值反转。
