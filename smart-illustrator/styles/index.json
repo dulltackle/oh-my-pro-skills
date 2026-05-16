@@ -1,0 +1,27 @@
+{
+  "light": {
+    "file": "style-light.md",
+    "targets": ["article", "slides", "cover"],
+    "defaultAspectRatio": "16:9"
+  },
+  "dark": {
+    "file": "style-dark.md",
+    "targets": ["article", "slides", "cover"],
+    "defaultAspectRatio": "16:9"
+  },
+  "minimal": {
+    "file": "style-minimal.md",
+    "targets": ["article", "slides", "cover"],
+    "defaultAspectRatio": "16:9"
+  },
+  "bento": {
+    "file": "style-bento.md",
+    "targets": ["article", "slides", "cover"],
+    "defaultAspectRatio": "16:9"
+  },
+  "cover": {
+    "file": "style-cover.md",
+    "targets": ["article", "cover"],
+    "defaultAspectRatio": "16:9"
+  }
+}
