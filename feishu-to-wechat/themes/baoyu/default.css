@@ -1,0 +1,275 @@
+/**
+ * MD 基础主题样式 — 含 CSS 变量定义（微信兼容版）
+ * 
+ * 所有 var() 已替换为硬编码值，确保 juice 内联后微信编辑器可正常渲染。
+ * 颜色方案：经典蓝白（baoyu default 主题默认色）
+ */
+
+/* ==================== CSS 变量定义 ==================== */
+:root {
+  --md-primary-color: #1e80ff;
+  --foreground: 222 20% 15%;
+  --md-font-size: 16px;
+  --md-font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --blockquote-background: rgba(30, 128, 255, 0.05);
+}
+
+/* ==================== 容器样式 ==================== */
+#output {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 16px;
+  line-height: 1.75;
+  text-align: left;
+  color: #333;
+}
+
+/* ==================== Global resets ==================== */
+#output > :first-child {
+  margin-top: 0 !important;
+}
+
+/* ==================== 一级标题 ==================== */
+#output h1 {
+  display: table;
+  padding: 0 1em;
+  border-bottom: 2px solid #1e80ff;
+  margin: 2em auto 1em;
+  color: #333;
+  font-size: 19px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* ==================== 二级标题 ==================== */
+#output h2 {
+  display: table;
+  padding: 0 0.5em 0.0.2em;
+  margin: 2em auto 1em;
+  color: #fff;
+  background: #1e80ff;
+  font-size: 19px;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 4px;
+}
+
+/* ==================== 三级标题 ==================== */
+#output h3 {
+  padding-left: 10px;
+  border-left: 3px solid #1e80ff;
+  margin: 1.8em 8px 0.7em 0;
+  color: #333;
+  font-size: 17px;
+  font-weight: bold;
+  line-height: 1.4;
+}
+
+/* ==================== 四级/五级/六级标题 ==================== */
+#output h4, #output h5, #output h6 {
+  margin: 1.5em 8px 0.5em;
+  color: #1e80ff;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* ==================== 段落 ==================== */
+#output p {
+  margin: 1.2em 8px;
+  letter-spacing: 0.03em;
+  color: #333;
+  line-height: 1.8;
+}
+
+/* ==================== 强调/粗体 ⭐ 关键修复 ==================== */
+#output strong {
+  color: #1e80ff;
+  font-weight: bold !important;
+}
+
+/* ==================== 斜体 ==================== */
+#output em {
+  font-style: italic;
+}
+
+/* ==================== 行内代码 ⭐ 关键修复 ==================== */
+#output code {
+  font-size: 90%;
+  color: #d14;
+  background: rgba(27, 31, 35, 0.08);
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  word-break: break-all;
+}
+
+/* ==================== 代码块 ⭐ 关键修复 ==================== */
+#output pre {
+  background: #f6f8fa;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin: 12px 8px;
+  overflow-x: auto;
+  line-height: 1.5;
+  border: 1px solid #eaecef;
+}
+
+#output pre > code {
+  display: block;
+  padding: 0 !important;
+  background: none !important;
+  color: #24292e;
+  font-size: 14px !important;
+  border-radius: 0;
+  white-space: pre;
+  word-break: normal;
+  line-height: 1.5;
+}
+
+/* highlight.js 高亮配色 */
+#output pre code .hljs-keyword,
+#output pre code .hljs-selector-tag,
+#output pre code .hljs-literal,
+#output pre code .hljs-section,
+#output pre code .hljs-link {
+  color: #cf222e;
+}
+#output pre code .hljs-string,
+#output pre code .hljs-title,
+#output pre code .hljs-name,
+#output pre code .hljs-type,
+#output pre code .hljs-attribute,
+#output pre code .hljs-symbol,
+#output pre code .hljs-bullet,
+#output pre code .hljs-addition,
+#output pre code .hljs-variable,
+#output pre code .hljs-template-pvariable,
+#output pre code .hljs-template-variable {
+  color: #0a3069;
+}
+#output pre code .hljs-comment,
+#output pre code .hljs-quote,
+#output pre code .hljs-deletion,
+#output pre code .hljs-meta {
+  color: #6a737d;
+}
+#output pre code .hljs-number,
+#output pre code .hljs-built_in {
+  color: #005cc5;
+}
+#output pre code .hljs-function .hljs-title {
+  color: #6f42c1;
+}
+#output pre code .hljs-class .hljs-title,
+#output pre code .hljs-type .hljs-title {
+  color: #645300;
+  text-decoration: underline;
+}
+#output pre code .hljs-regexp,
+#output pre code .hljs-built_in {
+  color: #005cc5;
+}
+#output pre code .hljsattr {
+  color: #825e00;
+}
+#output pre code .hljs-selector-class {
+  color: #116329;
+}
+#output pre code .hljs-selector-id {
+  color: #b854d4;
+}
+#output pre code .hljs-subst {
+  color: #24292e;
+}
+
+/* ==================== 引用块 ==================== */
+#output blockquote {
+  font-style: normal;
+  padding: 12px 16px;
+  border-left: 4px solid #1e80ff;
+  border-radius: 0 6px 6px 0;
+  color: #555;
+  background: rgba(30, 128, 255, 0.04);
+  margin: 1em 8px;
+}
+
+#output blockquote p {
+  margin: 0;
+  color: #555;
+}
+
+/* ==================== 图片 ==================== */
+#output img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 12px auto;
+  border-radius: 4px;
+}
+
+/* ==================== 列表 ==================== */
+#output ol, #output ul {
+  padding-left: 1.5em;
+  margin: 0.5em 8px;
+  color: #333;
+}
+
+#output ul {
+  list-style: disc;
+}
+
+#output ol {
+  list-style: decimal;
+}
+
+#output li {
+  margin: 0.3em 0;
+  line-height: 1.7;
+  color: #333;
+}
+
+/* ==================== 分隔线 ==================== */
+#output hr {
+  border: none;
+  border-top: 2px solid #eee;
+  margin: 1.5em auto;
+  width: 60%;
+}
+
+/* ==================== 表格 ==================== */
+#output table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 8px;
+  color: #333;
+  font-size: 14px;
+}
+
+#output th {
+  background: #f6f8fa;
+  border: 1px solid #dfe2e5;
+  padding: 8px 12px;
+  font-weight: bold;
+  text-align: left;
+}
+
+#output td {
+  border: 1px solid #dfe2e5;
+  padding: 8px 12px;
+}
+
+#output tr:nth-child(even) td {
+  background: #fafbfc;
+}
+
+/* ==================== 链接 ==================== */
+#output a {
+  color: #576b95;
+  text-decoration: none;
+}
+
+/* ==================== 链接脚注 ==================== */
+p.footnotes {
+  margin: 0.5em 8px;
+  font-size: 80%;
+  color: #888;
+}
