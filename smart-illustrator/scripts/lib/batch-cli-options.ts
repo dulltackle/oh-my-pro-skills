@@ -58,7 +58,7 @@ Options:
   -c, --config <path>       JSON config file (unified format only)
   -o, --output-dir <path>   Output directory (default: ./illustrations)
   -m, --model <model>       Model to use (default: provider default model)
-  --provider <provider>     API provider: tuzi, tuzi-openai, or gemini
+  --provider <provider>     API provider: tuzi or tuzi-openai
   --size <size>             Image size: 2k (default) or default
   -a, --aspect-ratio <ratio>  Override config aspect ratio
   --ref <path>              Reference image for style (can use multiple, max 3)
@@ -78,10 +78,8 @@ Resume Generation:
   Use --force to regenerate all images, or --regenerate to regenerate specific ones.
 
 Environment:
-  TUZI_API_KEY              Preferred when present
-  TUZI_API_KEY              Fallback provider (Tuzi and Tuzi OpenAI)
+  TUZI_API_KEY              Tuzi API key (Google-compatible and OpenAI-compatible endpoints)
   TUZI_OPENAI_API_BASE      Optional Tuzi OpenAI-compatible API base
-  GEMINI_API_KEY            Fallback provider
 
 Config File Format (only unified JSON format is supported):
   {

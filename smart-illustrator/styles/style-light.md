@@ -1,6 +1,6 @@
 # Style: Light / 浅色清爽风格
 
-用于正文配图的 Gemini Prompt 风格模板。
+用于正文配图的 Prompt 风格模板。
 
 > **默认色板**：`brand-colors.md` → **Light Neutral / 浅色中性**
 
@@ -11,7 +11,7 @@
 - 流程指南
 - Newsletter 配图
 
-## Gemini System Prompt
+## System Prompt
 
 ```
 你是一位信息图绘图大师。你的目标是把用户提供的内容转化为一张可直接用于 YouTube 视频 BROLL 或 Newsletter 配图的视觉信息图。

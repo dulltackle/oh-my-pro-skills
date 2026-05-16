@@ -1,6 +1,6 @@
 # Style: Dark / 深色高对比风格
 
-用于封面图和高冲击力场景的 Gemini Prompt 风格模板。
+用于封面图和高冲击力场景的 Prompt 风格模板。
 
 > **默认色板**：`brand-colors.md` → **Brand Signature / 品牌签名**
 
@@ -14,7 +14,7 @@
 - YouTube 缩略图
 - 高冲击力场景
 
-## Gemini System Prompt
+## System Prompt
 
 ```
 你是一位信息图绘图大师。你的目标是把用户提供的内容转化为一张可直接用于 YouTube 视频 BROLL 或 Newsletter 配图的视觉信息图。

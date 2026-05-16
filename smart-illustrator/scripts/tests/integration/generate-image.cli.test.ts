@@ -6,7 +6,6 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
-  DEFAULT_GEMINI_MODEL,
   DEFAULT_TUZI_MODEL,
   DEFAULT_TUZI_OPENAI_MODEL,
 } from "../../generate-image.js";
@@ -60,17 +59,15 @@ describe("generate-image CLI integration (mock APIs)", () => {
     }
   });
 
-  it("supports provider tuzi/tuzi-openai/gemini with same prompt demand", async () => {
+  it("supports provider tuzi/tuzi-openai with same prompt demand", async () => {
     const workDir = await mkdtemp(join(tmpdir(), "smart-illustrator-cli-"));
     const commonEnv = {
       TUZI_API_BASE: server.baseUrl,
       TUZI_OPENAI_API_BASE: server.baseUrl,
-      GEMINI_API_BASE: server.baseUrl,
       TUZI_API_KEY: "tz-key",
-      GEMINI_API_KEY: "gm-key",
     };
 
-    for (const provider of ["tuzi", "tuzi-openai", "gemini"] as const) {
+    for (const provider of ["tuzi", "tuzi-openai"] as const) {
       const output = join(workDir, `${provider}.png`);
       await runCli(
         [
@@ -92,7 +89,7 @@ describe("generate-image CLI integration (mock APIs)", () => {
       expect(content.length).toBeGreaterThan(0);
     }
 
-    expect(server.requests.length).toBe(3);
+    expect(server.requests.length).toBe(2);
   });
 
   it("supports --prompt-file and --candidates with sequential output names", async () => {
@@ -211,7 +208,6 @@ describe("generate-image CLI integration (mock APIs)", () => {
     expect(stdout).toContain(DEFAULT_TUZI_MODEL);
     expect(stdout).toContain(DEFAULT_TUZI_MODEL);
     expect(stdout).toContain(DEFAULT_TUZI_OPENAI_MODEL);
-    expect(stdout).toContain(DEFAULT_GEMINI_MODEL);
     expect(stdout).not.toContain("--varied");
     expect(stdout).not.toContain("--learn-cover");
     expect(stdout).not.toContain("--learn-note");
@@ -223,8 +219,8 @@ describe("generate-image CLI integration (mock APIs)", () => {
     const error = await runCliExpectFailure(
       ["--varied", "--prompt", "youtube cover prompt", "--output", "ignored.png"],
       {
-        GEMINI_API_BASE: server.baseUrl,
-        GEMINI_API_KEY: "gm-key",
+        TUZI_API_BASE: server.baseUrl,
+        TUZI_API_KEY: "tz-key",
       },
     );
 
@@ -238,8 +234,8 @@ describe("generate-image CLI integration (mock APIs)", () => {
     const error = await runCliExpectFailure(
       ["--ref-weight", "0.5", "--prompt", "style lock", "--output", "ignored.png"],
       {
-        GEMINI_API_BASE: server.baseUrl,
-        GEMINI_API_KEY: "gm-key",
+        TUZI_API_BASE: server.baseUrl,
+        TUZI_API_KEY: "tz-key",
       },
     );
 
@@ -258,7 +254,7 @@ describe("generate-image CLI integration (mock APIs)", () => {
     const { stdout } = await runCli(
       [
         "--provider",
-        "gemini",
+        "tuzi",
         "--prompt",
         "retry this image",
         "--output",
@@ -267,8 +263,8 @@ describe("generate-image CLI integration (mock APIs)", () => {
         "1",
       ],
       {
-        GEMINI_API_BASE: server.baseUrl,
-        GEMINI_API_KEY: "gm-key",
+        TUZI_API_BASE: server.baseUrl,
+        TUZI_API_KEY: "tz-key",
       },
     );
 
@@ -323,7 +319,7 @@ describe("generate-image CLI integration (mock APIs)", () => {
     const error = await runCliExpectFailure(
       [
         "--provider",
-        "gemini",
+        "tuzi",
         "--prompt",
         "missing ref should fail",
         "--ref",
@@ -332,8 +328,8 @@ describe("generate-image CLI integration (mock APIs)", () => {
         failedOutput,
       ],
       {
-        GEMINI_API_BASE: server.baseUrl,
-        GEMINI_API_KEY: "gm-key",
+        TUZI_API_BASE: server.baseUrl,
+        TUZI_API_KEY: "tz-key",
       },
     );
 
@@ -346,7 +342,7 @@ describe("generate-image CLI integration (mock APIs)", () => {
     await runCli(
       [
         "--provider",
-        "gemini",
+        "tuzi",
         "--prompt",
         "missing ref can be ignored",
         "--ref",
@@ -356,8 +352,8 @@ describe("generate-image CLI integration (mock APIs)", () => {
         ignoredOutput,
       ],
       {
-        GEMINI_API_BASE: server.baseUrl,
-        GEMINI_API_KEY: "gm-key",
+        TUZI_API_BASE: server.baseUrl,
+        TUZI_API_KEY: "tz-key",
       },
     );
 
@@ -377,7 +373,7 @@ describe("generate-image CLI integration (mock APIs)", () => {
     await runCli(
       [
         "--provider",
-        "gemini",
+        "tuzi",
         "--prompt",
         "youtube cover prompt",
         "--output",
@@ -385,8 +381,8 @@ describe("generate-image CLI integration (mock APIs)", () => {
       ],
       {
         HOME: fakeHome,
-        GEMINI_API_BASE: server.baseUrl,
-        GEMINI_API_KEY: "gm-key",
+        TUZI_API_BASE: server.baseUrl,
+        TUZI_API_KEY: "tz-key",
       },
     );
 

@@ -4,7 +4,7 @@
 
 - `tests/unit`：纯函数与共享模块测试，包括参数解析、请求构建、响应提取、错误分类、prompt 构建与 Markdown 分析。
 - `tests/integration`：基于本地模拟 HTTP 服务的 CLI 级测试，覆盖统一入口、单图生成和批量生成流程。
-- `tests/live`：真实 API 冒烟测试，用于检查 Tuzi 和 Gemini 的线上兼容性。
+- `tests/live`：真实 API 冒烟测试，用于检查 Tuzi 的线上兼容性。
 
 ## 命令
 
@@ -16,9 +16,8 @@
 ## 真实测试所需密钥
 
 - `TUZI_API_KEY`
-- `GEMINI_API_KEY`
 
-如果缺少任何密钥，`test:live` 会快速失败。
+如果缺少密钥，`test:live` 会快速失败。
 
 ## 常见问题
 

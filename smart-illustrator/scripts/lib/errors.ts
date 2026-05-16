@@ -65,7 +65,7 @@ function inferKindFromMessage(message: string): ErrorKind | null {
     return "export";
   }
   if (
-    /(API|provider|model|Gemini|Tuzi|HTTP \d{3}|status \d{3})/i.test(
+    /(API|provider|model|Tuzi|HTTP \d{3}|status \d{3})/i.test(
       message,
     )
   ) {

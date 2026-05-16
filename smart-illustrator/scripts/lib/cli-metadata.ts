@@ -8,7 +8,7 @@ export const PLATFORMS = [
   "xiaohongshu",
   "landscape",
 ] as const;
-export const PROVIDERS = ["tuzi", "tuzi-openai", "gemini"] as const;
+export const PROVIDERS = ["tuzi", "tuzi-openai"] as const;
 export const SIZES = ["default", "2k"] as const;
 export const ASPECT_RATIOS = [
   "1:1",

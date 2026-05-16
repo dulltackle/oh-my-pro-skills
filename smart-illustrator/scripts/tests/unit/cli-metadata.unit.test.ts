@@ -19,7 +19,7 @@ describe("cli-metadata", () => {
       "xiaohongshu",
       "landscape",
     ]);
-    expect(PROVIDERS).toEqual(["tuzi", "tuzi-openai", "gemini"]);
+    expect(PROVIDERS).toEqual(["tuzi", "tuzi-openai"]);
     expect(SIZES).toEqual(["default", "2k"]);
     expect(ASPECT_RATIOS).toContain("16:9");
     expect(ASPECT_RATIOS).toContain("21:9");

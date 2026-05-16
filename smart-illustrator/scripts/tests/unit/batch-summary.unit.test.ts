@@ -9,7 +9,7 @@ describe("batch-summary", () => {
     const command = buildRetryCommand(
       "/tmp/deck slides.json",
       "/tmp/out dir",
-      "gemini",
+      "tuzi",
       "default",
       "16:9",
       ["/tmp/ref one.png"],
@@ -24,7 +24,7 @@ describe("batch-summary", () => {
     expect(command).toContain("batch-generate.ts");
     expect(command).toContain("--config '/tmp/deck slides.json'");
     expect(command).toContain("--output-dir '/tmp/out dir'");
-    expect(command).toContain("--provider gemini");
+    expect(command).toContain("--provider tuzi");
     expect(command).toContain("--size default");
     expect(command).toContain("--aspect-ratio 16:9");
     expect(command).toContain("--ref '/tmp/ref one.png'");

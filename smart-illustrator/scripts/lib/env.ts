@@ -5,12 +5,9 @@ import { fileURLToPath } from "node:url";
 export interface ApiBaseUrls {
   tuzi: string;
   tuziOpenai: string;
-  gemini: string;
 }
 export const DEFAULT_TUZI_API_BASE = "https://api.tu-zi.com/v1beta/models";
 export const DEFAULT_TUZI_OPENAI_API_BASE = "https://api.tu-zi.com/v1";
-export const DEFAULT_GEMINI_API_BASE =
-  "https://generativelanguage.googleapis.com/v1beta/models";
 
 export function parseDotenv(content: string): Record<string, string> {
   const result: Record<string, string> = {};
@@ -75,9 +72,5 @@ export function getApiBaseUrls(
       overrides.tuziOpenai ||
       process.env.TUZI_OPENAI_API_BASE ||
       DEFAULT_TUZI_OPENAI_API_BASE,
-    gemini:
-      overrides.gemini ||
-      process.env.GEMINI_API_BASE ||
-      DEFAULT_GEMINI_API_BASE,
   };
 }

@@ -39,7 +39,7 @@ node --import tsx scripts/smart-illustrator.ts ...
 | `--ref` | - | 参考图路径，可重复传入（如 `--ref a.png --ref b.png`） |
 | `-c, --candidates` | `1` | 候选图数量（最多 4） |
 | `-a, --aspect-ratio` | - | 宽高比，如 `16:9` / `3:2` / `3:4` |
-| `--provider` | 自动探测 | 底层 API provider：`tuzi` / `tuzi-openai` / `gemini` |
+| `--provider` | 自动探测 | 底层 API provider：`tuzi` / `tuzi-openai` |
 | `--model` | provider 默认值 | 覆盖底层模型 |
 | `--output-dir` | 输入文件目录 | 指定输出目录 |
 | `--timeout` | `45000` | 单张图片生成超时时间，单位毫秒 |

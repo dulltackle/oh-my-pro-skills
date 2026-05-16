@@ -12,9 +12,7 @@ export type FetchLike = (
 
 export const DEFAULT_TUZI_MODEL = "nano-banana-2";
 export const DEFAULT_TUZI_OPENAI_MODEL = "gpt-image-2";
-export const DEFAULT_GEMINI_MODEL = "gemini-3-pro-image-preview";
-
-export interface GeminiResponse {
+export interface TuziGenerateContentResponse {
   candidates?: Array<{
     content?: {
       parts?: Array<{
@@ -73,7 +71,12 @@ export interface BuiltProviderRequest {
 export function getDefaultModel(provider: Provider): string {
   if (provider === "tuzi") return DEFAULT_TUZI_MODEL;
   if (provider === "tuzi-openai") return DEFAULT_TUZI_OPENAI_MODEL;
-  return DEFAULT_GEMINI_MODEL;
+  throw new SmartIllustratorError({
+    kind: "config",
+    code: "UNSUPPORTED_PROVIDER",
+    message: `Unsupported provider: ${provider}`,
+    retryable: false,
+  });
 }
 
 function getOpenAiImageSize(aspectRatio?: AspectRatio): string {
@@ -201,18 +204,6 @@ export function buildProviderRequest(
     generationConfig,
   };
 
-  if (provider === "gemini") {
-    return {
-      provider,
-      url: `${resolvedBaseUrls.gemini}/${model}:generateContent?key=${apiKey}`,
-      init: {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody),
-      },
-    };
-  }
-
   return {
     provider,
     url: `${resolvedBaseUrls.tuzi}/${model}:generateContent`,
@@ -227,8 +218,8 @@ export function buildProviderRequest(
   };
 }
 
-export function extractImageFromGeminiLikeResponse(
-  data: GeminiResponse,
+export function extractImageFromGenerateContentResponse(
+  data: TuziGenerateContentResponse,
 ): { imageData: Buffer; mimeType: string } | null {
   if (!data.candidates?.[0]?.content?.parts) {
     throw new SmartIllustratorError({
@@ -282,7 +273,6 @@ export function extractImageFromOpenAiImagesResponse(
 
 export interface ProviderKeys {
   tuzi?: string;
-  gemini?: string;
 }
 
 export interface ResolveProviderInput {
@@ -300,42 +290,30 @@ export function resolveProviderAndKey(
   input: ResolveProviderInput,
 ): ResolvedProvider {
   const tuziKey = input.keys?.tuzi ?? process.env.TUZI_API_KEY;
-  const geminiKey = input.keys?.gemini ?? process.env.GEMINI_API_KEY;
-  const refPaths = input.refPaths || [];
 
   let provider = input.provider || null;
   if (!provider) {
     if (tuziKey) {
       provider = "tuzi";
-    } else if (geminiKey) {
-      provider = "gemini";
     } else {
       throw new SmartIllustratorError({
         kind: "config",
         code: "API_KEY_MISSING",
         message:
-          "No API key found. Set TUZI_API_KEY, or GEMINI_API_KEY environment variable",
+          "No API key found. Set TUZI_API_KEY environment variable",
         retryable: false,
       });
     }
   }
 
-  const apiKey =
-    provider === "tuzi" || provider === "tuzi-openai"
-      ? tuziKey
-      : geminiKey;
-  if (!apiKey) {
-    const envName =
-      provider === "tuzi" || provider === "tuzi-openai"
-        ? "TUZI_API_KEY"
-        : "GEMINI_API_KEY";
+  if (!tuziKey) {
     throw new SmartIllustratorError({
       kind: "config",
       code: "API_KEY_MISSING",
-      message: `${envName} is required for ${provider} provider`,
+      message: `TUZI_API_KEY is required for ${provider} provider`,
       retryable: false,
     });
   }
 
-  return { provider, apiKey };
+  return { provider, apiKey: tuziKey };
 }

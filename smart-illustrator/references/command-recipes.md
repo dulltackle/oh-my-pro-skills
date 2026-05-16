@@ -4,7 +4,6 @@
 
 - 执行前检查
 - 最小命令模板
-- Gemini 命令模板
 - Prompt Only 与剪贴板
 - 输出命名约定
 - 常见失败与重试
@@ -32,7 +31,7 @@ node --import tsx scripts/smart-illustrator.ts script.md --mode slides --prompt-
 node --import tsx scripts/smart-illustrator.ts --mode cover --topic "AI 工作流" --platform youtube
 ```
 
-## Gemini 命令模板
+## 底层脚本命令模板
 
 当你需要绕过高层 CLI、直接调底层单图脚本时，优先使用 `--prompt-file`，避免命令行转义错误：
 
@@ -108,7 +107,7 @@ fi
 ## 常见失败与重试
 
 - `API key missing`：
-  - 检查 `.env` 是否含 `GEMINI_API_KEY` / `TUZI_API_KEY`。
+  - 检查 `.env` 是否含 `TUZI_API_KEY`。
   - `tuzi-openai` 复用 `TUZI_API_KEY`，可用 `TUZI_OPENAI_API_BASE` 覆盖兼容端点 base。
 - `article/slides 模式缺输入文件`：
   - 补充 Markdown 文件路径。

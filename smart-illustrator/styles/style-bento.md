@@ -22,7 +22,7 @@ Bento Grid 使用 **单强调色 + 深底色** 方案，与封面图的双色光
 
 ---
 
-## Gemini System Prompt
+## System Prompt
 
 ```
 Create a Bento Grid style feature showcase image.

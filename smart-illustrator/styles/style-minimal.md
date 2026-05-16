@@ -11,7 +11,7 @@
 - 专业报告
 - 简洁演示
 
-## Gemini System Prompt
+## System Prompt
 
 ```
 You are a minimalist infographic designer. Create ultra-clean, professional illustrations.

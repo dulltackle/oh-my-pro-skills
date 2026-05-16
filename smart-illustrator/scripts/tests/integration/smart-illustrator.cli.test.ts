@@ -166,8 +166,8 @@ Slides should not use a cover-only style.`,
     );
 
     await runCli([inputPath], {
-      GEMINI_API_BASE: server.baseUrl,
-      GEMINI_API_KEY: "gm-key",
+      TUZI_API_BASE: server.baseUrl,
+      TUZI_API_KEY: "tz-key",
     });
 
     expect(existsSync(join(workDir, "article-cover.png"))).toBe(true);
@@ -198,8 +198,8 @@ Slides should not use a cover-only style.`,
     );
 
     await runCli([inputPath], {
-      GEMINI_API_BASE: server.baseUrl,
-      GEMINI_API_KEY: "gm-key",
+      TUZI_API_BASE: server.baseUrl,
+      TUZI_API_KEY: "tz-key",
     });
 
     const outputMarkdown = await readFile(join(workDir, "deep-image.md"), "utf-8");
@@ -225,13 +225,13 @@ Slides should not use a cover-only style.`,
         "--mode",
         "cover",
         "--provider",
-        "gemini",
+        "tuzi",
         "--ref",
         missingRef,
       ],
       {
-        GEMINI_API_BASE: server.baseUrl,
-        GEMINI_API_KEY: "gm-key",
+        TUZI_API_BASE: server.baseUrl,
+        TUZI_API_KEY: "tz-key",
       },
       workDir,
     );
@@ -247,14 +247,14 @@ Slides should not use a cover-only style.`,
         "--mode",
         "cover",
         "--provider",
-        "gemini",
+        "tuzi",
         "--ref",
         missingRef,
         "--ignore-missing-ref",
       ],
       {
-        GEMINI_API_BASE: server.baseUrl,
-        GEMINI_API_KEY: "gm-key",
+        TUZI_API_BASE: server.baseUrl,
+        TUZI_API_KEY: "tz-key",
       },
       workDir,
     );
@@ -286,7 +286,7 @@ Slides should not use a cover-only style.`,
       join(configDir, "config.json"),
       JSON.stringify(
         {
-          provider: "gemini",
+          provider: "tuzi",
           model: "configured-model",
           size: "default",
           candidates: 2,
@@ -301,8 +301,8 @@ Slides should not use a cover-only style.`,
     await runCli(
       ["article.md", "--mode", "cover"],
       {
-        GEMINI_API_BASE: server.baseUrl,
-        GEMINI_API_KEY: "gm-key",
+        TUZI_API_BASE: server.baseUrl,
+        TUZI_API_KEY: "tz-key",
       },
       workDir,
     );
@@ -310,7 +310,7 @@ Slides should not use a cover-only style.`,
     expect(existsSync(join(outputDir, "article-cover-1.png"))).toBe(true);
     expect(existsSync(join(outputDir, "article-cover-2.png"))).toBe(true);
     expect(server.requests).toHaveLength(2);
-    expect(server.requests[0].path).toContain("/configured-model:generateContent?key=gm-key");
+    expect(server.requests[0].path).toContain("/configured-model:generateContent");
     const firstBody = server.requests[0].body as {
       generationConfig: { responseModalities: string[] };
       contents: Array<{ parts: Array<Record<string, unknown>> }>;
@@ -318,7 +318,7 @@ Slides should not use a cover-only style.`,
     expect(firstBody.generationConfig.responseModalities).toEqual(["IMAGE"]);
     expect(
       firstBody.contents[0].parts.some(
-        (part: Record<string, unknown>) => "inlineData" in part,
+        (part: Record<string, unknown>) => "inline_data" in part,
       ),
     ).toBe(true);
   });
@@ -335,15 +335,15 @@ Slides should not use a cover-only style.`,
         "--topic",
         "Retry Cover",
         "--provider",
-        "gemini",
+        "tuzi",
         "--output-dir",
         workDir,
         "--backoff-base",
         "1",
       ],
       {
-        GEMINI_API_BASE: server.baseUrl,
-        GEMINI_API_KEY: "gm-key",
+        TUZI_API_BASE: server.baseUrl,
+        TUZI_API_KEY: "tz-key",
       },
     );
 
@@ -365,15 +365,15 @@ Slides should not use a cover-only style.`,
         "--topic",
         "No Retry",
         "--provider",
-        "gemini",
+        "tuzi",
         "--output-dir",
         workDir,
         "--max-retries",
         "0",
       ],
       {
-        GEMINI_API_BASE: server.baseUrl,
-        GEMINI_API_KEY: "gm-key",
+        TUZI_API_BASE: server.baseUrl,
+        TUZI_API_KEY: "tz-key",
       },
     );
 

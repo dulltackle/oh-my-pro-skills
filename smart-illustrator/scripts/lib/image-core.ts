@@ -2,12 +2,12 @@ import { readFile } from "node:fs/promises";
 import { extname, isAbsolute, resolve } from "node:path";
 import {
   buildProviderRequest,
-  extractImageFromGeminiLikeResponse,
+  extractImageFromGenerateContentResponse,
   extractImageFromOpenAiImagesResponse,
   type ApiBaseUrls,
   type AspectRatio,
   type FetchLike,
-  type GeminiResponse,
+  type TuziGenerateContentResponse,
   type OpenAiImagesResponse,
   type Provider,
   type ReferenceImage,
@@ -159,47 +159,8 @@ export async function loadReferenceImages(
   return images;
 }
 
-async function generateImageGemini(
-  prompt: string,
-  model: string,
-  apiKey: string,
-  size: Size = "default",
-  references: ReferenceImage[] = [],
-  aspectRatio?: AspectRatio,
-  fetchImpl: FetchLike = fetch,
-  baseUrls: Partial<ApiBaseUrls> = {},
-  signal?: AbortSignal,
-): Promise<GenerationResult | null> {
-  const req = buildProviderRequest({
-    provider: "gemini",
-    prompt,
-    model,
-    apiKey,
-    size,
-    references,
-    aspectRatio,
-    baseUrls,
-  });
-  const data = await fetchProviderJson<GeminiResponse>({
-    provider: "gemini",
-    url: req.url,
-    init: { ...req.init, signal },
-    fetchImpl,
-  });
-  if (data.error) {
-    throw new SmartIllustratorError({
-      kind: "provider",
-      code: data.error.code ? `GEMINI_${data.error.code}` : "GEMINI_API_ERROR",
-      message: `Gemini API Error: ${data.error.message} (code: ${data.error.code})`,
-      retryable: data.error.code === 429 || data.error.code >= 500,
-    });
-  }
-
-  return extractImageFromGeminiLikeResponse(data);
-}
-
 function extractImageUrlFromTuziResponse(
-  data: GeminiResponse,
+  data: TuziGenerateContentResponse,
 ): { url: string; mimeType: string } | null {
   const parts = data.candidates?.[0]?.content?.parts;
   if (!parts) return null;
@@ -245,7 +206,7 @@ async function generateImageTuzi(
     aspectRatio,
     baseUrls,
   });
-  const data = await fetchProviderJson<GeminiResponse>({
+  const data = await fetchProviderJson<TuziGenerateContentResponse>({
     provider: "tuzi",
     url: req.url,
     init: { ...req.init, signal },
@@ -293,7 +254,7 @@ async function generateImageTuzi(
     }
   }
 
-  return extractImageFromGeminiLikeResponse(data);
+  return extractImageFromGenerateContentResponse(data);
 }
 
 async function generateImageTuziOpenai(
@@ -427,15 +388,10 @@ export async function runGenerationOnce(
     );
   }
 
-  return generateImageGemini(
-    prompt,
-    model,
-    apiKey,
-    size,
-    references,
-    aspectRatio,
-    fetchImpl,
-    baseUrls,
-    signal,
-  );
+  throw new SmartIllustratorError({
+    kind: "config",
+    code: "UNSUPPORTED_PROVIDER",
+    message: `Unsupported provider: ${provider}`,
+    retryable: false,
+  });
 }

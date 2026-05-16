@@ -10,16 +10,16 @@
 
 **封面图推荐 AI 团队协作 + prompt-only 模式**：
 
-1. 使用 `/ai-pair content-team` 启动团队（author + codex-reviewer + gemini-reviewer）
+1. 使用 `/ai-pair content-team` 启动团队（author + codex-reviewer + visual-reviewer）
 2. Author 用本文件的规则设计 3 个隐喻方案（中文推导 + 英文 prompt）
 3. Codex reviewer 评估：隐喻精度、prompt 质量、负向描述陷阱
-4. Gemini reviewer 评估：生成可行性、主体大小控制、材质稳定性
+4. Visual reviewer 评估：生成可行性、主体大小控制、材质稳定性
 5. Team lead 综合三方意见产出定稿英文 prompt
-6. 用户复制 prompt 到 [Gemini](https://gemini.google.com/) 手动生成
+6. 用户复制 prompt 到图像生成工具手动生成
 
-**为什么团队协作**：实测效果显著优于单人——多视角碰撞产生更好的隐喻方案，Gemini reviewer 能预判生成效果，Codex reviewer 能发现 prompt 中的陷阱。
+**为什么团队协作**：实测效果显著优于单人——多视角碰撞产生更好的隐喻方案，Visual reviewer 能预判生成效果，Codex reviewer 能发现 prompt 中的陷阱。
 
-**控制主体大小的关键技巧**（来自 Gemini reviewer 经验）：
+**控制主体大小的关键技巧**（来自 visual reviewer 经验）：
 - 先描述环境再描述主体（"A vast void. In the center, a tiny..."）
 - 使用 "Extreme wide shot" 镜头语言
 - 感性比例比数字有效（"a lone speck" 比 "30%" 好）
@@ -46,7 +46,7 @@
 
 ---
 
-## Gemini System Prompt
+## System Prompt
 
 > **重要**：最终发送给图像生成模型的 prompt 必须使用**英文**。中文用于隐喻推导和内部讨论，英文用于最终生成指令。
 

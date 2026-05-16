@@ -5,7 +5,6 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import {
   bootstrapEnv,
-  DEFAULT_GEMINI_MODEL,
   DEFAULT_TUZI_MODEL,
   runGenerationOnce,
   type Provider,
@@ -64,19 +63,5 @@ describe("live API smoke tests", () => {
     it.skip("Tuzi generates image (requires TUZI_API_KEY)", () => {});
   }
 
-  if (process.env.GEMINI_API_KEY) {
-    it(
-      "Gemini generates image",
-      async () => {
-        await assertLiveGeneration(
-          "gemini",
-          DEFAULT_GEMINI_MODEL,
-          process.env.GEMINI_API_KEY!,
-        );
-      },
-      300_000,
-    );
-  } else {
-    it.skip("Gemini generates image (requires GEMINI_API_KEY)", () => {});
-  }
+
 });

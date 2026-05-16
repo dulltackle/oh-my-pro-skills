@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Image Generation Script (Gemini / Tuzi API / Tuzi OpenAI API)
+ * Image Generation Script (Tuzi API / Tuzi OpenAI API)
  *
  * Usage:
  *   node --import tsx ~/.claude/skills/smart-illustrator/scripts/generate-image.ts --prompt "A cute cat" --output cat.png
@@ -13,12 +13,10 @@
  * Environment:
  *   TUZI_API_KEY - Tuzi API key (Google-compatible and OpenAI-compatible endpoints)
  *   TUZI_OPENAI_API_BASE - Optional Tuzi OpenAI-compatible API base
- *   GEMINI_API_KEY - Direct Gemini API key
  *
  * Models:
  *   nano-banana-2 (default for Tuzi)
  *   gpt-image-2 (default for Tuzi OpenAI)
- *   gemini-3-pro-image-preview (default for direct Gemini)
  */
 
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -40,7 +38,6 @@ import {
 } from "./lib/errors.js";
 import { loadReferenceImages, runGenerationOnce } from "./lib/image-core.js";
 import {
-  DEFAULT_GEMINI_MODEL,
   DEFAULT_TUZI_MODEL,
   DEFAULT_TUZI_OPENAI_MODEL,
   getDefaultModel,
@@ -86,11 +83,10 @@ export {
   type RunGenerationOnceOptions,
 } from "./lib/image-core.js";
 export {
-  DEFAULT_GEMINI_MODEL,
   DEFAULT_TUZI_MODEL,
   DEFAULT_TUZI_OPENAI_MODEL,
   buildProviderRequest,
-  extractImageFromGeminiLikeResponse,
+  extractImageFromGenerateContentResponse,
   extractImageFromOpenAiImagesResponse,
   getDefaultModel,
   resolveProviderAndKey,
@@ -98,7 +94,7 @@ export {
   type AspectRatio,
   type BuiltProviderRequest,
   type FetchLike,
-  type GeminiResponse,
+  type TuziGenerateContentResponse,
   type OpenAiImagesResponse,
   type Provider,
   type ProviderRequestOptions,
@@ -108,7 +104,7 @@ export {
 
 function printUsage(): never {
   console.log(`
-Image Generation Script (Gemini / Tuzi API / Tuzi OpenAI API)
+Image Generation Script (Tuzi API / Tuzi OpenAI API)
 
 Usage:
   node --import tsx generate-image.ts --prompt "description" --output image.png
@@ -119,7 +115,7 @@ Options:
   -f, --prompt-file <path>  Read prompt from file
   -o, --output <path>       Output image path (default: generated.png)
   -m, --model <model>       Model to use
-  --provider <provider>     API provider: tuzi (default), tuzi-openai, or gemini
+  --provider <provider>     API provider: tuzi (default) or tuzi-openai
   --size <size>             Image size: 2k (2048px, default) or default (~1.4K)
   -a, --aspect-ratio <ratio>  Aspect ratio: 1:1, 3:4, 4:3, 9:16, 16:9, 21:9, etc.
   --timeout <ms>            Per-image timeout in ms (default: 45000)
@@ -143,19 +139,14 @@ Style Configuration (persistent settings):
 Environment Variables (in order of priority):
   TUZI_API_KEY              Tuzi API key (Google-compatible and OpenAI-compatible endpoints)
   TUZI_OPENAI_API_BASE      Tuzi OpenAI-compatible API base (default: https://api.tu-zi.com/v1)
-  GEMINI_API_KEY            Direct Gemini API key
 
 Models:
   Tuzi:       ${DEFAULT_TUZI_MODEL} (default)
   Tuzi OpenAI: ${DEFAULT_TUZI_OPENAI_MODEL} (default)
-  Gemini:     ${DEFAULT_GEMINI_MODEL} (default)
 
 Examples:
   # Using Tuzi API (default)
   TUZI_API_KEY=xxx node --import tsx generate-image.ts -p "A futuristic city" -o city.png
-
-  # Using direct Gemini API
-  GEMINI_API_KEY=xxx node --import tsx generate-image.ts -p "A cute cat" -o cat.png --provider gemini
 
   # Using Tuzi OpenAI-compatible Images API
   TUZI_API_KEY=xxx node --import tsx generate-image.ts -p "A cute rabbit racing" -o rabbit.png --provider tuzi-openai
@@ -164,7 +155,7 @@ Examples:
   node --import tsx generate-image.ts -f illustration-prompt.md -o illustration.png
 
   # With style reference (style-lock)
-  GEMINI_API_KEY=xxx node --import tsx generate-image.ts -p "A tech diagram" -r style-ref.png -o output.png
+  TUZI_API_KEY=xxx node --import tsx generate-image.ts -p "A tech diagram" -r style-ref.png -o output.png
 
   # Generate 2 candidates for quality selection
   node --import tsx generate-image.ts -p "A tech diagram" -c 2 -o output.png

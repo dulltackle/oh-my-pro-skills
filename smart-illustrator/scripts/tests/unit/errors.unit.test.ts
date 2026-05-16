@@ -36,7 +36,7 @@ describe("errors", () => {
 
   it("marks 5xx HTTP provider errors as retryable", () => {
     const wrapped = buildHttpError({
-      provider: "gemini",
+      provider: "tuzi",
       status: 503,
       statusText: "Service Unavailable",
       detail: "upstream timeout",

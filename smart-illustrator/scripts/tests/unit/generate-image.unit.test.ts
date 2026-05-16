@@ -8,7 +8,7 @@ import {
 } from "../../lib/errors.js";
 import {
   buildProviderRequest,
-  extractImageFromGeminiLikeResponse,
+  extractImageFromGenerateContentResponse,
   extractImageFromOpenAiImagesResponse,
   resolveProviderAndKey,
   type ProviderRequestOptions,
@@ -39,31 +39,8 @@ describe("buildProviderRequest", () => {
     baseUrls: {
       tuzi: "https://tz.example",
       tuziOpenai: "https://tz-openai.example",
-      gemini: "https://gm.example",
     },
   };
-
-  it("builds Gemini request with key query and inlineData references", () => {
-    const req = buildProviderRequest({
-      ...base,
-      provider: "gemini",
-      references: [{ mimeType: "image/png", base64: "abc" }],
-    });
-    expect(req.url).toBe("https://gm.example/test-model:generateContent?key=key-1");
-    expect((req.init.headers as Record<string, string>).Authorization).toBeUndefined();
-    const body = bodyOf(req) as {
-      generationConfig: { imageConfig: { imageSize: string; aspectRatio: string } };
-      contents: Array<{ parts: Array<{ inlineData?: { mimeType: string; data: string } }> }>;
-    };
-    expect(body.generationConfig.imageConfig).toEqual({
-      imageSize: "2K",
-      aspectRatio: "16:9",
-    });
-    expect(body.contents[0].parts[1].inlineData).toEqual({
-      mimeType: "image/png",
-      data: "abc",
-    });
-  });
 
   it("builds Tuzi request with bearer and inline_data references", () => {
     const req = buildProviderRequest({
@@ -124,8 +101,8 @@ describe("buildProviderRequest", () => {
 });
 
 describe("response extractors", () => {
-  it("extracts gemini inlineData", () => {
-    const result = extractImageFromGeminiLikeResponse({
+  it("extracts generateContent inlineData", () => {
+    const result = extractImageFromGenerateContentResponse({
       candidates: [
         {
           content: {
@@ -139,7 +116,7 @@ describe("response extractors", () => {
   });
 
   it("extracts tuzi inline_data", () => {
-    const result = extractImageFromGeminiLikeResponse({
+    const result = extractImageFromGenerateContentResponse({
       candidates: [
         {
           content: {
@@ -152,13 +129,13 @@ describe("response extractors", () => {
     expect(result?.imageData.length).toBeGreaterThan(0);
   });
 
-  it("throws a typed provider error when gemini-like content is missing", () => {
-    expect(() => extractImageFromGeminiLikeResponse({})).toThrow(
+  it("throws a typed provider error when generateContent content is missing", () => {
+    expect(() => extractImageFromGenerateContentResponse({})).toThrow(
       SmartIllustratorError,
     );
 
     try {
-      extractImageFromGeminiLikeResponse({});
+      extractImageFromGenerateContentResponse({});
     } catch (error) {
       const appError = asSmartIllustratorError(error);
       expect(appError.kind).toBe("provider");
@@ -189,11 +166,10 @@ describe("response extractors", () => {
 });
 
 describe("resolveProviderAndKey", () => {
-  it("uses priority tuzi > gemini", () => {
+  it("uses tuzi when TUZI_API_KEY is present", () => {
     const result = resolveProviderAndKey({
       keys: {
         tuzi: "tz",
-        gemini: "gm",
       },
     });
     expect(result.provider).toBe("tuzi");
@@ -204,7 +180,7 @@ describe("resolveProviderAndKey", () => {
     try {
       resolveProviderAndKey({
         provider: "tuzi",
-        keys: { gemini: "gm" },
+        keys: {},
       });
       throw new Error("Expected resolveProviderAndKey to fail");
     } catch (error) {
@@ -229,7 +205,7 @@ describe("resolveProviderAndKey", () => {
     try {
       resolveProviderAndKey({
         provider: "tuzi-openai",
-        keys: { gemini: "gm" },
+        keys: {},
       });
       throw new Error("Expected resolveProviderAndKey to fail");
     } catch (error) {

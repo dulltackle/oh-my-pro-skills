@@ -157,8 +157,8 @@ describe("batch-generate CLI integration", () => {
     const { stdout } = await runCli(
       ["--config", configPath, "--output-dir", outputDir, "--delay", "0"],
       {
-        GEMINI_API_BASE: server.baseUrl,
-        GEMINI_API_KEY: "gm-key",
+        TUZI_API_BASE: server.baseUrl,
+        TUZI_API_KEY: "tz-key",
       },
     );
 
@@ -207,8 +207,8 @@ describe("batch-generate CLI integration", () => {
     );
 
     const env = {
-      GEMINI_API_BASE: server.baseUrl,
-      GEMINI_API_KEY: "gm-key",
+      TUZI_API_BASE: server.baseUrl,
+      TUZI_API_KEY: "tz-key",
     };
 
     await runCli(
@@ -341,15 +341,15 @@ describe("batch-generate CLI integration", () => {
         "--config",
         configPath,
         "--provider",
-        "gemini",
+        "tuzi",
         "--ref",
         missingRefPath,
         "--delay",
         "0",
       ],
       {
-        GEMINI_API_BASE: server.baseUrl,
-        GEMINI_API_KEY: "gm-key",
+        TUZI_API_BASE: server.baseUrl,
+        TUZI_API_KEY: "tz-key",
       },
     );
 
@@ -382,8 +382,8 @@ describe("batch-generate CLI integration", () => {
     const error = await runCliExpectFailure(
       ["--config", configPath, "--delay", "0"],
       {
-        GEMINI_API_BASE: server.baseUrl,
-        GEMINI_API_KEY: "gm-key",
+        TUZI_API_BASE: server.baseUrl,
+        TUZI_API_KEY: "tz-key",
       },
     );
 
@@ -410,8 +410,8 @@ describe("batch-generate CLI integration", () => {
     const error = await runCliExpectFailure(
       ["--config", configPath, "--delay", "0"],
       {
-        GEMINI_API_BASE: server.baseUrl,
-        GEMINI_API_KEY: "gm-key",
+        TUZI_API_BASE: server.baseUrl,
+        TUZI_API_KEY: "tz-key",
       },
     );
 
@@ -436,8 +436,8 @@ describe("batch-generate CLI integration", () => {
     const missingError = await runCliExpectFailure(
       ["--config", missingPicturesPath, "--delay", "0"],
       {
-        GEMINI_API_BASE: server.baseUrl,
-        GEMINI_API_KEY: "gm-key",
+        TUZI_API_BASE: server.baseUrl,
+        TUZI_API_KEY: "tz-key",
       },
     );
     expect(missingError.code).toBe(1);
@@ -448,8 +448,8 @@ describe("batch-generate CLI integration", () => {
     const emptyError = await runCliExpectFailure(
       ["--config", emptyPicturesPath, "--delay", "0"],
       {
-        GEMINI_API_BASE: server.baseUrl,
-        GEMINI_API_KEY: "gm-key",
+        TUZI_API_BASE: server.baseUrl,
+        TUZI_API_KEY: "tz-key",
       },
     );
     expect(emptyError.code).toBe(1);
@@ -490,8 +490,8 @@ describe("batch-generate CLI integration", () => {
       const error = await runCliExpectFailure(
         ["--config", configPath, "--delay", "0", ...args],
         {
-          GEMINI_API_BASE: server.baseUrl,
-          GEMINI_API_KEY: "gm-key",
+          TUZI_API_BASE: server.baseUrl,
+          TUZI_API_KEY: "tz-key",
         },
       );
 
@@ -504,8 +504,8 @@ describe("batch-generate CLI integration", () => {
     const missingIdError = await runCliExpectFailure(
       ["--config", configPath, "--delay", "0", "--regenerate", "3"],
       {
-        GEMINI_API_BASE: server.baseUrl,
-        GEMINI_API_KEY: "gm-key",
+        TUZI_API_BASE: server.baseUrl,
+        TUZI_API_KEY: "tz-key",
       },
     );
 
@@ -534,8 +534,8 @@ describe("batch-generate CLI integration", () => {
     const error = await runCliExpectFailure(
       ["--config", configPath, "--delay", "0"],
       {
-        GEMINI_API_BASE: server.baseUrl,
-        GEMINI_API_KEY: "gm-key",
+        TUZI_API_BASE: server.baseUrl,
+        TUZI_API_KEY: "tz-key",
       },
     );
 
@@ -569,8 +569,8 @@ describe("batch-generate CLI integration", () => {
         "0",
       ],
       {
-        GEMINI_API_BASE: server.baseUrl,
-        GEMINI_API_KEY: "gm-key",
+        TUZI_API_BASE: server.baseUrl,
+        TUZI_API_KEY: "tz-key",
       },
     );
 
