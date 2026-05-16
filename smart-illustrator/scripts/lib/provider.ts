@@ -294,7 +294,7 @@ export function resolveProviderAndKey(
   let provider = input.provider || null;
   if (!provider) {
     if (tuziKey) {
-      provider = "tuzi";
+      provider = "tuzi-openai";
     } else {
       throw new SmartIllustratorError({
         kind: "config",
