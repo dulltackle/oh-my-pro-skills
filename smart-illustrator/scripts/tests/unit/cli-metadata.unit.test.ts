@@ -20,7 +20,7 @@ describe("cli-metadata", () => {
       "landscape",
     ]);
     expect(PROVIDERS).toEqual(["tuzi", "tuzi-openai"]);
-    expect(SIZES).toEqual(["default", "2k"]);
+    expect(SIZES).toEqual(["default", "2k", "4k"]);
     expect(ASPECT_RATIOS).toContain("16:9");
     expect(ASPECT_RATIOS).toContain("21:9");
   });

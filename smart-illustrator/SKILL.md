@@ -57,7 +57,7 @@ description: 为 Markdown 文章、讲稿或主题生成真实配图、信息图
 
 统一入口 CLI 会自动读取共享配置，但仍不提供配置写入能力。
 
-- `scripts/smart-illustrator.ts`：读取项目级 / 用户级 `.smart-illustrator/config.json`，并通过 `styles/index.json` 定位风格文件
+- `scripts/smart-illustrator.ts`：读取项目级 / 用户级 `.smart-illustrator/config.json`，并通过 `styles/index.json` 定位风格文件；未配置时封面平台默认 `wechat`，生成尺寸默认 `4k`
 - `scripts/generate-image.ts`：继续支持项目级 / 用户级配置文件，并支持配置写入
 
 也就是说，`--no-config`、`--save-config` 这类配置管理参数，仍主要属于底层单图脚本能力；统一入口 CLI 当前只负责消费共享配置。

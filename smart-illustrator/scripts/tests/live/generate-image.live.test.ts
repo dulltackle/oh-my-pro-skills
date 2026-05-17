@@ -57,7 +57,7 @@ describe("live API smoke tests", () => {
       async () => {
         await assertLiveGeneration("tuzi", DEFAULT_TUZI_MODEL, process.env.TUZI_API_KEY!);
       },
-      300_000,
+      600_000,
     );
   } else {
     it.skip("Tuzi generates image (requires TUZI_API_KEY)", () => {});

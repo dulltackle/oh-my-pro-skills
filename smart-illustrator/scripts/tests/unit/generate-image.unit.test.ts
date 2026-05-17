@@ -34,7 +34,7 @@ describe("buildProviderRequest", () => {
     prompt: "hello world",
     model: "test-model",
     apiKey: "key-1",
-    size: "2k",
+    size: "4k",
     aspectRatio: "16:9",
     baseUrls: {
       tuzi: "https://tz.example",
@@ -52,10 +52,15 @@ describe("buildProviderRequest", () => {
     expect((req.init.headers as Record<string, string>).Authorization).toBe("Bearer key-1");
     const body = bodyOf(req) as {
       contents: Array<{ parts: Array<{ inline_data?: { mime_type: string; data: string } }> }>;
+      generationConfig: { imageConfig: { imageSize: string; aspectRatio: string } };
     };
     expect(body.contents[0].parts[1].inline_data).toEqual({
       mime_type: "image/png",
       data: "abc",
+    });
+    expect(body.generationConfig.imageConfig).toEqual({
+      imageSize: "4K",
+      aspectRatio: "16:9",
     });
   });
 

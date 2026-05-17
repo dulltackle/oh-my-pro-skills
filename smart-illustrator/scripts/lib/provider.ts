@@ -168,6 +168,7 @@ export function buildProviderRequest(
   };
   const imageConfig: Record<string, string> = {};
   if (size === "2k") imageConfig.imageSize = "2K";
+  if (size === "4k") imageConfig.imageSize = "4K";
   if (aspectRatio) imageConfig.aspectRatio = aspectRatio;
   if (Object.keys(imageConfig).length > 0) {
     generationConfig.imageConfig = imageConfig;

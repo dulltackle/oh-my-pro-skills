@@ -8,6 +8,17 @@ import {
 } from "../../lib/smart-options.js";
 
 describe("smart-options", () => {
+  it("uses current shared defaults", () => {
+    const options = resolveSmartOptions(
+      parseSmartArgs(["--mode", "cover", "--topic", "默认封面"]),
+      process.cwd(),
+    );
+
+    expect(options.platform).toBe("wechat");
+    expect(options.size).toBe("4k");
+    expect(options.timeoutMs).toBe(600_000);
+  });
+
   it("parses the explicit platform option", () => {
     const parsed = parseSmartArgs([
       "--mode",

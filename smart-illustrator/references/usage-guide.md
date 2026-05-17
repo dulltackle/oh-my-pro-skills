@@ -31,7 +31,7 @@ npx --yes tsx scripts/smart-illustrator.ts ...
 | 参数 | 默认值 | 说明 |
 |---|---|---|
 | `--mode` | `article` | 模式：`article` / `slides` / `cover` |
-| `--platform` | `youtube` | 封面平台（主要用于 `cover`）：`youtube` / `wechat` / `twitter` / `xiaohongshu` / `landscape` |
+| `--platform` | `wechat` | 封面平台（主要用于 `cover`）：`youtube` / `wechat` / `twitter` / `xiaohongshu` / `landscape` |
 | `--topic` | - | 封面主题（`cover` 且无文章输入时必填） |
 | `--prompt-only` | `false` | 只输出 prompt，不调用图像 API |
 | `--style` | 按目标自动选择 | 风格：从 `styles/index.json` 读取；正文/slides 默认 `light`，封面默认 `cover`；当前为 `light` / `dark` / `minimal` / `bento` / `cover` |
@@ -41,6 +41,7 @@ npx --yes tsx scripts/smart-illustrator.ts ...
 | `-a, --aspect-ratio` | - | 宽高比，如 `16:9` / `3:2` / `3:4` |
 | `--provider` | 自动探测 | 底层 API provider：`tuzi` / `tuzi-openai` |
 | `--model` | provider 默认值 | 覆盖底层模型 |
+| `--size` | `4k` | 输出尺寸：`default` / `2k` / `4k` |
 | `--output-dir` | 输入文件目录 | 指定输出目录 |
 | `--timeout` | `600000` | 单张图片生成超时时间，单位毫秒 |
 | `--max-retries` | `1` | 瞬时错误重试次数，范围 `0` 到 `2` |
@@ -50,7 +51,7 @@ npx --yes tsx scripts/smart-illustrator.ts ...
 
 - 统一入口 CLI 会自动读取共享配置文件，CLI 显式参数优先于配置文件。
 - 统一入口 CLI 仍不承诺 `--save-config` / `--no-config` 这类配置管理参数；这部分仍由 `scripts/generate-image.ts` 负责。
-- `cover` 模式的平台预设优先于 style 默认比例；如需强制比例，优先显式传 `-a`。
+- `cover` 模式的平台预设优先于 style 默认比例；默认平台为 `wechat`，如需强制比例，优先显式传 `-a`。
 - `article` 和 `slides` 默认使用当前 style 在 `styles/index.json` 中声明的 `defaultAspectRatio`，未声明时兜底为 `16:9`。
 - `-c` 会对每个输出物分别生成多个候选文件，默认引用第 1 张作为 sidecar 文档中的默认图。
 - `--style` 的可选值和适用模式以 `styles/index.json` 为准；如果 style 不支持当前 `--mode`，统一入口会停止并提示可用 style。
@@ -98,7 +99,7 @@ npx --yes tsx scripts/smart-illustrator.ts path/to/script.md --mode slides --pro
 
 ```bash
 # 基于文章生成封面
-npx --yes tsx scripts/smart-illustrator.ts path/to/article.md --mode cover --platform youtube
+npx --yes tsx scripts/smart-illustrator.ts path/to/article.md --mode cover --platform wechat
 
 # 无文章输入时，必须提供 --topic
 npx --yes tsx scripts/smart-illustrator.ts --mode cover --platform wechat --topic "产品设计方法论"
@@ -167,7 +168,7 @@ npx --yes tsx scripts/smart-illustrator.ts --mode cover --platform wechat --topi
 | `platform` | 默认平台预设 |
 | `provider` | 默认 provider |
 | `model` | 默认模型 |
-| `size` | 默认输出尺寸 |
+| `size` | 默认输出尺寸；未配置时默认为 `4k` |
 | `aspectRatio` | 默认宽高比 |
 | `references` | 默认参考图列表 |
 | `candidates` | 默认候选图数量 |

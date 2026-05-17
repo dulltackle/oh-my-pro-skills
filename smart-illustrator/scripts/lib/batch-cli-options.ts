@@ -16,7 +16,7 @@ const BATCH_CLI_SPECS: CliOptionSpec[] = [
   { name: "output-dir", aliases: ["-o"], type: "string", defaultValue: "./illustrations" },
   { name: "model", aliases: ["-m"], type: "string" },
   { name: "provider", type: "string", choices: PROVIDERS },
-  { name: "size", type: "string", choices: SIZES, defaultValue: "2k" },
+  { name: "size", type: "string", choices: SIZES, defaultValue: "4k" },
   { name: "aspect-ratio", aliases: ["-a"], type: "string", choices: ASPECT_RATIOS },
   { name: "ref", aliases: ["--reference"], type: "string", repeatable: true },
   { name: "ignore-missing-ref", type: "boolean" },
@@ -59,7 +59,7 @@ Options:
   -o, --output-dir <path>   Output directory (default: ./illustrations)
   -m, --model <model>       Model to use (default: provider default model)
   --provider <provider>     API provider: tuzi or tuzi-openai
-  --size <size>             Image size: 2k (default) or default
+  --size <size>             Image size: 4k (default), 2k, or default
   -a, --aspect-ratio <ratio>  Override config aspect ratio
   --ref <path>              Reference image for style (can use multiple, max 3)
   --ignore-missing-ref      Skip unreadable --ref paths instead of failing

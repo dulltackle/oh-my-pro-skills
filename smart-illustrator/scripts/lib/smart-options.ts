@@ -71,7 +71,7 @@ Options:
   -a, --aspect-ratio <r>  Override the default aspect ratio
   --provider <name>       ${PROVIDERS.join(" | ")}
   --model <name>          Override the provider default model
-  --size <size>           ${SIZES.join(" | ")} (default: 2k)
+  --size <size>           ${SIZES.join(" | ")} (default: 4k)
   --output-dir <path>     Output directory (default: input file directory or cwd)
   --timeout <ms>          Per-image timeout in ms (default: 600000)
   --max-retries <n>       Retry transient failures (0-2, default: 1)
@@ -81,7 +81,7 @@ Options:
 Examples:
   npx --yes tsx scripts/smart-illustrator.ts article.md
   npx --yes tsx scripts/smart-illustrator.ts article.md --mode slides --prompt-only
-  npx --yes tsx scripts/smart-illustrator.ts --mode cover --topic "AI 工作流" --platform youtube
+  npx --yes tsx scripts/smart-illustrator.ts --mode cover --topic "AI 工作流" --platform wechat
 `);
   process.exit(0);
 }
@@ -162,12 +162,12 @@ export function resolveSmartOptions(
   return {
     ...parsed,
     style: resolvedConfig.style ?? null,
-    platform: resolvedConfig.platform ?? "youtube",
+    platform: resolvedConfig.platform ?? "wechat",
     refs: resolvedConfig.references ?? [],
     candidates: resolvedConfig.candidates ?? 1,
     provider: resolvedConfig.provider ?? null,
     model: resolvedConfig.model ?? null,
-    size: resolvedConfig.size ?? "2k",
+    size: resolvedConfig.size ?? "4k",
     aspectRatio: resolvedConfig.aspectRatio ?? parsed.aspectRatio,
     outputDir: resolvedConfig.outputDir ?? null,
     timeoutMs: parsed.timeoutMs,

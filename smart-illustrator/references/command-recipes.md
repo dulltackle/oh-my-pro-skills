@@ -28,7 +28,7 @@ npx --yes tsx scripts/smart-illustrator.ts article.md
 npx --yes tsx scripts/smart-illustrator.ts script.md --mode slides --prompt-only
 
 # 统一入口：topic 直出封面
-npx --yes tsx scripts/smart-illustrator.ts --mode cover --topic "AI 工作流" --platform youtube
+npx --yes tsx scripts/smart-illustrator.ts --mode cover --topic "AI 工作流" --platform wechat
 ```
 
 ## 底层脚本命令模板

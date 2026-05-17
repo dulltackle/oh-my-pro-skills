@@ -116,7 +116,7 @@ Options:
   -o, --output <path>       Output image path (default: generated.png)
   -m, --model <model>       Model to use
   --provider <provider>     API provider: tuzi (default) or tuzi-openai
-  --size <size>             Image size: 2k (2048px, default) or default (~1.4K)
+  --size <size>             Image size: 4k (default), 2k, or default (~1.4K)
   -a, --aspect-ratio <ratio>  Aspect ratio: 1:1, 3:4, 4:3, 9:16, 16:9, 21:9, etc.
   --timeout <ms>            Per-image timeout in ms (default: 600000)
   --max-retries <n>         Retry transient failures (0-2, default: 1)
@@ -224,7 +224,7 @@ export async function main() {
 
   provider = finalConfig.provider ?? provider;
   model = finalConfig.model ?? model;
-  size = finalConfig.size ?? "2k";
+  size = finalConfig.size ?? "4k";
   aspectRatio = finalConfig.aspectRatio ?? aspectRatio;
   candidates = finalConfig.candidates ?? 1;
 

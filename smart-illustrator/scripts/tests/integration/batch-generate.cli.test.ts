@@ -190,7 +190,7 @@ describe("batch-generate CLI integration", () => {
     };
     expect(summary.total).toBe(2);
     expect(summary.summaryPath).toBe(join(outputDir, "deck.summary.json"));
-    expect(summary.size).toBe("2k");
+    expect(summary.size).toBe("4k");
     expect(summary.references).toEqual({ count: 0, paths: [] });
     expect(summary.counts).toEqual({
       generated: 2,
