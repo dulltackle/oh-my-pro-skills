@@ -8,10 +8,14 @@
 
 ## 命令
 
-- `npm test`：运行离线测试（`unit` + `integration`）。
-- `npm run typecheck`：运行 TypeScript 类型检查。
-- `npm run test:live`：运行真实 API 冒烟测试。
-- `npm run test:all`：按顺序运行离线测试和真实 API 冒烟测试。
+可以在 `smart-illustrator` 根目录运行：
+
+- `npm test`：转发到 `scripts` 子包，运行离线测试（`unit` + `integration`）。
+- `npm run typecheck`：转发到 `scripts` 子包，运行 TypeScript 类型检查。
+- `npm run test:live`：转发到 `scripts` 子包，运行真实 API 冒烟测试。
+- `npm run test:all`：转发到 `scripts` 子包，按顺序运行离线测试和真实 API 冒烟测试。
+
+也可以直接在 `smart-illustrator/scripts` 目录运行同名命令；`scripts` 目录仍是实际 Node 子包。
 
 ## 真实测试所需密钥
 
