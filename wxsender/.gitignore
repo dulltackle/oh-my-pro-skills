@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# 虚拟环境
+.venv/
+venv/
+env/
+
+# 测试与覆盖率
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# 分发 / 打包
+*.egg-info/
+*.egg
+dist/
+build/
+
+# 工具与 IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# 运行时状态（本项目）
+.state/
+
+# 杂项
+*.log
+.DS_Store
+
+# 系统配置 / 工具（沙箱环境产物）
+.bash_profile
+.bashrc
+.profile
+.zprofile
+.zshrc
+.gitconfig
+.gitmodules
+.ripgreprc
+.codex
+.mcp.json
