@@ -42,7 +42,7 @@ npx --yes tsx scripts/smart-illustrator.ts ...
 | `--provider` | 自动探测 | 底层 API provider：`tuzi` / `tuzi-openai` |
 | `--model` | provider 默认值 | 覆盖底层模型 |
 | `--output-dir` | 输入文件目录 | 指定输出目录 |
-| `--timeout` | `300000` | 单张图片生成超时时间，单位毫秒 |
+| `--timeout` | `600000` | 单张图片生成超时时间，单位毫秒 |
 | `--max-retries` | `1` | 瞬时错误重试次数，范围 `0` 到 `2` |
 | `--backoff-base` | `1200` | 指数退避基准延迟，单位毫秒 |
 
@@ -232,7 +232,7 @@ style 元数据：
   - 处理：检查错误输出，适当降低 `-c`，或缩短 prompt 后重试。
 - 批量链路偶发超时或网络抖动：
   - 原因：provider 瞬时错误、网络抖动、响应超时。
-  - 处理：统一入口、单图 CLI 和批量 CLI 都支持 `--max-retries 1 --timeout 300000 --backoff-base 1200`。
+  - 处理：统一入口、单图 CLI 和批量 CLI 都支持 `--max-retries 1 --timeout 600000 --backoff-base 1200`。
   - 批量 CLI 执行后可查看 `*.summary.json` 中的 `retried` 和每项 `retryCount`。
 - 错误提示前缀如 `[input]` / `[config]` / `[style]` / `[provider]` / `[network]` / `[export]`：
   - 含义：表示错误分类，便于快速判断是参数问题、配置问题还是网络/导出问题。

@@ -33,7 +33,7 @@ const SMART_CLI_SPECS: CliOptionSpec[] = [
   { name: "model", type: "string" },
   { name: "size", type: "string", choices: SIZES },
   { name: "output-dir", type: "string" },
-  { name: "timeout", type: "integer", min: 1000, defaultValue: 300_000 },
+  { name: "timeout", type: "integer", min: 1000, defaultValue: 600_000 },
   { name: "max-retries", type: "integer", min: 0, max: 2, defaultValue: 1 },
   { name: "backoff-base", type: "integer", min: 100, defaultValue: 1_200 },
 ];
@@ -73,7 +73,7 @@ Options:
   --model <name>          Override the provider default model
   --size <size>           ${SIZES.join(" | ")} (default: 2k)
   --output-dir <path>     Output directory (default: input file directory or cwd)
-  --timeout <ms>          Per-image timeout in ms (default: 300000)
+  --timeout <ms>          Per-image timeout in ms (default: 600000)
   --max-retries <n>       Retry transient failures (0-2, default: 1)
   --backoff-base <ms>     Retry backoff base delay in ms (default: 1200)
   -h, --help              Show this help

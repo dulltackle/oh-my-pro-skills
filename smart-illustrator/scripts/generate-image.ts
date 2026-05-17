@@ -64,7 +64,7 @@ const GENERATE_CLI_SPECS: CliOptionSpec[] = [
   { name: "ref", aliases: ["-r", "--reference"], type: "string", repeatable: true },
   { name: "ignore-missing-ref", type: "boolean" },
   { name: "candidates", aliases: ["-c"], type: "integer", min: 1, max: 4 },
-  { name: "timeout", type: "integer", min: 1000, defaultValue: 300_000 },
+  { name: "timeout", type: "integer", min: 1000, defaultValue: 600_000 },
   { name: "max-retries", type: "integer", min: 0, max: 2, defaultValue: 1 },
   { name: "backoff-base", type: "integer", min: 100, defaultValue: 1_200 },
   { name: "save-config", type: "boolean" },
@@ -118,7 +118,7 @@ Options:
   --provider <provider>     API provider: tuzi (default) or tuzi-openai
   --size <size>             Image size: 2k (2048px, default) or default (~1.4K)
   -a, --aspect-ratio <ratio>  Aspect ratio: 1:1, 3:4, 4:3, 9:16, 16:9, 21:9, etc.
-  --timeout <ms>            Per-image timeout in ms (default: 300000)
+  --timeout <ms>            Per-image timeout in ms (default: 600000)
   --max-retries <n>         Retry transient failures (0-2, default: 1)
   --backoff-base <ms>       Retry backoff base delay in ms (default: 1200)
   -h, --help                Show this help

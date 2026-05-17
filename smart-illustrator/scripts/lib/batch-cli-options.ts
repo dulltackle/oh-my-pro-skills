@@ -21,7 +21,7 @@ const BATCH_CLI_SPECS: CliOptionSpec[] = [
   { name: "ref", aliases: ["--reference"], type: "string", repeatable: true },
   { name: "ignore-missing-ref", type: "boolean" },
   { name: "delay", aliases: ["-d"], type: "integer", min: 0, defaultValue: 2000 },
-  { name: "timeout", type: "integer", min: 1000, defaultValue: 300_000 },
+  { name: "timeout", type: "integer", min: 1000, defaultValue: 600_000 },
   { name: "max-retries", type: "integer", min: 0, max: 2, defaultValue: 1 },
   { name: "backoff-base", type: "integer", min: 100, defaultValue: 1_200 },
   { name: "prefix", aliases: ["-p"], type: "string" },
@@ -64,7 +64,7 @@ Options:
   --ref <path>              Reference image for style (can use multiple, max 3)
   --ignore-missing-ref      Skip unreadable --ref paths instead of failing
   -d, --delay <ms>          Delay between requests in ms (default: 2000)
-  --timeout <ms>            Per-image timeout in ms (default: 300000)
+  --timeout <ms>            Per-image timeout in ms (default: 600000)
   --max-retries <n>         Retry transient failures (0-2, default: 1)
   --backoff-base <ms>       Retry backoff base delay in ms (default: 1200)
   -p, --prefix <text>       Filename prefix (default: from config filename)

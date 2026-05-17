@@ -30,7 +30,7 @@ export interface RetryResult<T> {
 
 const DEFAULT_POLICY: RetryPolicy = {
   maxRetries: 1,
-  timeoutMs: 300_000,
+  timeoutMs: 600_000,
   backoffBaseMs: 1_200,
   backoffMaxMs: 12_000,
 };

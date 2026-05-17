@@ -118,7 +118,7 @@ fi
 - provider 瞬时错误或网络抖动：
   - 统一入口、单图 CLI 和批量 CLI 都支持内建重试参数：
     - `--max-retries 0|1|2`：瞬时错误重试次数（默认 `1`）
-    - `--timeout <ms>`：单图超时（默认 `300000`）
+    - `--timeout <ms>`：单图超时（默认 `600000`）
     - `--backoff-base <ms>`：指数退避基数（默认 `1200`）
 - 批量生成失败需要可恢复重跑：
   - 每次执行会输出 `*.summary.json`，其中包含 `generated/skipped/failed/retried` 统计和每个条目的 `retryCount`。
