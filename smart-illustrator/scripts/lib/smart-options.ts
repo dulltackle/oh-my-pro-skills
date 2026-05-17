@@ -33,7 +33,7 @@ const SMART_CLI_SPECS: CliOptionSpec[] = [
   { name: "model", type: "string" },
   { name: "size", type: "string", choices: SIZES },
   { name: "output-dir", type: "string" },
-  { name: "timeout", type: "integer", min: 1000, defaultValue: 45_000 },
+  { name: "timeout", type: "integer", min: 1000, defaultValue: 300_000 },
   { name: "max-retries", type: "integer", min: 0, max: 2, defaultValue: 1 },
   { name: "backoff-base", type: "integer", min: 100, defaultValue: 1_200 },
 ];
@@ -50,8 +50,8 @@ export function printSmartUsage(): never {
 Smart Illustrator CLI
 
 Usage:
-  node --import tsx scripts/smart-illustrator.ts <input.md> [options]
-  node --import tsx scripts/smart-illustrator.ts --mode cover --topic "主题" [options]
+  npx --yes tsx scripts/smart-illustrator.ts <input.md> [options]
+  npx --yes tsx scripts/smart-illustrator.ts --mode cover --topic "主题" [options]
 
 Modes:
   article                 Generate article illustrations and an optional cover
@@ -73,15 +73,15 @@ Options:
   --model <name>          Override the provider default model
   --size <size>           ${SIZES.join(" | ")} (default: 2k)
   --output-dir <path>     Output directory (default: input file directory or cwd)
-  --timeout <ms>          Per-image timeout in ms (default: 45000)
+  --timeout <ms>          Per-image timeout in ms (default: 300000)
   --max-retries <n>       Retry transient failures (0-2, default: 1)
   --backoff-base <ms>     Retry backoff base delay in ms (default: 1200)
   -h, --help              Show this help
 
 Examples:
-  node --import tsx scripts/smart-illustrator.ts article.md
-  node --import tsx scripts/smart-illustrator.ts article.md --mode slides --prompt-only
-  node --import tsx scripts/smart-illustrator.ts --mode cover --topic "AI 工作流" --platform youtube
+  npx --yes tsx scripts/smart-illustrator.ts article.md
+  npx --yes tsx scripts/smart-illustrator.ts article.md --mode slides --prompt-only
+  npx --yes tsx scripts/smart-illustrator.ts --mode cover --topic "AI 工作流" --platform youtube
 `);
   process.exit(0);
 }

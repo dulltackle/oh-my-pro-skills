@@ -4,11 +4,11 @@
  * Image Generation Script (Tuzi API / Tuzi OpenAI API)
  *
  * Usage:
- *   node --import tsx ~/.claude/skills/smart-illustrator/scripts/generate-image.ts --prompt "A cute cat" --output cat.png
- *   node --import tsx ~/.claude/skills/smart-illustrator/scripts/generate-image.ts --prompt-file prompt.md --output image.png
+ *   npx --yes tsx ~/.claude/skills/smart-illustrator/scripts/generate-image.ts --prompt "A cute cat" --output cat.png
+ *   npx --yes tsx ~/.claude/skills/smart-illustrator/scripts/generate-image.ts --prompt-file prompt.md --output image.png
  *
  * Style-lock (reference images):
- *   node --import tsx generate-image.ts --prompt "..." --ref style-ref.png --output image.png
+ *   npx --yes tsx generate-image.ts --prompt "..." --ref style-ref.png --output image.png
  *
  * Environment:
  *   TUZI_API_KEY - Tuzi API key (Google-compatible and OpenAI-compatible endpoints)
@@ -64,7 +64,7 @@ const GENERATE_CLI_SPECS: CliOptionSpec[] = [
   { name: "ref", aliases: ["-r", "--reference"], type: "string", repeatable: true },
   { name: "ignore-missing-ref", type: "boolean" },
   { name: "candidates", aliases: ["-c"], type: "integer", min: 1, max: 4 },
-  { name: "timeout", type: "integer", min: 1000, defaultValue: 45_000 },
+  { name: "timeout", type: "integer", min: 1000, defaultValue: 300_000 },
   { name: "max-retries", type: "integer", min: 0, max: 2, defaultValue: 1 },
   { name: "backoff-base", type: "integer", min: 100, defaultValue: 1_200 },
   { name: "save-config", type: "boolean" },
@@ -107,8 +107,8 @@ function printUsage(): never {
 Image Generation Script (Tuzi API / Tuzi OpenAI API)
 
 Usage:
-  node --import tsx generate-image.ts --prompt "description" --output image.png
-  node --import tsx generate-image.ts --prompt-file prompt.md --output image.png
+  npx --yes tsx generate-image.ts --prompt "description" --output image.png
+  npx --yes tsx generate-image.ts --prompt-file prompt.md --output image.png
 
 Options:
   -p, --prompt <text>       Image description
@@ -118,7 +118,7 @@ Options:
   --provider <provider>     API provider: tuzi (default) or tuzi-openai
   --size <size>             Image size: 2k (2048px, default) or default (~1.4K)
   -a, --aspect-ratio <ratio>  Aspect ratio: 1:1, 3:4, 4:3, 9:16, 16:9, 21:9, etc.
-  --timeout <ms>            Per-image timeout in ms (default: 45000)
+  --timeout <ms>            Per-image timeout in ms (default: 300000)
   --max-retries <n>         Retry transient failures (0-2, default: 1)
   --backoff-base <ms>       Retry backoff base delay in ms (default: 1200)
   -h, --help                Show this help
@@ -146,19 +146,19 @@ Models:
 
 Examples:
   # Using Tuzi API (default)
-  TUZI_API_KEY=xxx node --import tsx generate-image.ts -p "A futuristic city" -o city.png
+  TUZI_API_KEY=xxx npx --yes tsx generate-image.ts -p "A futuristic city" -o city.png
 
   # Using Tuzi OpenAI-compatible Images API
-  TUZI_API_KEY=xxx node --import tsx generate-image.ts -p "A cute rabbit racing" -o rabbit.png --provider tuzi-openai
+  TUZI_API_KEY=xxx npx --yes tsx generate-image.ts -p "A cute rabbit racing" -o rabbit.png --provider tuzi-openai
 
   # From prompt file
-  node --import tsx generate-image.ts -f illustration-prompt.md -o illustration.png
+  npx --yes tsx generate-image.ts -f illustration-prompt.md -o illustration.png
 
   # With style reference (style-lock)
-  TUZI_API_KEY=xxx node --import tsx generate-image.ts -p "A tech diagram" -r style-ref.png -o output.png
+  TUZI_API_KEY=xxx npx --yes tsx generate-image.ts -p "A tech diagram" -r style-ref.png -o output.png
 
   # Generate 2 candidates for quality selection
-  node --import tsx generate-image.ts -p "A tech diagram" -c 2 -o output.png
+  npx --yes tsx generate-image.ts -p "A tech diagram" -c 2 -o output.png
 `);
   process.exit(0);
 }

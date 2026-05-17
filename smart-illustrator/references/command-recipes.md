@@ -22,13 +22,13 @@ npm install
 
 ```bash
 # 统一入口：文章配图
-node --import tsx scripts/smart-illustrator.ts article.md
+npx --yes tsx scripts/smart-illustrator.ts article.md
 
 # 统一入口：slides prompt-only
-node --import tsx scripts/smart-illustrator.ts script.md --mode slides --prompt-only
+npx --yes tsx scripts/smart-illustrator.ts script.md --mode slides --prompt-only
 
 # 统一入口：topic 直出封面
-node --import tsx scripts/smart-illustrator.ts --mode cover --topic "AI 工作流" --platform youtube
+npx --yes tsx scripts/smart-illustrator.ts --mode cover --topic "AI 工作流" --platform youtube
 ```
 
 ## 底层脚本命令模板
@@ -42,7 +42,7 @@ cat > /tmp/image-prompt.txt <<'EOF'
 **内容**：{配图描述}
 EOF
 
-node --import tsx scripts/generate-image.ts \
+npx --yes tsx scripts/generate-image.ts \
   --prompt-file /tmp/image-prompt.txt \
   --output article-image-01.png \
   --aspect-ratio 16:9
@@ -59,7 +59,7 @@ cat > /tmp/cover-prompt.txt <<'EOF'
 - 视觉隐喻：{设计方向}
 EOF
 
-node --import tsx scripts/generate-image.ts \
+npx --yes tsx scripts/generate-image.ts \
   --prompt-file /tmp/cover-prompt.txt \
   --output article-cover.png \
   --aspect-ratio 16:9
@@ -118,7 +118,7 @@ fi
 - provider 瞬时错误或网络抖动：
   - 统一入口、单图 CLI 和批量 CLI 都支持内建重试参数：
     - `--max-retries 0|1|2`：瞬时错误重试次数（默认 `1`）
-    - `--timeout <ms>`：单图超时（默认 `45000`）
+    - `--timeout <ms>`：单图超时（默认 `300000`）
     - `--backoff-base <ms>`：指数退避基数（默认 `1200`）
 - 批量生成失败需要可恢复重跑：
   - 每次执行会输出 `*.summary.json`，其中包含 `generated/skipped/failed/retried` 统计和每个条目的 `retryCount`。

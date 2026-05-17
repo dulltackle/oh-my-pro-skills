@@ -166,13 +166,13 @@ describe("response extractors", () => {
 });
 
 describe("resolveProviderAndKey", () => {
-  it("uses tuzi when TUZI_API_KEY is present", () => {
+  it("defaults to tuzi-openai when TUZI_API_KEY is present", () => {
     const result = resolveProviderAndKey({
       keys: {
         tuzi: "tz",
       },
     });
-    expect(result.provider).toBe("tuzi");
+    expect(result.provider).toBe("tuzi-openai");
     expect(result.apiKey).toBe("tz");
   });
 

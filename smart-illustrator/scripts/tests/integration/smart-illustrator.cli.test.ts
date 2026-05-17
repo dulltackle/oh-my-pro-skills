@@ -167,6 +167,7 @@ Slides should not use a cover-only style.`,
 
     await runCli([inputPath], {
       TUZI_API_BASE: server.baseUrl,
+      TUZI_OPENAI_API_BASE: server.baseUrl,
       TUZI_API_KEY: "tz-key",
     });
 
@@ -199,6 +200,7 @@ Slides should not use a cover-only style.`,
 
     await runCli([inputPath], {
       TUZI_API_BASE: server.baseUrl,
+      TUZI_OPENAI_API_BASE: server.baseUrl,
       TUZI_API_KEY: "tz-key",
     });
 
@@ -231,6 +233,7 @@ Slides should not use a cover-only style.`,
       ],
       {
         TUZI_API_BASE: server.baseUrl,
+        TUZI_OPENAI_API_BASE: server.baseUrl,
         TUZI_API_KEY: "tz-key",
       },
       workDir,
@@ -254,6 +257,7 @@ Slides should not use a cover-only style.`,
       ],
       {
         TUZI_API_BASE: server.baseUrl,
+        TUZI_OPENAI_API_BASE: server.baseUrl,
         TUZI_API_KEY: "tz-key",
       },
       workDir,
@@ -302,6 +306,7 @@ Slides should not use a cover-only style.`,
       ["article.md", "--mode", "cover"],
       {
         TUZI_API_BASE: server.baseUrl,
+        TUZI_OPENAI_API_BASE: server.baseUrl,
         TUZI_API_KEY: "tz-key",
       },
       workDir,
@@ -343,6 +348,7 @@ Slides should not use a cover-only style.`,
       ],
       {
         TUZI_API_BASE: server.baseUrl,
+        TUZI_OPENAI_API_BASE: server.baseUrl,
         TUZI_API_KEY: "tz-key",
       },
     );
@@ -373,6 +379,7 @@ Slides should not use a cover-only style.`,
       ],
       {
         TUZI_API_BASE: server.baseUrl,
+        TUZI_OPENAI_API_BASE: server.baseUrl,
         TUZI_API_KEY: "tz-key",
       },
     );

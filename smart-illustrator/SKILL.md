@@ -46,7 +46,7 @@ description: 为 Markdown 文章、讲稿或主题生成真实配图、信息图
 
 - 在技能根目录执行脚本，统一使用相对路径。
 - 主要命令：
-  - `node --import tsx scripts/smart-illustrator.ts ...`
+  - `npx --yes tsx scripts/smart-illustrator.ts ...`
 - 底层脚本保留：
   - `scripts/generate-image.ts`：单图底层生成
   - `scripts/batch-generate.ts`：直接消费 batch JSON

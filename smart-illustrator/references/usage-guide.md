@@ -23,7 +23,7 @@
 统一入口命令：
 
 ```bash
-node --import tsx scripts/smart-illustrator.ts ...
+npx --yes tsx scripts/smart-illustrator.ts ...
 ```
 
 当前高层 CLI 已落地的参数如下：
@@ -42,7 +42,7 @@ node --import tsx scripts/smart-illustrator.ts ...
 | `--provider` | 自动探测 | 底层 API provider：`tuzi` / `tuzi-openai` |
 | `--model` | provider 默认值 | 覆盖底层模型 |
 | `--output-dir` | 输入文件目录 | 指定输出目录 |
-| `--timeout` | `45000` | 单张图片生成超时时间，单位毫秒 |
+| `--timeout` | `300000` | 单张图片生成超时时间，单位毫秒 |
 | `--max-retries` | `1` | 瞬时错误重试次数，范围 `0` 到 `2` |
 | `--backoff-base` | `1200` | 指数退避基准延迟，单位毫秒 |
 
@@ -61,15 +61,15 @@ node --import tsx scripts/smart-illustrator.ts ...
 
 ```bash
 # 最小命令：生成正文配图 + 封面
-node --import tsx scripts/smart-illustrator.ts path/to/article.md
+npx --yes tsx scripts/smart-illustrator.ts path/to/article.md
 
 # 只输出 prompt
-node --import tsx scripts/smart-illustrator.ts path/to/article.md --prompt-only
+npx --yes tsx scripts/smart-illustrator.ts path/to/article.md --prompt-only
 
 # 常见变体
-node --import tsx scripts/smart-illustrator.ts path/to/article.md --style dark
-node --import tsx scripts/smart-illustrator.ts path/to/article.md --no-cover
-node --import tsx scripts/smart-illustrator.ts path/to/article.md --ref ./brand-ref.png -c 2
+npx --yes tsx scripts/smart-illustrator.ts path/to/article.md --style dark
+npx --yes tsx scripts/smart-illustrator.ts path/to/article.md --no-cover
+npx --yes tsx scripts/smart-illustrator.ts path/to/article.md --ref ./brand-ref.png -c 2
 ```
 
 当前最小闭环：
@@ -82,10 +82,10 @@ node --import tsx scripts/smart-illustrator.ts path/to/article.md --ref ./brand-
 
 ```bash
 # 最小命令：按脚本拆成多张独立信息图
-node --import tsx scripts/smart-illustrator.ts path/to/script.md --mode slides
+npx --yes tsx scripts/smart-illustrator.ts path/to/script.md --mode slides
 
 # 只输出 JSON prompt
-node --import tsx scripts/smart-illustrator.ts path/to/script.md --mode slides --prompt-only
+npx --yes tsx scripts/smart-illustrator.ts path/to/script.md --mode slides --prompt-only
 ```
 
 行为约束：
@@ -98,10 +98,10 @@ node --import tsx scripts/smart-illustrator.ts path/to/script.md --mode slides -
 
 ```bash
 # 基于文章生成封面
-node --import tsx scripts/smart-illustrator.ts path/to/article.md --mode cover --platform youtube
+npx --yes tsx scripts/smart-illustrator.ts path/to/article.md --mode cover --platform youtube
 
 # 无文章输入时，必须提供 --topic
-node --import tsx scripts/smart-illustrator.ts --mode cover --platform wechat --topic "产品设计方法论"
+npx --yes tsx scripts/smart-illustrator.ts --mode cover --platform wechat --topic "产品设计方法论"
 ```
 
 ## slides 模式 JSON 规范
@@ -232,7 +232,7 @@ style 元数据：
   - 处理：检查错误输出，适当降低 `-c`，或缩短 prompt 后重试。
 - 批量链路偶发超时或网络抖动：
   - 原因：provider 瞬时错误、网络抖动、响应超时。
-  - 处理：统一入口、单图 CLI 和批量 CLI 都支持 `--max-retries 1 --timeout 45000 --backoff-base 1200`。
+  - 处理：统一入口、单图 CLI 和批量 CLI 都支持 `--max-retries 1 --timeout 300000 --backoff-base 1200`。
   - 批量 CLI 执行后可查看 `*.summary.json` 中的 `retried` 和每项 `retryCount`。
 - 错误提示前缀如 `[input]` / `[config]` / `[style]` / `[provider]` / `[network]` / `[export]`：
   - 含义：表示错误分类，便于快速判断是参数问题、配置问题还是网络/导出问题。

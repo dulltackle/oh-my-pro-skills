@@ -82,35 +82,41 @@ async function startPartialFailureServer(): Promise<MockApiServer> {
       });
 
       requestCount += 1;
+      const isOpenai = (req.url || "").includes("/images/");
+
       if (requestCount === 2) {
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end(
-          JSON.stringify({
-            candidates: [
-              {
-                content: {
-                  parts: [{ text: "no image returned" }],
+          JSON.stringify(
+            isOpenai
+              ? { data: [{ text: "no image returned" }] }
+              : {
+                  candidates: [
+                    { content: { parts: [{ text: "no image returned" }] } },
+                  ],
                 },
-              },
-            ],
-          }),
+          ),
         );
         return;
       }
 
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(
-        JSON.stringify({
-          candidates: [
-            {
-              content: {
-                parts: [
-                  { inlineData: { mimeType: "image/png", data: PNG_BASE64 } },
+        JSON.stringify(
+          isOpenai
+            ? { data: [{ b64_json: PNG_BASE64 }], output_format: "png" }
+            : {
+                candidates: [
+                  {
+                    content: {
+                      parts: [
+                        { inlineData: { mimeType: "image/png", data: PNG_BASE64 } },
+                      ],
+                    },
+                  },
                 ],
               },
-            },
-          ],
-        }),
+        ),
       );
     },
   );
@@ -158,6 +164,7 @@ describe("batch-generate CLI integration", () => {
       ["--config", configPath, "--output-dir", outputDir, "--delay", "0"],
       {
         TUZI_API_BASE: server.baseUrl,
+        TUZI_OPENAI_API_BASE: server.baseUrl,
         TUZI_API_KEY: "tz-key",
       },
     );
@@ -208,6 +215,7 @@ describe("batch-generate CLI integration", () => {
 
     const env = {
       TUZI_API_BASE: server.baseUrl,
+      TUZI_OPENAI_API_BASE: server.baseUrl,
       TUZI_API_KEY: "tz-key",
     };
 
@@ -289,6 +297,7 @@ describe("batch-generate CLI integration", () => {
       ],
       {
         TUZI_API_BASE: server.baseUrl,
+        TUZI_OPENAI_API_BASE: server.baseUrl,
         TUZI_API_KEY: "tz-key",
       },
     );
@@ -349,6 +358,7 @@ describe("batch-generate CLI integration", () => {
       ],
       {
         TUZI_API_BASE: server.baseUrl,
+        TUZI_OPENAI_API_BASE: server.baseUrl,
         TUZI_API_KEY: "tz-key",
       },
     );
@@ -383,6 +393,7 @@ describe("batch-generate CLI integration", () => {
       ["--config", configPath, "--delay", "0"],
       {
         TUZI_API_BASE: server.baseUrl,
+        TUZI_OPENAI_API_BASE: server.baseUrl,
         TUZI_API_KEY: "tz-key",
       },
     );
@@ -411,6 +422,7 @@ describe("batch-generate CLI integration", () => {
       ["--config", configPath, "--delay", "0"],
       {
         TUZI_API_BASE: server.baseUrl,
+        TUZI_OPENAI_API_BASE: server.baseUrl,
         TUZI_API_KEY: "tz-key",
       },
     );
@@ -437,6 +449,7 @@ describe("batch-generate CLI integration", () => {
       ["--config", missingPicturesPath, "--delay", "0"],
       {
         TUZI_API_BASE: server.baseUrl,
+        TUZI_OPENAI_API_BASE: server.baseUrl,
         TUZI_API_KEY: "tz-key",
       },
     );
@@ -449,6 +462,7 @@ describe("batch-generate CLI integration", () => {
       ["--config", emptyPicturesPath, "--delay", "0"],
       {
         TUZI_API_BASE: server.baseUrl,
+        TUZI_OPENAI_API_BASE: server.baseUrl,
         TUZI_API_KEY: "tz-key",
       },
     );
@@ -491,6 +505,7 @@ describe("batch-generate CLI integration", () => {
         ["--config", configPath, "--delay", "0", ...args],
         {
           TUZI_API_BASE: server.baseUrl,
+          TUZI_OPENAI_API_BASE: server.baseUrl,
           TUZI_API_KEY: "tz-key",
         },
       );
@@ -505,6 +520,7 @@ describe("batch-generate CLI integration", () => {
       ["--config", configPath, "--delay", "0", "--regenerate", "3"],
       {
         TUZI_API_BASE: server.baseUrl,
+        TUZI_OPENAI_API_BASE: server.baseUrl,
         TUZI_API_KEY: "tz-key",
       },
     );
@@ -535,6 +551,7 @@ describe("batch-generate CLI integration", () => {
       ["--config", configPath, "--delay", "0"],
       {
         TUZI_API_BASE: server.baseUrl,
+        TUZI_OPENAI_API_BASE: server.baseUrl,
         TUZI_API_KEY: "tz-key",
       },
     );
@@ -570,13 +587,14 @@ describe("batch-generate CLI integration", () => {
       ],
       {
         TUZI_API_BASE: server.baseUrl,
+        TUZI_OPENAI_API_BASE: server.baseUrl,
         TUZI_API_KEY: "tz-key",
       },
     );
 
     expect(stdout).toContain("Complete: 1/2 succeeded, 1 failed");
     expect(stdout).toContain("Failed items:");
-    expect(stdout).toContain("- [2] Flow: No image generated");
+    expect(stdout).toContain("- [2] Flow: Tuzi OpenAI API did not return an image.");
     expect(stdout).toContain("Retry command:");
     expect(stdout).toContain("--regenerate 2");
 
@@ -593,7 +611,7 @@ describe("batch-generate CLI integration", () => {
       expect.objectContaining({
         id: 2,
         status: "failed",
-        error: "No image generated",
+        error: "Tuzi OpenAI API did not return an image.",
         retryCount: 0,
       }),
     ]);
