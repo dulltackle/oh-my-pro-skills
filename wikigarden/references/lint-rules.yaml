@@ -1,0 +1,83 @@
+# Lint 评分规则（单一数据源）
+#
+# 本文件是 Lint 报告评分的权威定义。
+# healthcheck.py 读取此文件驱动检查和计分，maintenance.md 引用此文件。
+# 如需调整维度、阈值或扣分值，只需修改本文件。
+
+dimensions:
+  consistency:
+    name: 一致性
+    max_score: 5
+    min_score: 1
+    deductions:
+      - name: 术语表缺失
+        penalty: 1
+        check: glossary_missing
+      - name: 空页面
+        penalty_per_item: 1
+        check: empty_pages
+  completeness:
+    name: 完整性
+    max_score: 5
+    min_score: 1
+    deductions:
+      - name: index 缺失
+        penalty: 2
+        check: index_missing
+      - name: 悬空链接
+        penalty: 1
+        check: broken_links
+      - name: "摘要覆盖率 <50%"
+        penalty: 1
+        check: summary_coverage_low
+  structure:
+    name: 结构
+    max_score: 5
+    min_score: 1
+    deductions:
+      - name: 过大页面
+        penalty: 1
+        check: large_pages
+        threshold: 200
+      - name: 孤儿页面
+        penalty: 0
+        check: orphan_pages
+  freshness:
+    name: 新鲜度
+    max_score: 5
+    min_score: 1
+    deductions:
+      - name: ">14 天未更新"
+        penalty: 1
+        check: stale_days
+        threshold: 14
+      - name: ">30 天未更新"
+        penalty: 2
+        check: stale_days
+        threshold: 30
+      - name: 有 pending 素材
+        penalty: 1
+        check: pending_raw
+  coverage:
+    name: 覆盖度
+    max_score: 5
+    min_score: 1
+    deductions:
+      - name: 概念/专题均为空
+        penalty: 2
+        check: concepts_and_topics_empty
+      - name: 无专题页
+        penalty: 1
+        check: no_topics
+      - name: 目录缺失
+        penalty: 1
+        check: coverage_dirs_missing
+
+render:
+  star_full: "⭐"
+  star_empty: "☆"
+  total_slots: 5
+  severity:
+    critical: "🔴"
+    warning: "🟡"
+    info: "ℹ️"
