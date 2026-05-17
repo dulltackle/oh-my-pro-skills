@@ -1,7 +1,7 @@
 {
   "light": {
     "file": "style-light.md",
-    "targets": ["article", "slides", "cover"],
+    "targets": ["article", "slides"],
     "defaultAspectRatio": "16:9"
   },
   "dark": {

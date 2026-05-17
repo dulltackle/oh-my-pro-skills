@@ -131,13 +131,15 @@ export async function handleArticleMode({
   options,
 }: ArtifactBuildContext): Promise<void> {
   const body = resolveModeAspectRatio("article", "body", options);
-  const cover = resolveModeAspectRatio("cover", "cover", options);
   const bodyStyle = await readStylePrompt(body.styleName);
-  const coverStyle = await readStylePrompt(cover.styleName);
+  const cover = options.noCover
+    ? null
+    : resolveModeAspectRatio("cover", "cover", { ...options, style: null });
+  const coverStyle = cover ? await readStylePrompt(cover.styleName) : null;
   const articleSections = buildArticleSections(markdown, articleTitle);
   const artifacts: GeneratedArtifact[] = [];
 
-  if (!options.noCover) {
+  if (cover && coverStyle) {
     artifacts.push({
       label: "cover",
       prompt: buildCoverPrompt(
@@ -168,13 +170,13 @@ export async function handleArticleMode({
     await writePromptBundle(join(outputDir, `${baseName}-article-prompts.json`), {
       mode: "article",
       articleTitle,
-      cover: options.noCover
-        ? null
-        : {
+      cover: cover
+        ? {
             output: `${baseName}-cover.png`,
             aspectRatio: cover.aspectRatio,
             prompt: artifacts[0]?.label === "cover" ? artifacts[0].prompt : null,
-          },
+          }
+        : null,
       illustrations: articleSections.map((section, index) => ({
         section: section.title,
         output: `${baseName}-image-${String(index + 1).padStart(2, "0")}.png`,

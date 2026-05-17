@@ -34,7 +34,7 @@ npx --yes tsx scripts/smart-illustrator.ts ...
 | `--platform` | `youtube` | 封面平台（主要用于 `cover`）：`youtube` / `wechat` / `twitter` / `xiaohongshu` / `landscape` |
 | `--topic` | - | 封面主题（`cover` 且无文章输入时必填） |
 | `--prompt-only` | `false` | 只输出 prompt，不调用图像 API |
-| `--style` | `light` | 风格：从 `styles/index.json` 读取；当前为 `light` / `dark` / `minimal` / `bento` / `cover` |
+| `--style` | 按目标自动选择 | 风格：从 `styles/index.json` 读取；正文/slides 默认 `light`，封面默认 `cover`；当前为 `light` / `dark` / `minimal` / `bento` / `cover` |
 | `--no-cover` | `false` | 不生成封面（仅 `article`） |
 | `--ref` | - | 参考图路径，可重复传入（如 `--ref a.png --ref b.png`） |
 | `-c, --candidates` | `1` | 候选图数量（最多 4） |
@@ -186,7 +186,7 @@ npx --yes tsx scripts/smart-illustrator.ts --mode cover --platform wechat --topi
 style 元数据：
 
 - `styles/index.json` 是 style 的单一事实来源，负责声明文件名、适用模式和默认宽高比。
-- 当前默认规则：正文默认 `light`，封面也默认 `light`。
+- 当前默认规则：正文/slides 默认 `light`，封面默认 `cover`。
 - 新增 style 时，优先修改 `styles/index.json`，而不是在脚本和文档里重复补硬编码映射。
 - 文档中的平台和 style 列表应随 CLI help、`scripts/lib/cli-metadata.ts` 和 `styles/index.json` 同步；发现不一致时，以代码和 index 为准，再更新文档。
 

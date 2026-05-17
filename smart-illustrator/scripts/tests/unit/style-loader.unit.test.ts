@@ -19,7 +19,7 @@ describe("style-loader", () => {
     expect(STYLE_NAMES).toEqual(["light", "dark", "minimal", "bento", "cover"]);
     expect(getStyleMetadata("light")).toMatchObject({
       file: "style-light.md",
-      targets: ["article", "slides", "cover"],
+      targets: ["article", "slides"],
       defaultAspectRatio: "16:9",
     });
     expect(getStyleMetadata("cover")).toMatchObject({
@@ -37,8 +37,8 @@ describe("style-loader", () => {
   it("keeps default style resolution behavior for body and cover targets", () => {
     expect(resolveStyleName("article", null, "body")).toBe("light");
     expect(resolveStyleName("slides", null, "body")).toBe("light");
-    expect(resolveStyleName("article", null, "cover")).toBe("light");
-    expect(resolveStyleName("cover", null, "cover")).toBe("light");
+    expect(resolveStyleName("article", null, "cover")).toBe("cover");
+    expect(resolveStyleName("cover", null, "cover")).toBe("cover");
     expect(resolveStyleName("cover", "dark", "cover")).toBe("dark");
   });
 
