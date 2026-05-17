@@ -186,7 +186,7 @@ npx --yes tsx scripts/smart-illustrator.ts --mode cover --platform wechat --topi
 style 元数据：
 
 - `styles/index.json` 是 style 的单一事实来源，负责声明文件名、适用模式和默认宽高比。
-- 当前默认规则保持不变：正文默认 `light`，封面默认 `cover`。
+- 当前默认规则：正文默认 `light`，封面也默认 `light`。
 - 新增 style 时，优先修改 `styles/index.json`，而不是在脚本和文档里重复补硬编码映射。
 - 文档中的平台和 style 列表应随 CLI help、`scripts/lib/cli-metadata.ts` 和 `styles/index.json` 同步；发现不一致时，以代码和 index 为准，再更新文档。
 

@@ -37,8 +37,8 @@ describe("style-loader", () => {
   it("keeps default style resolution behavior for body and cover targets", () => {
     expect(resolveStyleName("article", null, "body")).toBe("light");
     expect(resolveStyleName("slides", null, "body")).toBe("light");
-    expect(resolveStyleName("article", null, "cover")).toBe("cover");
-    expect(resolveStyleName("cover", null, "cover")).toBe("cover");
+    expect(resolveStyleName("article", null, "cover")).toBe("light");
+    expect(resolveStyleName("cover", null, "cover")).toBe("light");
     expect(resolveStyleName("cover", "dark", "cover")).toBe("dark");
   });
 

@@ -68,8 +68,7 @@ export function resolveStyleName(
     return provided;
   }
 
-  const preferred: StyleName =
-    (target === "cover" || mode === "cover") ? "cover" : "light";
+  const preferred: StyleName = "light";
   if (getStyleMetadata(preferred).targets.includes(mode)) {
     return preferred;
   }
