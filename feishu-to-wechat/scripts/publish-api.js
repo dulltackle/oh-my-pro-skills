@@ -130,6 +130,7 @@ function parseArgs() {
     .option('--author <name>', '作者名')
     .option('--digest <text>', '文章摘要')
     .option('--dry-run', '仅测试，不创建草稿', false)
+    .option('--cover <path>', '封面图本地路径（上传为永久素材）')
     .option('--output <path>', '保存渲染后 HTML 到指定路径')
     .option('-h, --help', '显示帮助');
 
@@ -144,6 +145,7 @@ function parseArgs() {
     author: opts.author || null,
     digest: opts.digest || null,
     dryRun: !!opts.dryRun,
+    cover: opts.cover || null,
     output: opts.output || null,
     help: !!opts.help,
   };
@@ -443,12 +445,6 @@ async function main() {
 
     log.info(`标题: ${title}`);
     log.info(`图片占位符: ${imagePlaceholders.length} 个`);
-
-    // 保存渲染后的 HTML（调试用）
-    if (args.output) {
-      fs.writeFileSync(args.output, result.html, 'utf-8');
-      log.info(`渲染后的 HTML 已保存: ${args.output}`);
-    }
   }
 
   // ── 模式 B：直接提供 HTML ─────────────────────────
@@ -500,32 +496,49 @@ async function main() {
 
   try {
     // Step 1: 获取 Token
-    log.info('步骤 1/4: 获取 access_token...');
+    log.info('步骤 1/5: 获取 access_token...');
     const accessToken = await wechatApi.fetchAccessToken();
     log.info('✅ Token 获取成功');
 
-    // Step 2: 处理图片（上传到微信，替换占位符）
+    // Step 2: 上传封面图（如有）
+    let thumbMediaId = null;
+    if (args.cover) {
+      log.info(`步骤 2/5: 上传封面图: ${args.cover}`);
+      const coverResult = await wechatApi.uploadMaterial(args.cover);
+      thumbMediaId = coverResult.media_id;
+      log.info(`✅ 封面图上传成功: media_id=${thumbMediaId}`);
+    } else {
+      log.info('步骤 2/5: 无封面图，跳过');
+    }
+
+    // Step 3: 处理图片（上传到微信，替换占位符）
     if (imagePlaceholders.length > 0) {
-      log.info(`步骤 2/4: 处理图片 (${imagePlaceholders.length} 张)...`);
+      log.info(`步骤 3/5: 处理图片 (${imagePlaceholders.length} 张)...`);
       const imgResult = await processImages(htmlContent, imagePlaceholders);
       htmlContent = imgResult.html;
       log.info(`✅ 图片处理完成: ${imgResult.logs.filter(l => l.status === 'success').length} 成功, ${imgResult.logs.filter(l => l.status === 'error').length} 失败`);
+      // 保存最终 HTML（图片已替换为 CDN URL）
+      if (args.output) {
+        fs.writeFileSync(args.output, htmlContent, 'utf-8');
+        log.info(`最终 HTML（含 CDN 图片）已保存: ${args.output}`);
+      }
     } else {
-      log.info('步骤 2/4: 无需处理图片，跳过');
+      log.info('步骤 3/5: 无需处理图片，跳过');
     }
 
-    // Step 3: 创建草稿
-    log.info('步骤 3/4: 创建草稿...');
+    // Step 4: 创建草稿
+    log.info('步骤 4/5: 创建草稿...');
     const draftResult = await wechatApi.createDraft({
       title,
       content: htmlContent,
+      thumbMediaId,
       author: args.author,
       digest: args.digest,
     });
     log.info('✅ 草稿创建成功!');
 
-    // Step 4: 输出结果
-    log.info('步骤 4/4: 完成');
+    // Step 5: 输出结果
+    log.info('步骤 5/5: 完成');
     console.log(JSON.stringify({
       success: true,
       media_id: draftResult.media_id,
