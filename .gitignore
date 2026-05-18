@@ -1,3 +1,13 @@
 .codex
 lark*/
 node_modules
+
+# PPT Master: 第三方图标库（11,631 个 SVG，~48M）
+ppt-master/templates/icons/
+
+# PPT Master: 参考图片素材（~48M PNG）
+ppt-master/references/
+
+# Python 缓存
+__pycache__/
+*.pyc
