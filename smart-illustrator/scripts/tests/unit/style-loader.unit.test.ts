@@ -16,10 +16,22 @@ const stylesDir = resolve(
 
 describe("style-loader", () => {
   it("reads metadata from the shared style index", () => {
-    expect(STYLE_NAMES).toEqual(["light", "dark", "minimal", "bento", "cover"]);
+    expect(STYLE_NAMES).toEqual([
+      "light",
+      "light-cover",
+      "dark",
+      "minimal",
+      "bento",
+      "cover",
+    ]);
     expect(getStyleMetadata("light")).toMatchObject({
       file: "style-light.md",
       targets: ["article", "slides"],
+      defaultAspectRatio: "16:9",
+    });
+    expect(getStyleMetadata("light-cover")).toMatchObject({
+      file: "style-light-cover.md",
+      targets: ["article", "cover"],
       defaultAspectRatio: "16:9",
     });
     expect(getStyleMetadata("cover")).toMatchObject({
@@ -37,8 +49,8 @@ describe("style-loader", () => {
   it("keeps default style resolution behavior for body and cover targets", () => {
     expect(resolveStyleName("article", null, "body")).toBe("light");
     expect(resolveStyleName("slides", null, "body")).toBe("light");
-    expect(resolveStyleName("article", null, "cover")).toBe("cover");
-    expect(resolveStyleName("cover", null, "cover")).toBe("cover");
+    expect(resolveStyleName("article", null, "cover")).toBe("light-cover");
+    expect(resolveStyleName("cover", null, "cover")).toBe("light-cover");
     expect(resolveStyleName("cover", "dark", "cover")).toBe("dark");
   });
 

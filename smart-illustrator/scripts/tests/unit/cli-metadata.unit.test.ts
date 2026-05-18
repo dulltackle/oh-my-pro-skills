@@ -26,7 +26,14 @@ describe("cli-metadata", () => {
   });
 
   it("keeps style names aligned with the style index", () => {
-    expect(STYLE_NAMES).toEqual(["light", "dark", "minimal", "bento", "cover"]);
+    expect(STYLE_NAMES).toEqual([
+      "light",
+      "light-cover",
+      "dark",
+      "minimal",
+      "bento",
+      "cover",
+    ]);
     for (const styleName of STYLE_NAMES) {
       expect(ASPECT_RATIOS).toContain(getStyleMetadata(styleName).defaultAspectRatio);
     }

@@ -4,6 +4,11 @@
     "targets": ["article", "slides"],
     "defaultAspectRatio": "16:9"
   },
+  "light-cover": {
+    "file": "style-light-cover.md",
+    "targets": ["article", "cover"],
+    "defaultAspectRatio": "16:9"
+  },
   "dark": {
     "file": "style-dark.md",
     "targets": ["article", "slides", "cover"],
