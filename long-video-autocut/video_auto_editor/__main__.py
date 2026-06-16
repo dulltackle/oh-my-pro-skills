@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-"""Video Auto Editor v4.7 兼容入口。"""
+"""支持 python -m video_auto_editor 执行。"""
 
 from video_auto_editor.cli import main
 

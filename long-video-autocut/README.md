@@ -55,7 +55,7 @@ pip install openai-whisper
 Pass a **video file path**:
 
 ```bash
-python3 video_editor_auto_v4.6.py ./video.MTS ./output
+python3 -m video_auto_editor single ./video.MTS --output-dir ./output
 ```
 
 Output:
@@ -68,10 +68,10 @@ output/
 
 ### Scenario B: Batch + Deduplication + Concatenation
 
-Pass a **folder path** (automatically detected as batch mode):
+Pass a **folder path**:
 
 ```bash
-python3 video_editor_auto_v4.6.py ./Video ./output
+python3 -m video_auto_editor batch ./Video --output-dir ./output
 ```
 
 Output (only two files, intermediate files are cleaned up):
@@ -85,14 +85,16 @@ output/
 ### Command Format
 
 ```
-python3 video_editor_auto_v4.6.py <input> [output_dir] [work_dir]
+python3 -m video_auto_editor single <video_path> [--output-dir ./output] [--work-dir ./video_work]
+python3 -m video_auto_editor batch <input_dir> [--output-dir ./output] [--work-dir ./video_work]
 ```
 
 | Parameter | Description | Default |
 |------------|-------------|---------|
-| `<input>` | Video file path (Scenario A) or folder path (Scenario B) | Required |
-| `[output_dir]` | Output directory for clips and reports | `./output` |
-| `[work_dir]` | Temporary directory for intermediate files | `./video_work` |
+| `single <video_path>` | Process one video file (Scenario A) | Required |
+| `batch <input_dir>` | Process one folder of videos (Scenario B) | Required |
+| `--output-dir` | Output directory for clips and reports | `./output` |
+| `--work-dir` | Temporary directory for intermediate files | `./video_work` |
 
 Supported formats: `.MTS`, `.mp4`, `.mov`
 
@@ -118,15 +120,13 @@ Input directory → Process each video (Scenario A, no individual reports)
 
 ## 代码结构
 
-旧命令保持不变，具体实现已经拆分到 `video_auto_editor/` 下的小模块：
+命令入口和核心实现已经拆分到 `video_auto_editor/` 下的小模块：
 
 - `cli.py`：命令分发和 Scenario A/B 流程编排
 - `models.py`、`config.py`：共享数据结构和默认配置
 - `media.py`、`silence.py`、`transcript.py`：FFmpeg 操作、静音检测、Whisper 转写
 - `scoring.py`、`dedup.py`、`selection.py`：评分、去重、最终片段选择
 - `report.py`：Markdown 报告生成
-
-`video_editor_auto_v4.6.py` 保留为兼容入口。
 
 ---
 
@@ -256,8 +256,8 @@ Selection rule: Natural end > Adjusted score > Later filename (usually last take
 ## Project Structure
 
 ```
-video_editor_v4.6_release/
-├── video_editor_auto_v4.6.py   # Main script
+video_auto_editor/
+├── video_auto_editor/          # Core package and module CLI
 ├── README.md                   # This doc
 ├── CODE_DOCUMENTATION.md       # Technical doc (architecture, modules, API)
 ├── requirements.txt            # Python dependencies

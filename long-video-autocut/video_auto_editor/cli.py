@@ -1,10 +1,10 @@
 """命令行入口与单视频、批处理流程编排。"""
 
+import argparse
 import datetime
 import glob
 import os
 import shutil
-import sys
 
 from video_auto_editor.config import CONFIG
 from video_auto_editor.dedup import check_duplicate_content, cross_video_dedup
@@ -206,26 +206,41 @@ def _can_remove_work_dir(work_dir, output_dir):
     return common not in {work_abs, output_abs}
 
 
-def main(argv=None):
-    """兼容旧位置参数格式的命令行入口。"""
-    argv = sys.argv[1:] if argv is None else list(argv)
+def _add_common_output_args(parser):
+    parser.add_argument("--output-dir", default="./output", help="输出目录，默认 ./output")
+    parser.add_argument("--work-dir", default="./video_work", help="临时工作目录，默认 ./video_work")
 
-    if len(argv) >= 1 and os.path.isdir(argv[0]):
-        input_dir = argv[0]
-        output_dir = argv[1] if len(argv) > 1 else "./output"
-        work_dir = argv[2] if len(argv) > 2 else "./video_work"
-        os.makedirs(output_dir, exist_ok=True)
-        os.makedirs(work_dir, exist_ok=True)
-        process_batch(input_dir, output_dir, work_dir)
+
+def _build_parser():
+    parser = argparse.ArgumentParser(
+        prog="python -m video_auto_editor",
+        description="Video Auto Editor v4.7",
+    )
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    single_parser = subparsers.add_parser("single", help="处理单个视频")
+    single_parser.add_argument("video_path", help="输入视频文件路径")
+    _add_common_output_args(single_parser)
+
+    batch_parser = subparsers.add_parser("batch", help="批处理视频目录")
+    batch_parser.add_argument("input_dir", help="输入视频目录")
+    _add_common_output_args(batch_parser)
+
+    return parser
+
+
+def main(argv=None):
+    """模块命令入口，要求显式指定 single 或 batch 子命令。"""
+    args = _build_parser().parse_args(argv)
+
+    os.makedirs(args.output_dir, exist_ok=True)
+    os.makedirs(args.work_dir, exist_ok=True)
+
+    if args.command == "batch":
+        process_batch(args.input_dir, args.output_dir, args.work_dir)
         return
 
-    video_path = argv[0] if len(argv) > 0 else "02047.MTS"
-    output_dir = argv[1] if len(argv) > 1 else "./output"
-    work_dir = argv[2] if len(argv) > 2 else "./video_work"
-    os.makedirs(output_dir, exist_ok=True)
-    os.makedirs(work_dir, exist_ok=True)
-
-    clip = process_single_video(video_path, output_dir, work_dir)
+    clip = process_single_video(args.video_path, args.output_dir, args.work_dir)
     if clip:
         print(f"  Scenario A complete: {clip.clip_path}")
     else:

@@ -25,7 +25,7 @@
 ┌─────────────────────────────────────────────────┐
 │              Main Entry (main)                   │
 │  - Parse arguments                               │
-│  - Detect scenario: file=Scenario A, dir=Scenario B │
+│  - Require explicit subcommand: single or batch  │
 └────────────────┬────────────────────────────────┘
                  │
         ┌────────┴────────┐
@@ -58,7 +58,7 @@
 
 | # | Module | File | Function | Description |
 |---|--------|------|----------|-------------|
-| 1 | CLI orchestration | `video_auto_editor/cli.py` | `main()`, `process_single_video()`, `process_batch()` | 解析旧位置参数并运行 Scenario A/B |
+| 1 | CLI orchestration | `video_auto_editor/cli.py` | `main()`, `process_single_video()`, `process_batch()` | 解析 `single`/`batch` 子命令并运行 Scenario A/B |
 | 2 | Config / models | `config.py`, `models.py` | `CONFIG`, `Segment`, `ClipInfo` | 共享默认配置和数据结构 |
 | 3 | Silence detection | `silence.py` | `detect_silence()`, `identify_segments()` | FFmpeg 静音检测和非静音片段切分 |
 | 4 | Scoring | `scoring.py` | `score_segment()`, `analyze_fluency()`, `calculate_adjusted_score()` | 基础评分和转写文本调整分 |
@@ -68,7 +68,7 @@
 | 8 | FFmpeg ops | `media.py` | `get_video_duration()`, `clip_segment()`, `concat_videos()` | 获取时长、裁剪和拼接 |
 | 9 | Reports | `report.py` | `generate_single_report()`, `generate_batch_report()` | Markdown 报告生成 |
 
-`video_editor_auto_v4.6.py` 保留为薄兼容入口，并委托给 `video_auto_editor.cli.main()`。
+模块入口由 `video_auto_editor/__main__.py` 委托给 `video_auto_editor.cli.main()`，支持 `python -m video_auto_editor ...` 执行。
 
 ---
 
@@ -337,9 +337,14 @@ Final output: concatenated video + batch report only.
 def main() -> None
 ```
 
-Auto-detects scenario from first argument:
-- Directory → Scenario B
-- File → Scenario A
+Parses explicit module CLI commands:
+
+```bash
+python3 -m video_auto_editor single <video_path> [--output-dir ./output] [--work-dir ./video_work]
+python3 -m video_auto_editor batch <input_dir> [--output-dir ./output] [--work-dir ./video_work]
+```
+
+Missing subcommands or invalid arguments are handled by `argparse`.
 
 ---
 

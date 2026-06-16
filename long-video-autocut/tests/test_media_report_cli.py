@@ -2,6 +2,8 @@ import os
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
+
 from video_auto_editor import cli, media
 from video_auto_editor.models import ClipInfo, Segment
 from video_auto_editor.report import generate_batch_report, generate_single_report
@@ -118,7 +120,7 @@ def test_generate_batch_report_contains_dedup_and_total_duration(tmp_path):
     assert "**Total duration**: 30.0s (0.5min)" in content
 
 
-def test_main_dispatches_directory_to_batch(monkeypatch, tmp_path):
+def test_main_dispatches_batch_subcommand(monkeypatch, tmp_path):
     calls = []
 
     def fake_process_batch(input_dir, output_dir, work_dir):
@@ -126,12 +128,12 @@ def test_main_dispatches_directory_to_batch(monkeypatch, tmp_path):
 
     monkeypatch.setattr(cli, "process_batch", fake_process_batch)
 
-    cli.main([str(tmp_path), "out", "work"])
+    cli.main(["batch", str(tmp_path), "--output-dir", "out", "--work-dir", "work"])
 
     assert calls == [(str(tmp_path), "out", "work")]
 
 
-def test_main_dispatches_file_to_single(monkeypatch, tmp_path):
+def test_main_dispatches_single_subcommand(monkeypatch, tmp_path):
     calls = []
     video_path = tmp_path / "input.mp4"
     video_path.write_text("not real video", encoding="utf-8")
@@ -142,9 +144,15 @@ def test_main_dispatches_file_to_single(monkeypatch, tmp_path):
 
     monkeypatch.setattr(cli, "process_single_video", fake_process_single)
 
-    cli.main([str(video_path), "out", "work"])
+    cli.main(["single", str(video_path), "--output-dir", "out", "--work-dir", "work"])
 
     assert calls == [(str(video_path), "out", "work")]
+
+
+def test_main_requires_explicit_subcommand():
+    with pytest.raises(SystemExit) as exc_info:
+        cli.main([])
+    assert exc_info.value.code == 2
 
 
 def test_process_single_video_success_and_batch_mode(monkeypatch, tmp_path):
