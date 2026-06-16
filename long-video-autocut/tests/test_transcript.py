@@ -1,4 +1,3 @@
-import importlib.util
 import subprocess
 from pathlib import Path
 from types import SimpleNamespace
@@ -11,14 +10,6 @@ from video_auto_editor.transcript import TranscriptionResult, WhisperConfig, Whi
 
 def completed(returncode=0, stderr=""):
     return SimpleNamespace(returncode=returncode, stderr=stderr)
-
-
-def load_editor_script():
-    script_path = Path(__file__).resolve().parents[1] / "video_editor_auto_v4.6.py"
-    spec = importlib.util.spec_from_file_location("video_editor_auto_v4_6", script_path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
 
 
 def test_is_available_returns_true_when_whisper_help_succeeds(monkeypatch):
@@ -196,21 +187,19 @@ def test_whisper_success_returns_transcript_text(monkeypatch, tmp_path):
 
 
 def test_transcribe_candidates_skips_when_whisper_unavailable():
-    editor = load_editor_script()
     candidates = [SimpleNamespace(index=1, start_time=0, end_time=10, transcript="")]
 
     class FakeTranscriber:
         def is_available(self):
             return False
 
-    result = editor.transcribe_candidates("input.mov", candidates, "work", FakeTranscriber())
+    result = transcript.transcribe_candidates("input.mov", candidates, "work", FakeTranscriber())
 
     assert result is candidates
     assert candidates[0].transcript == ""
 
 
 def test_transcribe_candidates_continues_after_single_segment_failure():
-    editor = load_editor_script()
     candidates = [
         SimpleNamespace(index=1, start_time=0, end_time=10, transcript=""),
         SimpleNamespace(index=2, start_time=11, end_time=20, transcript=""),
@@ -225,7 +214,7 @@ def test_transcribe_candidates_continues_after_single_segment_failure():
                 return TranscriptionResult(success=False, error="failed")
             return TranscriptionResult(success=True, text="第二段")
 
-    editor.transcribe_candidates("input.mov", candidates, "work", FakeTranscriber())
+    transcript.transcribe_candidates("input.mov", candidates, "work", FakeTranscriber())
 
     assert candidates[0].transcript == ""
     assert candidates[1].transcript == "第二段"

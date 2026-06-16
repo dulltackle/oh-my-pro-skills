@@ -1,0 +1,25 @@
+"""全局默认配置。"""
+
+CONFIG = {
+    "silence_noise": -30,
+    "silence_duration": 0.8,
+    "min_score": 90,
+    "min_duration": 15,
+    "buffer_start": 1,
+    "buffer_end": 3,
+    "crf": 18,
+    "preset": "fast",
+    "audio_bitrate": "192k",
+    "penalty_repeat": 5,
+    "penalty_stutter": 3,
+    "penalty_interrupt": 10,
+    "bonus_natural_end": 5,
+    "bonus_completeness_max": 3,
+    "duplicate_threshold": 0.7,
+    "whisper_model": "small",
+    "whisper_language": "zh",
+    "whisper_timeout": 120,
+    "whisper_output_format": "txt",
+    "whisper_sample_rate": 16000,
+    "whisper_channels": 1,
+}

@@ -56,17 +56,19 @@
 
 ### Module List
 
-| # | Module | Function | Description |
-|---|--------|----------|-------------|
-| 1 | Silence detection | `detect_silence()` | FFmpeg silencedetect filter |
-| 2 | Segment identification | `identify_segments()` | Split non-silent intervals by silence |
-| 3 | Scoring | `score_segment()` + `_score_boundary()` | 4 dims × 25 pts = 100 |
-| 4 | Transcription | `WhisperTranscriber` + `transcribe_candidates()` | Whisper CLI 封装，支持失败降级 |
-| 5 | Fluency analysis | `analyze_fluency()` | Repeat/stutter/interrupt/natural-end detection |
-| 6 | Adjusted score | `calculate_adjusted_score()` | Base + penalties/bonuses → 0-100 |
-| 7 | Content dedup | `_find_duplicate_groups()` + `check_duplicate_content()` + `cross_video_dedup()` | Generic grouping, shared by within/cross-video |
-| 8 | Layered selection | `select_best_segment()` | Natural end → Fluency → Adjusted score → Duration |
-| 9 | FFmpeg ops | `clip_segment()` + `concat_videos()` | Clip + concatenate |
+| # | Module | File | Function | Description |
+|---|--------|------|----------|-------------|
+| 1 | CLI orchestration | `video_auto_editor/cli.py` | `main()`, `process_single_video()`, `process_batch()` | 解析旧位置参数并运行 Scenario A/B |
+| 2 | Config / models | `config.py`, `models.py` | `CONFIG`, `Segment`, `ClipInfo` | 共享默认配置和数据结构 |
+| 3 | Silence detection | `silence.py` | `detect_silence()`, `identify_segments()` | FFmpeg 静音检测和非静音片段切分 |
+| 4 | Scoring | `scoring.py` | `score_segment()`, `analyze_fluency()`, `calculate_adjusted_score()` | 基础评分和转写文本调整分 |
+| 5 | Transcription | `transcript.py` | `WhisperTranscriber`, `transcribe_candidates()` | Whisper CLI 封装，支持失败降级 |
+| 6 | Content dedup | `dedup.py` | `_find_duplicate_groups()`, `check_duplicate_content()`, `cross_video_dedup()` | 片内和跨视频复用的文本相似分组 |
+| 7 | Layered selection | `selection.py` | `select_best_segment()` | 自然结尾 → 流畅度 → 调整分 → 时长/顺序 |
+| 8 | FFmpeg ops | `media.py` | `get_video_duration()`, `clip_segment()`, `concat_videos()` | 获取时长、裁剪和拼接 |
+| 9 | Reports | `report.py` | `generate_single_report()`, `generate_batch_report()` | Markdown 报告生成 |
+
+`video_editor_auto_v4.6.py` 保留为薄兼容入口，并委托给 `video_auto_editor.cli.main()`。
 
 ---
 

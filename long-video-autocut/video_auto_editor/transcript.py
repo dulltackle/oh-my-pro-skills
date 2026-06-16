@@ -5,6 +5,8 @@ import subprocess
 import sys
 from dataclasses import dataclass
 
+from video_auto_editor.config import CONFIG
+
 
 @dataclass
 class WhisperConfig:
@@ -144,3 +146,47 @@ class WhisperTranscriber:
             audio_path=audio_path,
             transcript_path=transcript_path,
         )
+
+
+def create_whisper_transcriber(config=None):
+    """从配置创建 Whisper 转写器。"""
+    config = config or CONFIG
+    return WhisperTranscriber(
+        WhisperConfig(
+            model=config["whisper_model"],
+            language=config["whisper_language"],
+            timeout=config["whisper_timeout"],
+            output_format=config["whisper_output_format"],
+            sample_rate=config["whisper_sample_rate"],
+            channels=config["whisper_channels"],
+        )
+    )
+
+
+def transcribe_candidates(video_path, candidates, work_dir, transcriber=None, config=None):
+    """原地转写候选片段；失败时保持 seg.transcript 为空并继续处理。"""
+    print("\n🎤 Step 6: Transcribing candidates...")
+    transcriber = transcriber or create_whisper_transcriber(config)
+
+    if not transcriber.is_available():
+        print("   ⚠️  Whisper not installed or unavailable, skipping transcription, using audio-only scoring")
+        return candidates
+
+    for segment in candidates:
+        print(f"   Transcribing segment_{segment.index}...")
+        result = transcriber.transcribe_segment(
+            video_path=video_path,
+            segment_index=segment.index,
+            start_time=segment.start_time,
+            end_time=segment.end_time,
+            work_dir=work_dir,
+        )
+        if result.success:
+            segment.transcript = result.text
+            if segment.transcript:
+                preview = segment.transcript[:50] + "..." if len(segment.transcript) > 50 else segment.transcript
+                print(f"   ✅ [{preview}]")
+        else:
+            print(f"    ⚠️  Transcription failed: segment_{segment.index}: {result.error}")
+
+    return candidates

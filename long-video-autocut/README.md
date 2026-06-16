@@ -116,6 +116,18 @@ Input directory → Process each video (Scenario A, no individual reports)
 → Clean intermediate files → Generate single batch report
 ```
 
+## 代码结构
+
+旧命令保持不变，具体实现已经拆分到 `video_auto_editor/` 下的小模块：
+
+- `cli.py`：命令分发和 Scenario A/B 流程编排
+- `models.py`、`config.py`：共享数据结构和默认配置
+- `media.py`、`silence.py`、`transcript.py`：FFmpeg 操作、静音检测、Whisper 转写
+- `scoring.py`、`dedup.py`、`selection.py`：评分、去重、最终片段选择
+- `report.py`：Markdown 报告生成
+
+`video_editor_auto_v4.6.py` 保留为兼容入口。
+
 ---
 
 ## Configuration
