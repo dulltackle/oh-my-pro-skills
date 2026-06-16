@@ -61,7 +61,7 @@
 | 1 | Silence detection | `detect_silence()` | FFmpeg silencedetect filter |
 | 2 | Segment identification | `identify_segments()` | Split non-silent intervals by silence |
 | 3 | Scoring | `score_segment()` + `_score_boundary()` | 4 dims × 25 pts = 100 |
-| 4 | Transcription | `transcribe_segment()` | Whisper CLI (Chinese) |
+| 4 | Transcription | `WhisperTranscriber` + `transcribe_candidates()` | Whisper CLI 封装，支持失败降级 |
 | 5 | Fluency analysis | `analyze_fluency()` | Repeat/stutter/interrupt/natural-end detection |
 | 6 | Adjusted score | `calculate_adjusted_score()` | Base + penalties/bonuses → 0-100 |
 | 7 | Content dedup | `_find_duplicate_groups()` + `check_duplicate_content()` + `cross_video_dedup()` | Generic grouping, shared by within/cross-video |
@@ -198,12 +198,15 @@ def score_segment(seg, silences, total_duration) -> Segment
 ### Module 4: Transcription
 
 ```python
-def transcribe_segment(video_path, seg, work_dir) -> str
+def create_whisper_transcriber() -> WhisperTranscriber
+def transcribe_candidates(video_path, candidates, work_dir, transcriber=None) -> List[Segment]
 ```
 
-1. Extract segment audio with FFmpeg (16kHz, mono, WAV)
-2. Call Whisper CLI for Chinese transcription
-3. If Whisper not installed, skip and use audio-only scoring
+1. 从全局 `CONFIG` 创建 `WhisperTranscriber`。
+2. 通过当前 Python 解释器检查 Whisper 是否可用。
+3. 为每个候选片段使用 FFmpeg 抽取音频（16kHz、单声道、WAV）。
+4. 通过 `python -m whisper` 调用 Whisper CLI 执行中文转写。
+5. 如果 Whisper 不可用，或某个片段转写失败，保留空文本并继续使用纯音频评分。
 
 ---
 

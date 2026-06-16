@@ -62,8 +62,8 @@ Output:
 
 ```
 output/
-├── video_粗剪.mp4    # Best segment (clipped)
-└── video_报告.md     # Processing report
+├── video_clip.mp4    # 最佳片段裁剪结果
+└── video_report.md   # 处理报告
 ```
 
 ### Scenario B: Batch + Deduplication + Concatenation
@@ -78,8 +78,8 @@ Output (only two files, intermediate files are cleaned up):
 
 ```
 output/
-├── 最终拼接_20260311_1905.mp4  # Deduplicated concatenated video
-└── 批量处理报告.md              # Batch report (segment details + dedup decisions)
+├── final_concat_20260311_1905.mp4  # 去重后的拼接视频
+└── batch_report.md                 # 批量报告，包含片段明细和去重决策
 ```
 
 ### Command Format
@@ -226,7 +226,7 @@ The system uses **layered selection**, not raw score comparison. Natural end > F
 ### Q: Whisper transcription inaccurate?
 
 Default uses `small` model for speed/accuracy balance. To improve:
-- In `transcribe_segment`, change `--model small` to `--model medium` or `--model large`
+- 在 `CONFIG` 中将 `whisper_model` 从 `small` 改为 `medium` 或 `large`
 - `medium` model has ~85% accuracy for Chinese; recommended if resources allow
 
 ### Q: How does cross-video dedup decide which to keep?
@@ -235,8 +235,8 @@ Selection rule: Natural end > Adjusted score > Later filename (usually last take
 
 ### Q: Where are the detailed reports?
 
-- Scenario A: `output/<video_name>_报告.md`
-- Scenario B: `output/批量处理报告.md` (includes segment details, transcription summaries, dedup decisions)
+- Scenario A: `output/<video_name>_report.md`
+- Scenario B: `output/batch_report.md`，包含片段明细、转写摘要和去重决策
   - Scenario B does not keep intermediate reports or clips; they are cleaned after concatenation
 
 ---

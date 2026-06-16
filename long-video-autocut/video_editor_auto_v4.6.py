@@ -21,6 +21,8 @@ import subprocess, re, os, sys, json, glob, difflib, datetime, shutil
 from dataclasses import dataclass, field
 from typing import List, Tuple, Optional
 
+from video_auto_editor.transcript import WhisperConfig, WhisperTranscriber
+
 # --- Config ---
 CONFIG = {
     "silence_noise": -30,           # dB, lower = stricter
@@ -38,6 +40,12 @@ CONFIG = {
     "bonus_natural_end": 5,         # natural ending bonus
     "bonus_completeness_max": 3,    # completeness bonus cap
     "duplicate_threshold": 0.7,     # content similarity threshold
+    "whisper_model": "small",       # Whisper model
+    "whisper_language": "zh",       # Whisper language
+    "whisper_timeout": 120,         # Whisper per-segment timeout
+    "whisper_output_format": "txt", # Whisper output format
+    "whisper_sample_rate": 16000,   # extracted audio sample rate
+    "whisper_channels": 1,          # extracted audio channels
 }
 
 # --- Data structures ---
@@ -172,33 +180,44 @@ def score_segment(seg, silences, total_duration):
     return seg
 
 # --- Module 4: Transcription (Whisper CLI) ---
-def transcribe_segment(video_path, seg, work_dir):
-    """Extract segment audio and transcribe via Whisper"""
-    audio_path = os.path.join(work_dir, f"segment_{seg.index}.wav")
-    subprocess.run([
-        "ffmpeg", "-y", "-i", video_path,
-        "-ss", str(seg.start_time), "-to", str(seg.end_time),
-        "-vn", "-ar", "16000", "-ac", "1", audio_path
-    ], capture_output=True, text=True)
+def create_whisper_transcriber():
+    """从全局配置创建 Whisper 转写器。"""
+    return WhisperTranscriber(WhisperConfig(
+        model=CONFIG["whisper_model"],
+        language=CONFIG["whisper_language"],
+        timeout=CONFIG["whisper_timeout"],
+        output_format=CONFIG["whisper_output_format"],
+        sample_rate=CONFIG["whisper_sample_rate"],
+        channels=CONFIG["whisper_channels"],
+    ))
 
-    if not os.path.exists(audio_path):
-        print(f"    ⚠️  Audio extraction failed: segment_{seg.index}")
-        return ""
-    try:
-        subprocess.run([
-            "python3", "-m", "whisper", audio_path,
-            "--model", "small", "--language", "zh",
-            "--output_format", "txt", "--output_dir", work_dir
-        ], capture_output=True, text=True, timeout=120)
-        txt_path = audio_path.replace('.wav', '.txt')
-        if os.path.exists(txt_path):
-            with open(txt_path, 'r', encoding='utf-8') as f:
-                return f.read().strip()
-        print(f"    ⚠️  Transcript file not generated: segment_{seg.index}")
-        return ""
-    except Exception as e:
-        print(f"    ⚠️  Transcription failed: segment_{seg.index}: {e}")
-        return ""
+def transcribe_candidates(video_path, candidates, work_dir, transcriber=None):
+    """原地转写候选片段；失败时保持 seg.transcript 为空并继续处理。"""
+    print("\n🎤 Step 6: Transcribing candidates...")
+    transcriber = transcriber or create_whisper_transcriber()
+
+    if not transcriber.is_available():
+        print("   ⚠️  Whisper not installed or unavailable, skipping transcription, using audio-only scoring")
+        return candidates
+
+    for seg in candidates:
+        print(f"   Transcribing segment_{seg.index}...")
+        result = transcriber.transcribe_segment(
+            video_path=video_path,
+            segment_index=seg.index,
+            start_time=seg.start_time,
+            end_time=seg.end_time,
+            work_dir=work_dir,
+        )
+        if result.success:
+            seg.transcript = result.text
+            if seg.transcript:
+                preview = seg.transcript[:50] + "..." if len(seg.transcript) > 50 else seg.transcript
+                print(f"   ✅ [{preview}]")
+        else:
+            print(f"    ⚠️  Transcription failed: segment_{seg.index}: {result.error}")
+
+    return candidates
 
 # --- Module 5: Fluency analysis ---
 def analyze_fluency(transcript):
@@ -424,23 +443,7 @@ def process_single_video(video_path, output_dir, work_dir, batch_mode=False):
         print(f"   Selected top {len(candidates)} segments by score")
 
     # Step 6: Transcription
-    print("\n🎤 Step 6: Transcribing candidates...")
-    whisper_available = True
-    try:
-        if subprocess.run(["python3", "-m", "whisper", "--help"], capture_output=True, text=True, timeout=10).returncode != 0:
-            whisper_available = False
-    except Exception:
-        whisper_available = False
-
-    if whisper_available:
-        for seg in candidates:
-            print(f"   Transcribing segment_{seg.index}...")
-            seg.transcript = transcribe_segment(video_path, seg, video_work)
-            if seg.transcript:
-                preview = seg.transcript[:50] + "..." if len(seg.transcript) > 50 else seg.transcript
-                print(f"   ✅ [{preview}]")
-    else:
-        print("   ⚠️  Whisper not installed, skipping transcription, using audio-only scoring")
+    candidates = transcribe_candidates(video_path, candidates, video_work)
 
     # Step 7: Fluency analysis
     print("\n📊 Step 7: Fluency analysis...")
@@ -615,7 +618,7 @@ def main():
 
     video_path = sys.argv[1] if len(sys.argv) > 1 else "02047.MTS"
     output_dir = sys.argv[2] if len(sys.argv) > 2 else "./output"
-    work_dir = "./video_work"
+    work_dir = sys.argv[3] if len(sys.argv) > 3 else "./video_work"
     os.makedirs(output_dir, exist_ok=True)
     os.makedirs(work_dir, exist_ok=True)
 
