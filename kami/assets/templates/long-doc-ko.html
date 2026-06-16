@@ -111,12 +111,24 @@
     break-after: page;
   }
   .cover-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8pt;
     font-family: var(--sans);
     font-size: 10pt;
     color: var(--brand);
-    letter-spacing: 1pt;
+    letter-spacing: 1.5pt;
     text-transform: uppercase;
+    font-weight: 500;
     margin-bottom: 18pt;
+  }
+  .cover-eyebrow::before {
+    content: "";
+    width: 9pt;
+    height: 1.5pt;
+    border-radius: 0.75pt;
+    background: var(--brand);
+    flex-shrink: 0;
   }
   .cover-title {
     font-size: 36pt;

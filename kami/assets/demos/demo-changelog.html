@@ -6,10 +6,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Kami · v2.0 Release Notes</title>
+<title>Mole · v1.7.1 Release Notes</title>
 <meta name="author" content="Tw93">
-<meta name="description" content="Kami v2.0 release notes: nine templates, multilingual typography, and a stricter build pipeline.">
-<meta name="keywords" content="Kami, release notes, changelog, document generation">
+<meta name="description" content="Mole v1.7.1 release notes: accessibility, a faster status board, and deeper cleanup, uninstall, and updates.">
+<meta name="keywords" content="Mole, macOS, release notes, changelog, Mac utility">
 <meta name="generator" content="Kami">
 <style>
   @font-face { font-family: "JetBrains Mono"; src: url("../fonts/JetBrainsMono.woff2") format("woff2"); font-weight: 400; font-style: normal; }
@@ -62,114 +62,97 @@
   strong { font-weight: 500; }
   .hl { color: var(--brand); font-weight: 500; }
 
-  .version-header {
-    text-align: center;
-    margin-bottom: 24pt;
-    padding-bottom: 16pt;
+  /* HEADER - left-aligned editorial opener, matches the one-pager. */
+  .header {
+    margin-bottom: 20pt;
+    padding-bottom: 13pt;
     border-bottom: 0.5pt solid var(--border);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20pt;
   }
-  .version-logo {
-    font-family: var(--sans);
-    font-size: 14pt;
-    font-weight: 500;
-    color: var(--brand);
-    letter-spacing: 2pt;
-    text-transform: uppercase;
-    margin-bottom: 8pt;
-  }
-  .version-title {
-    font-family: var(--serif);
-    font-size: 30pt;
-    font-weight: 500;
-    color: var(--near-black);
-    line-height: 1.15;
-    letter-spacing: -0.5pt;
-    margin-bottom: 6pt;
-  }
-  .version-tagline {
-    font-size: 12pt;
-    color: var(--olive);
-    line-height: 1.5;
-  }
-  .version-date {
-    font-size: 10pt;
-    color: var(--stone);
-    margin-top: 6pt;
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-  }
-
-  h2 {
-    font-family: var(--serif);
-    font-size: 16pt;
-    font-weight: 500;
-    color: var(--near-black);
-    margin: 20pt 0 8pt 0;
-    border-left: 2.5pt solid var(--brand);
-    border-radius: 1.5pt;
-    padding-left: 8pt;
-    break-after: avoid;
-  }
-
-  h3 {
-    font-size: 13pt;
-    font-weight: 500;
-    color: var(--dark-warm);
-    margin: 14pt 0 4pt 0;
-    break-after: avoid;
-  }
-
-  p { margin: 0 0 8pt 0; line-height: 1.55; widows: 2; orphans: 2; }
-
-  ol.changes {
-    margin: 6pt 0 14pt 0;
-    padding-left: 24pt;
-    line-height: 1.55;
-  }
-  ol.changes li {
-    margin-bottom: 4pt;
-  }
-  ol.changes li::marker {
-    color: var(--brand);
-    font-weight: 500;
-  }
-
-  .tag {
-    display: inline-block;
-    background: var(--tag-bg);
-    color: var(--brand);
+  .title-block { flex: 1; }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 7pt;
     font-family: var(--sans);
     font-size: 9pt;
-    font-weight: 500;
-    padding: 1pt 6pt;
-    border-radius: 3pt;
-    letter-spacing: 0.4pt;
+    color: var(--brand);
+    letter-spacing: 1.5pt;
     text-transform: uppercase;
-    margin-right: 3pt;
+    font-weight: 500;
+    margin-bottom: 8pt;
   }
-  .tag.breaking {
-    background: var(--breaking-bg);
-    color: var(--breaking-fg);
+  .eyebrow::before {
+    content: "";
+    width: 8pt;
+    height: 1.5pt;
+    border-radius: 0.75pt;
+    background: var(--brand);
+    flex-shrink: 0;
+  }
+  h1 {
+    font-family: var(--serif);
+    font-size: 29pt;
+    font-weight: 500;
+    color: var(--near-black);
+    line-height: 1.1;
+    letter-spacing: -0.5pt;
+    margin-bottom: 7pt;
+  }
+  .subtitle {
+    font-size: 11.5pt;
+    color: var(--olive);
+    line-height: 1.45;
+    max-width: 150mm;
+  }
+  .meta {
+    font-size: 10pt;
+    color: var(--stone);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
   }
 
-  .callout {
-    background: var(--ivory);
-    border-left: 2pt solid var(--brand);
-    padding: 8pt 14pt;
-    border-radius: 3pt;
-    margin: 12pt 0;
+  /* SECTION HEAD - brand left bar */
+  h2 {
+    font-family: var(--serif);
+    font-size: 14pt;
+    font-weight: 500;
+    color: var(--near-black);
+    margin: 20pt 0 10pt 0;
+    border-left: 2.5pt solid var(--brand);
+    border-radius: 1.5pt;
+    padding-left: 9pt;
+    break-after: avoid;
+  }
+  h2:first-of-type { margin-top: 0; }
+
+  code { font-family: var(--mono); font-size: 0.92em; }
+
+  /* CHANGE LIST - numbered with brand-colored markers and a bold lead-in.
+     Numbers carry sequence without a repeated decorative glyph; the section
+     bars stay the only brand marks. Each section restarts at 1. */
+  ol.changes { margin: 0; padding-left: 18pt; }
+  ol.changes li {
+    margin-bottom: 7pt;
+    padding-left: 3pt;
     line-height: 1.55;
     break-inside: avoid;
   }
+  ol.changes li:last-child { margin-bottom: 0; }
+  ol.changes li::marker { color: var(--brand); font-weight: 500; }
+  ol.changes li strong { font-weight: 500; color: var(--near-black); }
+  ol.changes li .hl { color: var(--brand); font-weight: 500; }
 
+  /* ACKNOWLEDGEMENTS - a quiet labelled note, not a filled card, so the page
+     stays flat. The small brand label is the only marker it needs. */
   .thanks {
-    margin-top: 16pt;
-    padding: 10pt 14pt;
-    background: var(--ivory);
-    border-left: 1.4pt solid var(--brand);
-    border-radius: 4pt;
-    font-size: 10pt;
+    margin-top: 18pt;
+    font-size: 9.5pt;
     line-height: 1.55;
+    color: var(--olive);
     break-inside: avoid;
   }
   .thanks-label {
@@ -181,59 +164,60 @@
     font-weight: 500;
     margin-bottom: 4pt;
   }
+  .thanks .hl { color: var(--brand); font-weight: 500; }
 
   .changelog-footer {
-    margin-top: 20pt;
+    margin-top: 13pt;
     padding-top: 8pt;
     border-top: 0.3pt dotted var(--border);
     font-size: 9pt;
     color: var(--stone);
-    text-align: center;
     line-height: 1.5;
+    display: flex;
+    justify-content: space-between;
     font-variant-numeric: tabular-nums;
+    letter-spacing: 0.3pt;
   }
 </style>
 </head>
 <body>
 
-<div class="version-header">
-  <div class="version-logo">Kami</div>
-  <div class="version-title">v2.0 Parchment</div>
-  <div class="version-tagline">Nine templates, four languages, one constraint set, every output ready to ship.</div>
-  <div class="version-date">2026.06.14</div>
+<div class="header">
+  <div class="title-block">
+    <div class="eyebrow">Release Notes</div>
+    <h1>Mole v1.7.1</h1>
+    <div class="subtitle">Accessibility throughout, a faster status board, and deeper cleanup, uninstall, and updates.</div>
+  </div>
+  <div class="meta">June 13, 2026</div>
 </div>
 
-<h2>Changelog</h2>
-
-<h3>Breaking Changes</h3>
+<h2>Highlights</h2>
 <ol class="changes">
-  <li><span class="tag breaking">Breaking</span> Template registry moved to <span class="hl">scripts/shared.py</span>. Custom forks that patched <span class="hl">build.py</span> directly must re-point at the new <code>HTML_TEMPLATES</code> map.</li>
-  <li><span class="tag breaking">Breaking</span> Commercial CJK fonts are no longer bundled in <span class="hl">dist/kami.zip</span>. Run <code>scripts/ensure-fonts.sh</code> once to restore local preview paths.</li>
+  <li><strong>Accessibility throughout</strong>: VoiceOver labels, smoother keyboard paths, and Reduce Motion across the app and the website, guided by feedback from <span class="hl">users with visual impairments</span>.</li>
+  <li><strong>A faster status board</strong>: the dashboard opens from your last snapshot while fresh data loads, process rows appear sooner, and power and temperature readings line up better.</li>
+  <li><strong>Deeper software and uninstall</strong>: Electron apps update inside Mole alongside Sparkle, Homebrew, and the App Store, and uninstall now connects startup items and package receipts.</li>
+  <li><strong>Clean covers more, still review-first</strong>: WeChat caches, oversized live logs, Xcode artifacts, and project <code>build</code> and <code>dist</code> folders are easy to review, group, or exclude.</li>
+  <li><strong>Fan control on Apple Silicon</strong>: presets now apply reliably, including M4-class Macs where the thermal controller had kept fan writes locked.</li>
+  <li><strong>License and devices</strong>: device lists load faster, you can release every Mac at once, and moving a license to a new machine is handled inside the app.</li>
 </ol>
 
-<h3>Features</h3>
+<h2>Fixes &amp; polish</h2>
 <ol class="changes">
-  <li>Added the <span class="hl">Landing Page</span> template with five deployment companions (vercel, sitemap, robots, llms, llms-full).</li>
-  <li>Slides now ship three rendering paths: WeasyPrint HTML to PDF, editable PPTX via python-pptx, and a Markdown-first Marp variant.</li>
-  <li>Pygments syntax highlighting for code blocks, with a clean monochrome fallback when it is not installed.</li>
-  <li>Resume gained a <span class="hl">dense</span> variant that keeps five-plus project entries inside a strict two-page bound.</li>
-</ol>
-
-<h3>Fixes</h3>
-<ol class="changes">
-  <li>Tightened resume project spacing so company blocks no longer crowd against each other on page one.</li>
-  <li>Resolved CJK parenthesis wrapping that broke line rhythm in Chinese and Korean templates.</li>
-  <li>Cross-template token drift is now caught by <code>build.py --check</code> before packaging.</li>
+  <li><strong>Menu bar</strong>: the icon is restored when Control Center drops it, and the popover stays compact on shorter screens.</li>
+  <li><strong>Clean</strong>: AI tool caches such as ChatGPT, Codex, and Antigravity can be cleaned again.</li>
+  <li><strong>Privacy</strong>: camera and microphone use is detected as it starts, with fewer false alerts.</li>
+  <li><strong>Planets</strong>: rendered larger and more natural, with a remastered NASA Blue Marble Earth and a steadier spin.</li>
+  <li><strong>Analyze and Doctor</strong>: disk analysis uses less CPU on many-core Macs, and Doctor reports carry more system state for clearer issue reports.</li>
 </ol>
 
 <div class="thanks">
   <div class="thanks-label">Acknowledgements</div>
-  Built on WeasyPrint, Tauri, and the TsangerJinKai, Charter, and YuMincho type families. Thanks to everyone who filed visual-QA issues across the CJK rendering paths.
+  Thanks to the Mole users with visual impairments whose feedback shaped this release's accessibility work, and to <span class="hl">@_huawuque</span> and <span class="hl">@liujiayi1111</span> for surfacing real-world issues before the stable build.
 </div>
 
 <div class="changelog-footer">
-  Kami (紙): good content deserves good paper.<br>
-  github.com/tw93/Kami
+  <span>Mole (鼴): a quiet keeper for your Mac.</span>
+  <span>mole.fit</span>
 </div>
 
 </body>

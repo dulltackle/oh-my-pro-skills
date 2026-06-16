@@ -157,7 +157,9 @@ magick /tmp/stacked.png -gravity Center -background '#f5f4ed' -extent 1241x1754 
 
 ## Release Notes
 
-For public releases, keep notes concise and bilingual when requested. Use one-to-one English and Chinese changelog items, 5 to 8 items, one sentence each.
+- For public releases, keep notes concise and bilingual. Use one-to-one English and Chinese changelog items, 5 to 8 items, one sentence each.
+- Generate the scaffold with `python3 scripts/draft-release-notes.py V<prev>..V<new> --version V<new> --title "<Codename>"`, then regroup the raw commit list into 5 to 8 product-themed bullets and translate each to Chinese. Do not paste raw commit subjects.
+- Match the established shape: title is `V<x.y.z> <Two-Word Codename>` (e.g. `V1.7.2 Cleaner Resumes`), body is the centered logo block + `### Changelog` (English numbered list) + `### 更新日志` (Chinese numbered list) + the closing tagline line.
 
 ## Release Flow
 
@@ -165,6 +167,8 @@ For public releases, keep notes concise and bilingual when requested. Use one-to
 - `dist/kami.zip` should be committed with release changes and uploaded to the latest GitHub release asset when refreshing the Claude Desktop package.
 - README and public site download links use `https://github.com/tw93/kami/releases/latest/download/kami.zip`; prefer refreshing that asset for small packaging or documentation fixes instead of creating a new tag.
 - Create a new version tag only when the maintainer explicitly wants a versioned release. Tag the commit that already contains the final refreshed `dist/kami.zip`; do not tag a source-only commit and refresh the archive afterward.
+- On tag push, `.github/workflows/release.yml` builds and attaches `dist/kami.zip`, creates the release if missing, and adds the house-style reactions (`+1 eyes heart hooray laugh rocket`, one each). Do not `gh release create` by hand; let CI create the placeholder, then set the real title and notes with `gh release edit V<x> --title "V<x> <Codename>" --notes-file <file>`.
+- If reactions are ever missing (older release, CI skipped), add them manually: `rid=$(gh api repos/tw93/Kami/releases/tags/V<x> --jq .id); for r in +1 eyes heart hooray laugh rocket; do gh api -X POST repos/tw93/Kami/releases/$rid/reactions -f content="$r"; done`.
 
 ## Fonts
 

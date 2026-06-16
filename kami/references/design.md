@@ -319,23 +319,17 @@ Three tiers from weak to strong visual weight:
 
 ### Lists
 
+Use native list markers, brand-colored: ordered lists carry numbers, unordered lists carry a disc. Do not fake a bullet with a `::before` en-dash; a dash marker reads like AI default output, not editorial typesetting. The `ul.dash` class is an alias for the same native rendering, kept only so existing markup keeps working.
+
 ```css
 ul, ol {
   padding-left: 16pt;
   line-height: 1.55;
 }
 ul li::marker { color: var(--brand); }
-```
-
-Editorial bookish variant - **en-dash instead of bullet**:
-
-```css
-ul.dash { list-style: none; padding-left: 0; }
-ul.dash li { padding-left: 14pt; }
-ul.dash li::before {
-  content: "\2013";
-  color: var(--brand);
-}
+ol li::marker { color: var(--brand); font-weight: 500; }
+ul.dash { padding-left: 16pt; }              /* native disc, no en-dash hack */
+ul.dash li::marker { color: var(--brand); }
 ```
 
 ### Quote
@@ -380,9 +374,11 @@ ul.dash li::before {
 
 Resume exception: resume templates use a quiet bottom rule instead of the brand left bar, and project rows stay borderless to avoid double rules and page-top orphan lines.
 
-One-pager / document header exception: the top header opens with an uppercase eyebrow led by an 8pt x 1.5pt brand tick, a serif title, and a 0.5pt hairline rule under the whole block. It does not use the full-height brand left bar, which reads heavy and crude as a page-top frame. Keep the left bar a section-level and pull-quote device, not a page header.
+Document header signature: across the document templates (one-pager, changelog, equity-report, long-doc cover) the page header opens with an uppercase eyebrow led by the 8pt x 1.5pt brand tick (a short horizontal bar, not a round bullet, which reads juvenile next to CJK), then the serif title, with any meta right-aligned and a 0.5pt hairline rule closing the block. This is the shared opener: no centered version block, no full-height left bar. The full-height brand left bar reads heavy and crude as a page-top frame, so keep it a section-level and pull-quote device only. Resume (name header) and letter (letterhead) keep their purpose-built headers and are exempt.
 
-Hero product shot (one-pager): a product brief earns one real screenshot as its visual anchor, not a decorative texture. Frame it in a wrapper with `overflow: hidden`, `border-radius`, a 0.5pt border, and a faint shadow; size the wrapper by `height` with the image set to `object-fit: cover` so dead background (wallpaper, chrome margins) is trimmed evenly while the app window stays whole. Give it a single caption that adds a fact, not a restatement. Adjust the wrapper height to fill the page rather than stretching text or leaving bottom whitespace.
+Hero product shot (one-pager): a product brief earns one real screenshot as its visual anchor, not a decorative texture. Frame it in a wrapper with `overflow: hidden`, `border-radius`, and a soft shadow (no closed sub-1pt border, which trips the `thin-border-radius` lint and risks a double ring); size the wrapper by `height` with the image set to `object-fit: cover` so dead background (wallpaper, chrome margins) is trimmed evenly while the app window stays whole. Give it a single caption that adds a fact, not a restatement. Adjust the wrapper height to fill the page rather than stretching text or leaving bottom whitespace.
+
+Changelog best practice: a release-notes doc uses the same editorial language as the one-pager, not a centered version block. Open with the left-aligned header (eyebrow tick + "Project Version" serif title + date on the right + hairline rule). Group entries under h2 section heads carrying the brand left bar (Breaking / Features / Fixes, or Highlights / Fixes), and drop any section that does not apply. Each entry is a numbered item with a bold lead-in, then a colon and the detail; the numbers carry sequence and restart per section, so no per-item bullet glyph is added (one repeated mark per row reads as clutter). Keep acknowledgements a quiet labelled note, never a filled card, and split the footer into left description and right URL. One locale per file, no bilingual stacking. A breaking entry may carry an inline `.tag.breaking` chip; that is the only inline tag worth keeping.
 
 ### Table (kami-table)
 
