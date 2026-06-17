@@ -98,9 +98,10 @@ description: "遵循 Conventional Commits 规范和安全协议生成 git 提交
 **推荐呈现结构**：
 
 ```text
-feat: add user profile endpoint for mobile integration
+feat(api): 为移动端应用添加用户资料读取接口
 
-Add profile read endpoint for mobile clients.
+新增 /api/v1/users/me 端点，支持移动客户端读取当前登录用户
+的完整资料，包括头像、联系方式及权限角色。
 
 Refs: #123
 
@@ -108,8 +109,10 @@ Refs: #123
 - 仅提交当前已暂存文件
 
 将要提交的文件：
-- src/api/user.py
-- tests/test_user.py
+- src/api/routes/user.py
+- src/services/user_service.py
+- tests/unit/test_user_service.py
+- docs/api/mobile-profile.md
 
 警告：
 - 未发现敏感文件
@@ -177,21 +180,21 @@ Refs: #123
 示例 1：新功能
 用户："提交这些更改"
 分析：为用户服务添加了新的 API 端点
-消息：`feat: add user profile endpoint for mobile integration`
+消息：`feat: 为移动端集成添加用户资料接口`
 暂存文件：src/api/user.py, tests/test_user.py
 确认：先以文本输出完整消息、提交边界和文件列表；再通过结构化交互工具（若可用）或格式化文本选项发起确认，等待用户响应后执行
 
 示例 2：Bug 修复
 用户："为登录修复创建提交"
 分析：跨 3 个文件修复了身份验证错误
-消息：`fix: resolve session validation edge case during token refresh`
+消息：`fix: 修复刷新令牌时会话校验的边界情况`
 确认：先以文本输出完整消息；再通过结构化交互工具（若可用）或格式化文本选项等待用户响应，用户接受或回复新消息后，直接提交
 
 示例 3：没有任何已暂存文件
 用户："提交一下"
 仓库状态：所有文件均为未跟踪或未暂存，无已暂存文件
 分析：分析全部未跟踪和未暂存文件的改动内容
-消息：`feat: init project with core modules`
+消息：`feat: 使用核心模块初始化项目`
 确认：先以文本输出完整消息，说明"仓库无已暂存文件，将提交全部未跟踪和未暂存文件"；再发起确认，等待用户响应
 执行：`git add` 全部文件后 `git commit`
 
@@ -199,12 +202,12 @@ Refs: #123
 用户："帮我把已经暂存的改动提交掉"
 仓库状态：`src/auth.ts` 已暂存，`README.md` 仍未暂存
 分析：只读取 `git diff --cached`，只根据 `src/auth.ts` 起草消息
-消息：`fix: handle token refresh validation failure`
+消息：`fix: 处理令牌刷新校验失败`
 确认：先以文本输出完整消息，明确说明"仅提交当前已暂存文件"；再发起确认，用户一旦确认或回复新消息，直接执行 `git commit`
 
 示例 5：用户回复自定义消息
-起草消息：`feat: add new feature`
-用户回复：`feat: add real-time analytics widget`
+起草消息：`feat: 添加新功能`
+用户回复：`feat: 添加实时分析小组件`
 处理：该回复既非"确认"也非"取消"，视为最终提交消息，直接提交，不再二次确认
 
 示例 6：破坏性变更
@@ -212,19 +215,19 @@ Refs: #123
 消息：
 
 ```
-feat!: remove deprecated legacy endpoints
+feat!: 移除已弃用的旧版接口
 
-BREAKING CHANGE: Legacy API v1 endpoints have been removed. Migrate to v2.
+BREAKING CHANGE: 旧版 API v1 接口已移除，请迁移至 v2。
 ```
 
 示例 7：多段落 body
 消息：
 
 ```
-fix: prevent racing of requests
+fix: 防止请求竞态
 
-Introduce request id and reference to latest request.
-Dismiss incoming responses other than from latest request.
+引入请求 ID 并关联到最新请求。
+丢弃非最新请求的响应。
 
 Refs: #123
 ```
@@ -266,7 +269,7 @@ Refs: #123
 | 未经请求就提交                 | 仅在用户要求时提交                                                     |
 | 未经确认就提交                 | 起草消息后必须获取唯一一次用户确认                                     |
 | 自动推送                       | 等待明确的推送请求                                                     |
-| 通用消息（"update code"）      | 具体（"fix: null pointer in auth"）                                    |
+| 通用消息（"update code"）      | 具体（"fix: 修复认证中的空指针问题"）                                    |
 | 包含机密                       | 警告并排除敏感文件                                                     |
 | 修改失败的提交                 | 修复后创建新提交                                                       |
 | 深入的 git 探索                | 仅运行必要的 git 命令                                                  |
