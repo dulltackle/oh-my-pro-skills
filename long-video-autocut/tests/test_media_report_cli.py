@@ -5,8 +5,9 @@ from types import SimpleNamespace
 import pytest
 
 from video_auto_editor import cli, media
-from video_auto_editor.models import ClipInfo, Segment
+from video_auto_editor.models import ClipInfo, Segment, TranscriptChunk
 from video_auto_editor.report import generate_batch_report, generate_single_report
+from video_auto_editor.transcript import VideoTranscriptionResult
 
 
 def completed(returncode=0, stdout="", stderr=""):
@@ -149,6 +150,22 @@ def test_main_dispatches_single_subcommand(monkeypatch, tmp_path):
     assert calls == [(str(video_path), "out", "work")]
 
 
+def test_main_dispatches_live_subcommand(monkeypatch, tmp_path):
+    calls = []
+    video_path = tmp_path / "live.mp4"
+    video_path.write_text("not real video", encoding="utf-8")
+
+    def fake_process_live(video_path_arg, output_dir, work_dir):
+        calls.append((video_path_arg, output_dir, work_dir))
+        return VideoTranscriptionResult(success=True, chunks=[])
+
+    monkeypatch.setattr(cli, "process_live_video", fake_process_live)
+
+    cli.main(["live", str(video_path), "--output-dir", "out", "--work-dir", "work"])
+
+    assert calls == [(str(video_path), "out", "work")]
+
+
 def test_main_requires_explicit_subcommand():
     with pytest.raises(SystemExit) as exc_info:
         cli.main([])
@@ -217,6 +234,49 @@ def test_process_single_video_falls_back_to_top_five_and_returns_none_on_clip_fa
     monkeypatch.setattr(cli, "clip_segment", lambda *args, **kwargs: False)
 
     assert cli.process_single_video("sample.mp4", str(tmp_path), str(tmp_path / "work")) is None
+
+
+def test_process_live_video_exports_transcript_srt(monkeypatch, tmp_path):
+    video_path = tmp_path / "live.mp4"
+    video_path.write_text("video", encoding="utf-8")
+    output_dir = tmp_path / "out"
+    work_dir = tmp_path / "work"
+    chunks = [TranscriptChunk(1, 2.5, "直播文本")]
+
+    monkeypatch.setattr(cli, "get_video_duration", lambda video_path_arg: 120.0)
+
+    def fake_transcribe(video_path_arg, video_work, config=None):
+        assert video_path_arg == str(video_path)
+        assert video_work == str(work_dir / "live")
+        return VideoTranscriptionResult(
+            success=True,
+            chunks=chunks,
+            cache_path=str(work_dir / "live" / "transcript.json"),
+        )
+
+    monkeypatch.setattr(cli, "transcribe_video", fake_transcribe)
+
+    result = cli.process_live_video(str(video_path), str(output_dir), str(work_dir))
+
+    assert result.success is True
+    assert (output_dir / "transcript.srt").read_text(encoding="utf-8") == (
+        "1\n"
+        "00:00:01,000 --> 00:00:02,500\n"
+        "直播文本\n\n"
+    )
+
+
+def test_process_live_video_returns_none_on_transcription_failure(monkeypatch, tmp_path):
+    video_path = tmp_path / "live.mp4"
+    video_path.write_text("video", encoding="utf-8")
+    monkeypatch.setattr(cli, "get_video_duration", lambda video_path_arg: 120.0)
+    monkeypatch.setattr(
+        cli,
+        "transcribe_video",
+        lambda *args, **kwargs: VideoTranscriptionResult(success=False, chunks=[], error="failed"),
+    )
+
+    assert cli.process_live_video(str(video_path), str(tmp_path / "out"), str(tmp_path / "work")) is None
 
 
 def test_process_single_video_returns_none_on_silence_detection_failure(monkeypatch, tmp_path):

@@ -5,6 +5,15 @@ from typing import List, Tuple
 
 
 @dataclass
+class TranscriptChunk:
+    """整视频转写中的一个带时间戳文本块。"""
+
+    start: float
+    end: float
+    text: str
+
+
+@dataclass
 class Segment:
     """视频中的一段非静音区间。"""
 

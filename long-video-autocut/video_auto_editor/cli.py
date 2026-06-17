@@ -14,7 +14,7 @@ from video_auto_editor.report import generate_batch_report, generate_single_repo
 from video_auto_editor.scoring import analyze_fluency, calculate_adjusted_score, score_segment
 from video_auto_editor.selection import select_best_segment
 from video_auto_editor.silence import detect_silence, identify_segments
-from video_auto_editor.transcript import transcribe_candidates
+from video_auto_editor.transcript import export_srt, transcribe_candidates, transcribe_video
 
 
 def process_single_video(video_path, output_dir, work_dir, batch_mode=False, config=None):
@@ -132,6 +132,43 @@ def _find_video_files(input_dir):
     )
 
 
+def process_live_video(video_path, output_dir, work_dir, config=None):
+    """直播拆条 MVP：先完成整视频转写缓存和全量 SRT 导出。"""
+    config = config or CONFIG
+    video_name = os.path.splitext(os.path.basename(video_path))[0]
+    video_work = os.path.join(work_dir, video_name)
+    os.makedirs(video_work, exist_ok=True)
+    os.makedirs(output_dir, exist_ok=True)
+
+    print(f"\n{'=' * 60}")
+    print(f"  Video Auto Editor v4.7 - Live MVP\n  Input: {video_path}")
+    print(f"{'=' * 60}\n")
+
+    print("📋 Step 1: Getting video info...")
+    total_duration = get_video_duration(video_path)
+    if total_duration is None:
+        print("   ❌ Failed to get video info")
+        return None
+    print(f"   Duration: {total_duration:.1f}s ({total_duration / 60:.1f}min)")
+
+    print("\n🎤 Step 2: Transcribing full video...")
+    transcript_result = transcribe_video(video_path, video_work, config=config)
+    if not transcript_result.success:
+        print(f"   ❌ {transcript_result.error}")
+        return None
+
+    source = "cache" if transcript_result.from_cache else "whisper"
+    print(f"   ✅ Loaded {len(transcript_result.chunks)} transcript chunks from {source}")
+    print(f"   📄 Transcript cache: {transcript_result.cache_path}")
+
+    srt_path = os.path.join(output_dir, "transcript.srt")
+    export_srt(transcript_result.chunks, srt_path)
+    print(f"   📄 Transcript SRT: {srt_path}")
+
+    print("\n✅ Live MVP complete. Next step: generate clip candidates from transcript + silence boundaries.")
+    return transcript_result
+
+
 def process_batch(input_dir, output_dir, work_dir, config=None):
     """批处理视频目录，输出拼接视频和批处理报告。"""
     config = config or CONFIG
@@ -226,6 +263,10 @@ def _build_parser():
     batch_parser.add_argument("input_dir", help="输入视频目录")
     _add_common_output_args(batch_parser)
 
+    live_parser = subparsers.add_parser("live", help="直播拆条 MVP：整视频转写与字幕导出")
+    live_parser.add_argument("video_path", help="输入直播视频文件路径")
+    _add_common_output_args(live_parser)
+
     return parser
 
 
@@ -238,6 +279,10 @@ def main(argv=None):
 
     if args.command == "batch":
         process_batch(args.input_dir, args.output_dir, args.work_dir)
+        return
+
+    if args.command == "live":
+        process_live_video(args.video_path, args.output_dir, args.work_dir)
         return
 
     clip = process_single_video(args.video_path, args.output_dir, args.work_dir)
