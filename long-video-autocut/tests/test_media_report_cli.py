@@ -5,8 +5,8 @@ from types import SimpleNamespace
 import pytest
 
 from video_auto_editor import cli, media
-from video_auto_editor.models import ClipCandidate, ClipInfo, Segment, TranscriptChunk
-from video_auto_editor.report import generate_batch_report, generate_single_report
+from video_auto_editor.models import ClipCandidate, ClipInfo, LiveClipInfo, Segment, TranscriptChunk
+from video_auto_editor.report import generate_batch_report, generate_live_report, generate_single_report
 from video_auto_editor.transcript import VideoTranscriptionResult
 
 
@@ -121,6 +121,21 @@ def test_generate_batch_report_contains_dedup_and_total_duration(tmp_path):
     assert "**Total duration**: 30.0s (0.5min)" in content
 
 
+def test_generate_live_report_rejects_selected_export_mismatch(tmp_path):
+    candidate = ClipCandidate(0, 0, 10, 10, "文本", title="标题", base_score=80)
+
+    with pytest.raises(ValueError, match="selected \\(1\\) and exports \\(0\\)"):
+        generate_live_report(
+            "live",
+            str(tmp_path),
+            total_duration=10,
+            silences=[],
+            candidates=[candidate],
+            selected=[candidate],
+            exports=[],
+        )
+
+
 def test_main_dispatches_batch_subcommand(monkeypatch, tmp_path):
     calls = []
 
@@ -155,15 +170,25 @@ def test_main_dispatches_live_subcommand(monkeypatch, tmp_path):
     video_path = tmp_path / "live.mp4"
     video_path.write_text("not real video", encoding="utf-8")
 
-    def fake_process_live(video_path_arg, output_dir, work_dir):
-        calls.append((video_path_arg, output_dir, work_dir))
-        return VideoTranscriptionResult(success=True, chunks=[])
+    def fake_process_live(video_path_arg, output_dir, work_dir, config=None):
+        calls.append((video_path_arg, output_dir, work_dir, config["max_clips"]))
+        return []
 
     monkeypatch.setattr(cli, "process_live_video", fake_process_live)
 
-    cli.main(["live", str(video_path), "--output-dir", "out", "--work-dir", "work"])
+    cli.main(["live", str(video_path), "--output-dir", "out", "--work-dir", "work", "--max-clips", "2"])
 
-    assert calls == [(str(video_path), "out", "work")]
+    assert calls == [(str(video_path), "out", "work", 2)]
+
+
+def test_main_rejects_non_positive_live_max_clips(tmp_path):
+    video_path = tmp_path / "live.mp4"
+    video_path.write_text("not real video", encoding="utf-8")
+
+    with pytest.raises(SystemExit) as exc_info:
+        cli.main(["live", str(video_path), "--max-clips", "0"])
+
+    assert exc_info.value.code == 2
 
 
 def test_main_requires_explicit_subcommand():
@@ -262,15 +287,23 @@ def test_process_live_video_exports_transcript_srt(monkeypatch, tmp_path):
         "generate_clip_candidates",
         lambda chunks_arg, silences, total_duration, config=None: candidates,
     )
+    monkeypatch.setattr(
+        cli,
+        "export_live_clips",
+        lambda *args, **kwargs: [
+            LiveClipInfo(1, "直播文本", 1, 2.5, 1.5, 80, "直播文本", str(output_dir / "clips" / "001_直播文本.mp4"))
+        ],
+    )
 
     result = cli.process_live_video(str(video_path), str(output_dir), str(work_dir))
 
-    assert result.success is True
+    assert len(result) == 1
     assert (output_dir / "transcript.srt").read_text(encoding="utf-8") == (
         "1\n"
         "00:00:01,000 --> 00:00:02,500\n"
         "直播文本\n\n"
     )
+    assert (output_dir / "拆条报告.md").exists()
 
 
 def test_process_live_video_logs_generated_candidates(monkeypatch, tmp_path, capsys):
@@ -294,13 +327,20 @@ def test_process_live_video_logs_generated_candidates(monkeypatch, tmp_path, cap
         return candidates
 
     monkeypatch.setattr(cli, "generate_clip_candidates", fake_generate)
+    monkeypatch.setattr(
+        cli,
+        "export_live_clips",
+        lambda *args, **kwargs: [
+            LiveClipInfo(1, "直播候选文本", 10, 50, 40, 95, "直播候选文本", str(tmp_path / "out" / "clips" / "001.mp4"))
+        ],
+    )
 
     cli.process_live_video(str(video_path), str(tmp_path / "out"), str(tmp_path / "work"))
 
     assert calls["args"] == (chunks, silences, 120.0)
     output = capsys.readouterr().out
     assert "Generated 1 clip candidates" in output
-    assert "candidate_0: 10.0-50.0s (40.0s) base=95.0 | 直播候选文本" in output
+    assert "candidate_0: 10.0-50.0s (40.0s) score=95.0 | 直播候选文本" in output
 
 
 def test_process_live_video_returns_none_on_transcription_failure(monkeypatch, tmp_path):

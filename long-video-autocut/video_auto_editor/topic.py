@@ -4,6 +4,7 @@ import re
 
 from video_auto_editor.config import CONFIG
 from video_auto_editor.models import ClipCandidate
+from video_auto_editor.scoring import analyze_fluency
 
 
 def generate_clip_candidates(chunks, silences, total_duration, config=None):
@@ -67,6 +68,70 @@ def generate_clip_candidates(chunks, silences, total_duration, config=None):
         start_pos = next_pos
 
     return candidates
+
+
+def enrich_clip_candidates(candidates, config=None):
+    """为直播候选补充分数、标题、摘要和关键词。"""
+    config = config or CONFIG
+    for candidate in candidates:
+        candidate.adjusted_score = _score_live_candidate(candidate, config)
+        candidate.title = _generate_title(candidate)
+        candidate.summary = _generate_summary(candidate.text)
+        candidate.keywords = _extract_keywords(candidate.text)
+    return candidates
+
+
+def _score_live_candidate(candidate, config):
+    repeat_count, stutter_count, is_natural_end, is_interrupted = analyze_fluency(candidate.text)
+    duration_factor = max(1.0, candidate.duration / 30.0)
+    score = candidate.base_score
+    score -= (repeat_count / duration_factor) * config["penalty_repeat"]
+    score -= (stutter_count / duration_factor) * config["penalty_stutter"]
+    if is_interrupted:
+        score -= config["penalty_interrupt"]
+    if is_natural_end:
+        score += config["bonus_natural_end"]
+    return round(_clamp(score, 0, 100), 1)
+
+
+def _generate_title(candidate):
+    text = _normalize_text(candidate.text)
+    sentence = _first_sentence(text)
+    sentence = re.sub(r"^[嗯啊呃那个就是说\s，,。！？!?.]+", "", sentence).strip()
+    sentence = re.sub(r"[。！？!?,，；;：:\s]+$", "", sentence).strip()
+    if sentence:
+        return sentence[:18]
+    return f"直播片段_{candidate.index + 1:03d}"
+
+
+def _generate_summary(text):
+    text = _normalize_text(text)
+    if not text:
+        return "直播片段摘要待补充。"
+    return text[:80]
+
+
+def _extract_keywords(text):
+    text = _normalize_text(text)
+    stopwords = {
+        "这个", "那个", "就是", "然后", "其实", "我们", "你们", "大家", "一个", "一些",
+        "因为", "所以", "但是", "如果", "可以", "这样", "来说", "里面", "时候",
+    }
+    words = []
+    for match in re.finditer(r"[\u4e00-\u9fff]{2,8}|[A-Za-z][A-Za-z0-9_-]{1,20}", text):
+        word = match.group(0)
+        if word in stopwords:
+            continue
+        if word not in words:
+            words.append(word)
+        if len(words) >= 5:
+            break
+    return words or ["直播片段"]
+
+
+def _first_sentence(text):
+    parts = re.split(r"[。！？!?]", text, maxsplit=1)
+    return parts[0] if parts else text
 
 
 def _build_window(clean_chunks, start_pos, target_duration):

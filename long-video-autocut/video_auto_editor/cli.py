@@ -7,15 +7,16 @@ import os
 import shutil
 
 from video_auto_editor.config import CONFIG
-from video_auto_editor.dedup import check_duplicate_content, cross_video_dedup
+from video_auto_editor.dedup import check_duplicate_content, check_duplicate_live_candidates, cross_video_dedup
+from video_auto_editor.export import export_live_clips
 from video_auto_editor.media import clip_segment, concat_videos, get_video_duration
 from video_auto_editor.models import ClipInfo
-from video_auto_editor.report import generate_batch_report, generate_single_report
+from video_auto_editor.report import generate_batch_report, generate_live_report, generate_single_report
 from video_auto_editor.scoring import analyze_fluency, calculate_adjusted_score, score_segment
-from video_auto_editor.selection import select_best_segment
+from video_auto_editor.selection import select_best_segment, select_live_clips
 from video_auto_editor.silence import detect_silence, identify_segments
 from video_auto_editor.transcript import export_srt, transcribe_candidates, transcribe_video
-from video_auto_editor.topic import generate_clip_candidates
+from video_auto_editor.topic import enrich_clip_candidates, generate_clip_candidates
 
 
 def process_single_video(video_path, output_dir, work_dir, batch_mode=False, config=None):
@@ -134,7 +135,7 @@ def _find_video_files(input_dir):
 
 
 def process_live_video(video_path, output_dir, work_dir, config=None):
-    """直播拆条 MVP：先完成整视频转写缓存和全量 SRT 导出。"""
+    """直播拆条 MVP：输出多条短视频、metadata 和报告。"""
     config = config or CONFIG
     video_name = os.path.splitext(os.path.basename(video_path))[0]
     video_work = os.path.join(work_dir, video_name)
@@ -176,16 +177,45 @@ def process_live_video(video_path, output_dir, work_dir, config=None):
 
     print("\n🧩 Step 4: Generating clip candidates...")
     candidates = generate_clip_candidates(transcript_result.chunks, silences, total_duration, config)
+    candidates = enrich_clip_candidates(candidates, config)
     print(f"   Generated {len(candidates)} clip candidates")
     for candidate in candidates:
         preview = candidate.text[:50] + "..." if len(candidate.text) > 50 else candidate.text
         print(
             f"   candidate_{candidate.index}: {candidate.start_time:.1f}-{candidate.end_time:.1f}s "
-            f"({candidate.duration:.1f}s) base={candidate.base_score:.1f} | {preview}"
+            f"({candidate.duration:.1f}s) score={_live_candidate_score(candidate):.1f} | {preview}"
         )
 
-    print("\n✅ Live MVP complete. Next step: select and export multiple clips.")
-    return transcript_result
+    print("\n🔄 Step 5: Duplicate content detection...")
+    candidates = check_duplicate_live_candidates(candidates, config)
+    print(f"   Marked {sum(1 for candidate in candidates if candidate.is_duplicate)} duplicate candidates")
+
+    print("\n🏆 Step 6: Selecting live clips...")
+    selected = select_live_clips(candidates, config["max_clips"], config)
+    if not selected:
+        print("   ⚠️  No live clips selected")
+    else:
+        for candidate in selected:
+            print(
+                f"   ✅ candidate_{candidate.index}: {candidate.start_time:.1f}-{candidate.end_time:.1f}s "
+                f"score={_live_candidate_score(candidate):.1f} title={candidate.title}"
+            )
+
+    print("\n✂️  Step 7: Exporting live clips...")
+    exports = export_live_clips(video_path, selected, transcript_result.chunks, output_dir, config)
+    if exports is None:
+        print("   ❌ Failed to export live clips")
+        return None
+    print(f"   ✅ Exported {len(exports)} clips")
+    print(f"   📄 Metadata: {os.path.join(output_dir, 'metadata.json')}")
+
+    report_path = generate_live_report(
+        video_name, output_dir, total_duration, silences, candidates, selected, exports, config
+    )
+    print(f"   📄 Report: {report_path}")
+
+    print("\n✅ Live MVP complete.")
+    return exports
 
 
 def process_batch(input_dir, output_dir, work_dir, config=None):
@@ -262,9 +292,23 @@ def _can_remove_work_dir(work_dir, output_dir):
     return common not in {work_abs, output_abs}
 
 
+def _live_candidate_score(candidate):
+    return candidate.adjusted_score if candidate.adjusted_score is not None else candidate.base_score
+
+
 def _add_common_output_args(parser):
     parser.add_argument("--output-dir", default="./output", help="输出目录，默认 ./output")
     parser.add_argument("--work-dir", default="./video_work", help="临时工作目录，默认 ./video_work")
+
+
+def _positive_int(value):
+    try:
+        parsed = int(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("必须是正整数") from exc
+    if parsed <= 0:
+        raise argparse.ArgumentTypeError("必须是正整数")
+    return parsed
 
 
 def _build_parser():
@@ -282,9 +326,10 @@ def _build_parser():
     batch_parser.add_argument("input_dir", help="输入视频目录")
     _add_common_output_args(batch_parser)
 
-    live_parser = subparsers.add_parser("live", help="直播拆条 MVP：整视频转写与字幕导出")
+    live_parser = subparsers.add_parser("live", help="直播拆条 MVP：批量导出短视频、metadata 和报告")
     live_parser.add_argument("video_path", help="输入直播视频文件路径")
     _add_common_output_args(live_parser)
+    live_parser.add_argument("--max-clips", type=_positive_int, default=None, help="最多导出短视频数量，默认 5")
 
     return parser
 
@@ -301,7 +346,10 @@ def main(argv=None):
         return
 
     if args.command == "live":
-        process_live_video(args.video_path, args.output_dir, args.work_dir)
+        live_config = CONFIG.copy()
+        if args.max_clips is not None:
+            live_config["max_clips"] = args.max_clips
+        process_live_video(args.video_path, args.output_dir, args.work_dir, config=live_config)
         return
 
     clip = process_single_video(args.video_path, args.output_dir, args.work_dir)

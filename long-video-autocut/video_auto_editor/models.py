@@ -1,7 +1,7 @@
 """视频粗剪流程使用的数据结构。"""
 
 from dataclasses import dataclass, field
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 
 @dataclass
@@ -26,6 +26,29 @@ class ClipCandidate:
     base_score: float = 0
     chunk_start_index: int = 0
     chunk_end_index: int = 0
+    adjusted_score: Optional[float] = None
+    title: str = ""
+    summary: str = ""
+    keywords: List[str] = field(default_factory=list)
+    is_duplicate: bool = False
+    duplicate_with: List[int] = field(default_factory=list)
+
+
+@dataclass
+class LiveClipInfo:
+    """直播拆条导出的单条短视频信息。"""
+
+    index: int
+    title: str
+    start_time: float
+    end_time: float
+    duration: float
+    score: float
+    text: str
+    output_path: str
+    subtitle_path: str = ""
+    summary: str = ""
+    keywords: List[str] = field(default_factory=list)
 
 
 @dataclass

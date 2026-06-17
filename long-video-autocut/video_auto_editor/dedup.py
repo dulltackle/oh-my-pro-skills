@@ -68,3 +68,22 @@ def cross_video_dedup(clips, config=None):
                 clips[idx].is_cross_duplicate = True
                 clips[idx].duplicate_of = clips[best].video_name
     return clips
+
+
+def check_duplicate_live_candidates(candidates, config=None):
+    """直播候选去重：每组保留 live 分数最高、边界分最高、时间更早的片段。"""
+    groups = _find_duplicate_groups(candidates, lambda candidate: candidate.text, config)
+    for group in groups:
+        best = max(
+            group,
+            key=lambda idx: (
+                candidates[idx].adjusted_score if candidates[idx].adjusted_score is not None else candidates[idx].base_score,
+                candidates[idx].base_score,
+                -candidates[idx].start_time,
+            ),
+        )
+        for idx in group:
+            if idx != best:
+                candidates[idx].is_duplicate = True
+                candidates[idx].duplicate_with.append(candidates[best].index)
+    return candidates
