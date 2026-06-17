@@ -14,6 +14,21 @@ class TranscriptChunk:
 
 
 @dataclass
+class ClipCandidate:
+    """直播拆条流程中的候选片段。"""
+
+    index: int
+    start_time: float
+    end_time: float
+    duration: float
+    text: str
+    source: str = "transcript_window"
+    base_score: float = 0
+    chunk_start_index: int = 0
+    chunk_end_index: int = 0
+
+
+@dataclass
 class Segment:
     """视频中的一段非静音区间。"""
 

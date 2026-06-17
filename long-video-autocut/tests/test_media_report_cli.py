@@ -5,7 +5,7 @@ from types import SimpleNamespace
 import pytest
 
 from video_auto_editor import cli, media
-from video_auto_editor.models import ClipInfo, Segment, TranscriptChunk
+from video_auto_editor.models import ClipCandidate, ClipInfo, Segment, TranscriptChunk
 from video_auto_editor.report import generate_batch_report, generate_single_report
 from video_auto_editor.transcript import VideoTranscriptionResult
 
@@ -242,8 +242,10 @@ def test_process_live_video_exports_transcript_srt(monkeypatch, tmp_path):
     output_dir = tmp_path / "out"
     work_dir = tmp_path / "work"
     chunks = [TranscriptChunk(1, 2.5, "直播文本")]
+    candidates = [ClipCandidate(0, 1, 2.5, 1.5, "直播文本", base_score=80)]
 
     monkeypatch.setattr(cli, "get_video_duration", lambda video_path_arg: 120.0)
+    monkeypatch.setattr(cli, "detect_silence", lambda video_path_arg, config=None: [(0.5, 1.0)])
 
     def fake_transcribe(video_path_arg, video_work, config=None):
         assert video_path_arg == str(video_path)
@@ -255,6 +257,11 @@ def test_process_live_video_exports_transcript_srt(monkeypatch, tmp_path):
         )
 
     monkeypatch.setattr(cli, "transcribe_video", fake_transcribe)
+    monkeypatch.setattr(
+        cli,
+        "generate_clip_candidates",
+        lambda chunks_arg, silences, total_duration, config=None: candidates,
+    )
 
     result = cli.process_live_video(str(video_path), str(output_dir), str(work_dir))
 
@@ -266,14 +273,58 @@ def test_process_live_video_exports_transcript_srt(monkeypatch, tmp_path):
     )
 
 
+def test_process_live_video_logs_generated_candidates(monkeypatch, tmp_path, capsys):
+    video_path = tmp_path / "live.mp4"
+    video_path.write_text("video", encoding="utf-8")
+    chunks = [TranscriptChunk(10, 50, "直播候选文本")]
+    silences = [(8, 10), (50, 55)]
+    candidates = [ClipCandidate(0, 10, 50, 40, "直播候选文本", base_score=95)]
+    calls = {}
+
+    monkeypatch.setattr(cli, "get_video_duration", lambda video_path_arg: 120.0)
+    monkeypatch.setattr(cli, "detect_silence", lambda video_path_arg, config=None: silences)
+    monkeypatch.setattr(
+        cli,
+        "transcribe_video",
+        lambda *args, **kwargs: VideoTranscriptionResult(success=True, chunks=chunks, cache_path="cache.json"),
+    )
+
+    def fake_generate(chunks_arg, silences_arg, total_duration, config=None):
+        calls["args"] = (chunks_arg, silences_arg, total_duration)
+        return candidates
+
+    monkeypatch.setattr(cli, "generate_clip_candidates", fake_generate)
+
+    cli.process_live_video(str(video_path), str(tmp_path / "out"), str(tmp_path / "work"))
+
+    assert calls["args"] == (chunks, silences, 120.0)
+    output = capsys.readouterr().out
+    assert "Generated 1 clip candidates" in output
+    assert "candidate_0: 10.0-50.0s (40.0s) base=95.0 | 直播候选文本" in output
+
+
 def test_process_live_video_returns_none_on_transcription_failure(monkeypatch, tmp_path):
+    video_path = tmp_path / "live.mp4"
+    video_path.write_text("video", encoding="utf-8")
+    monkeypatch.setattr(cli, "get_video_duration", lambda video_path_arg: 120.0)
+    monkeypatch.setattr(cli, "detect_silence", lambda video_path_arg, config=None: [])
+    monkeypatch.setattr(
+        cli,
+        "transcribe_video",
+        lambda *args, **kwargs: VideoTranscriptionResult(success=False, chunks=[], error="failed"),
+    )
+
+    assert cli.process_live_video(str(video_path), str(tmp_path / "out"), str(tmp_path / "work")) is None
+
+
+def test_process_live_video_returns_none_on_silence_detection_failure(monkeypatch, tmp_path):
     video_path = tmp_path / "live.mp4"
     video_path.write_text("video", encoding="utf-8")
     monkeypatch.setattr(cli, "get_video_duration", lambda video_path_arg: 120.0)
     monkeypatch.setattr(
         cli,
-        "transcribe_video",
-        lambda *args, **kwargs: VideoTranscriptionResult(success=False, chunks=[], error="failed"),
+        "detect_silence",
+        lambda video_path_arg, config=None: (_ for _ in ()).throw(RuntimeError("ffmpeg failed")),
     )
 
     assert cli.process_live_video(str(video_path), str(tmp_path / "out"), str(tmp_path / "work")) is None

@@ -15,6 +15,7 @@ from video_auto_editor.scoring import analyze_fluency, calculate_adjusted_score,
 from video_auto_editor.selection import select_best_segment
 from video_auto_editor.silence import detect_silence, identify_segments
 from video_auto_editor.transcript import export_srt, transcribe_candidates, transcribe_video
+from video_auto_editor.topic import generate_clip_candidates
 
 
 def process_single_video(video_path, output_dir, work_dir, batch_mode=False, config=None):
@@ -151,7 +152,15 @@ def process_live_video(video_path, output_dir, work_dir, config=None):
         return None
     print(f"   Duration: {total_duration:.1f}s ({total_duration / 60:.1f}min)")
 
-    print("\n🎤 Step 2: Transcribing full video...")
+    print("\n🔇 Step 2: Silence detection...")
+    try:
+        silences = detect_silence(video_path, config)
+    except RuntimeError as exc:
+        print(f"   ❌ {exc}")
+        return None
+    print(f"   Detected {len(silences)} silence spans")
+
+    print("\n🎤 Step 3: Transcribing full video...")
     transcript_result = transcribe_video(video_path, video_work, config=config)
     if not transcript_result.success:
         print(f"   ❌ {transcript_result.error}")
@@ -165,7 +174,17 @@ def process_live_video(video_path, output_dir, work_dir, config=None):
     export_srt(transcript_result.chunks, srt_path)
     print(f"   📄 Transcript SRT: {srt_path}")
 
-    print("\n✅ Live MVP complete. Next step: generate clip candidates from transcript + silence boundaries.")
+    print("\n🧩 Step 4: Generating clip candidates...")
+    candidates = generate_clip_candidates(transcript_result.chunks, silences, total_duration, config)
+    print(f"   Generated {len(candidates)} clip candidates")
+    for candidate in candidates:
+        preview = candidate.text[:50] + "..." if len(candidate.text) > 50 else candidate.text
+        print(
+            f"   candidate_{candidate.index}: {candidate.start_time:.1f}-{candidate.end_time:.1f}s "
+            f"({candidate.duration:.1f}s) base={candidate.base_score:.1f} | {preview}"
+        )
+
+    print("\n✅ Live MVP complete. Next step: select and export multiple clips.")
     return transcript_result
 
 
